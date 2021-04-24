@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:sulaimanfood/screens/signin.dart';
+import 'package:sulaimanfood/utility/myConstant.dart';
 import 'package:sulaimanfood/utility/my_style.dart';
 import 'package:sulaimanfood/utility/normal_dialog.dart';
 
@@ -84,7 +85,7 @@ class _SignUpState extends State<SignUp> {
 
   Future<Null> checkUser() async {
     String url =
-        'http://localhost/Sulaiman_food/getUserWhereUser.php?isAdd=true&user=$user';
+        '${MyConstant().domain}/Sulaiman_food/getUserWhereUser.php?isAdd=true&user=$user';
 
     try {
       Response response = await Dio().get(url);
@@ -103,7 +104,7 @@ class _SignUpState extends State<SignUp> {
 
   Future<Null> registerThread() async {
     String url =
-        'http://localhost/Sulaiman_food/addUser.php?isAdd=true&name=$name&user=$user&password=$password&chooseType=$chooseType';
+        '${MyConstant().domain}/Sulaiman_food/addUser.php?isAdd=true&name=$name&user=$user&password=$password&chooseType=$chooseType';
 
     try {
       Response response = await Dio().get(url);

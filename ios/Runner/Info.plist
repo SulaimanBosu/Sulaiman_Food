@@ -18,6 +18,8 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>LSApplicationCategoryType</key>
+	<string></string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -41,5 +43,20 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+    <key>io.flutter.embedded_views_preview</key>
+    <true/>
+
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Sulaiman Food ต้องการเข้าถึงตำแหน่งที่ตั้งปัจจุบันของคุณ</string>
+
+		<key>NSLocationAlwaysUsageDescription</key>
+	<string>Sulaiman Food ต้องการเข้าถึงตำแหน่งที่ตั้งปัจจุบันของคุณ</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Sulaiman Food ต้องการเข้าถึงรูปภาพของคุณ</string>
+    <key>NSCameraUsageDescription</key>
+    <string>Sulaiman Food ต้องการเข้าถึงกล้องของคุณ</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Sulaiman Food ต้องการเข้าถึงไมโครโฟนของคุณ</string>
+	
 </dict>
 </plist>

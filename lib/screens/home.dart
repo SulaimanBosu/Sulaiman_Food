@@ -59,9 +59,9 @@ class _HomeState extends State<Home> {
             MyStyle().mySizebox(),
             MyStyle().mySizebox(),
             MyStyle().mySizebox(),
-            showMap(),
+           // showMap(),
             MyStyle().mySizebox(),
-            saveButton(),
+          //  saveButton(),
             MyStyle().mySizebox(),
           ],
         ),
@@ -69,34 +69,34 @@ class _HomeState extends State<Home> {
     ); //Scaffold
   }
 
-  Widget saveButton() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      child: RaisedButton.icon(
-        color: MyStyle().primaryColor,
-        onPressed: () {},
-        icon: Icon(Icons.save,color: Colors.white,),
-        label: Text('Save Infomation',style: TextStyle(color: Colors.white),),
-      ),
-    );
-  }
+  // Widget saveButton() {
+  //   return Container(
+  //     width: MediaQuery.of(context).size.width,
+  //     child: RaisedButton.icon(
+  //       color: MyStyle().primaryColor,
+  //       onPressed: () {},
+  //       icon: Icon(Icons.save,color: Colors.white,),
+  //       label: Text('Save Infomation',style: TextStyle(color: Colors.white),),
+  //     ),
+  //   );
+  // }
 
-  Container showMap() {
-    LatLng latLng = LatLng(13.601704, 100.626396);
-    CameraPosition cameraPosition = CameraPosition(
-      target: latLng,
-      zoom: 16.0,
-    );
+  // Container showMap() {
+  //   LatLng latLng = LatLng(13.601704, 100.626396);
+  //   CameraPosition cameraPosition = CameraPosition(
+  //     target: latLng,
+  //     zoom: 16.0,
+  //   );
 
-    return Container(
-      height: 300,
-      child: GoogleMap(
-        initialCameraPosition: cameraPosition,
-        mapType: MapType.normal,
-        onMapCreated: (controller) {},
-      ),
-    );
-  }
+  //   return Container(
+  //     height: 300,
+  //     child: GoogleMap(
+  //       initialCameraPosition: cameraPosition,
+  //       mapType: MapType.normal,
+  //       onMapCreated: (controller) {},
+  //     ),
+  //   );
+  // }
 
   Drawer showDrawer() => Drawer(
         child: ListView(

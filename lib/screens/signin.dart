@@ -7,6 +7,7 @@ import 'package:sulaimanfood/model/user_model.dart';
 import 'package:sulaimanfood/screens/main_rider.dart';
 import 'package:sulaimanfood/screens/main_shop.dart';
 import 'package:sulaimanfood/screens/main_user.dart';
+import 'package:sulaimanfood/utility/myConstant.dart';
 import 'package:sulaimanfood/utility/my_style.dart';
 import 'package:sulaimanfood/utility/normal_dialog.dart';
 
@@ -80,7 +81,7 @@ class _SignInState extends State<SignIn> {
 
   Future<Null> checkAuthen() async {
     String url =
-        'http://127.0.0.1//Sulaiman_food/getUserWhereUser.php?isAdd=true&user=$user';
+        '${MyConstant().domain}/Sulaiman_food/getUserWhereUser.php?isAdd=true&user=$user';
     try {
       Response response = await Dio().get(url);
       print('res = $response');
@@ -108,13 +109,15 @@ class _SignInState extends State<SignIn> {
       } else{
         normalDialog(context, 'ไม่พบ User Name');
       }
-    } catch (e) {}
+    } catch (e) {
+      normalDialog(context, 'เชื่อมต่อเซอร์เวอร์ล้มเหลว $e');
+    }
   }
 
   Future<void> routeToService(Widget myWidget, UserModel userModel) async {
 
    SharedPreferences preferences = await SharedPreferences.getInstance();
-    preferences.setString( 'id', userModel.id);
+    preferences.setString( 'User_id', userModel.userId);
     preferences.setString( 'ChooseType', userModel.chooseType);
     preferences.setString( 'User', userModel.user);
     preferences.setString( 'Name', userModel.name);

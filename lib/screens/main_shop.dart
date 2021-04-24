@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sulaimanfood/screens/home.dart';
+import 'package:sulaimanfood/utility/ProgressIndicator.dart';
 import 'package:sulaimanfood/utility/my_style.dart';
 import 'package:sulaimanfood/utility/signout_process.dart';
 import 'package:sulaimanfood/widget/infomation_shop.dart';
@@ -14,7 +14,8 @@ class MainShop extends StatefulWidget {
 
 class _MainShopState extends State<MainShop> {
   String nameUser;
-  Widget currentWidget = OrderListShop();
+  Widget currentWidget = ListMenuShop();
+  Widget infoShop = InfomationShop();
 
   @override
   void initState() {
@@ -40,21 +41,30 @@ class _MainShopState extends State<MainShop> {
               icon: Icon(Icons.exit_to_app),
               onPressed: () {
                 signOutProcess(context);
-                routeToHome();
               })
         ],
       ),
       drawer: showDrawer(),
       body: currentWidget,
-    );
+     
+    //   body: refresh(),
+     );
   }
 
-  void routeToHome() {
-    MaterialPageRoute route = MaterialPageRoute(
-      builder: (context) => Home(),
-    );
-    Navigator.pushAndRemoveUntil(context, route, (route) => false);
-  }
+  // Center refresh() {
+  //   return Center(
+  //      child: RefreshIndicator(
+  //        onRefresh:()async{ 
+  //            //my refresh method
+  //        },
+  //      child:CustomScrollView(
+  //        slivers:[
+  //          SliverFillRemaining (child:infoShop)
+  //        ]
+  //        )
+  //      ),
+  //    );
+  // }
 
   Drawer showDrawer() => Drawer(
         child: ListView(
@@ -93,6 +103,7 @@ class _MainShopState extends State<MainShop> {
         onTap: () {
           setState(() {
             currentWidget = ListMenuShop();
+           // currentWidget = PercentIndicatorDemo();
           });
           Navigator.pop(context);
         },

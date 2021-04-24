@@ -12,6 +12,7 @@ class MainUser extends StatefulWidget {
 
 class _MainUserState extends State<MainUser> {
   String nameUser;
+  String userid;
 
   @override
   void initState() {
@@ -23,6 +24,7 @@ class _MainUserState extends State<MainUser> {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     setState(() {
       nameUser = preferences.getString('Name');
+      userid = preferences.getString('User_id');
     });
   }
 
@@ -31,7 +33,7 @@ class _MainUserState extends State<MainUser> {
     return Scaffold(
       appBar: AppBar(
         title:
-            Text(nameUser == null ? 'Main User' : 'ยินดีต้อนรับคุณ$nameUser'),
+            Text(nameUser == null ? 'Main User' : 'ยินดีต้อนรับคุณ$userid'),
         actions: <Widget>[
           IconButton(
               icon: Icon(Icons.exit_to_app),

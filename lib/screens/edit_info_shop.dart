@@ -183,8 +183,8 @@ class _EditInfoShopState extends State<EditInfoShop> {
     try {
       final pickedFile = await picker.getImage(
         source: imageSource,
-        maxHeight: 800.0,
-        maxWidth: 800.0,
+        maxHeight: 600.0,
+        maxWidth: 600.0,
       );
 
       setState(() {
@@ -223,9 +223,10 @@ class _EditInfoShopState extends State<EditInfoShop> {
 
   Future<Null> addInfomationShop(String urlImage) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
+    String shopid = preferences.getString('Shop_id');
     String userid = preferences.getString('User_id');
     String url =
-        '${MyConstant().domain}/Sulaiman_food/add_infomation.php?isAdd=true&nameShop=$nameShop&addressShop=$address&phoneShop=$phone&urlImage=$urlImage&latitude=$lat&longitude=$lng&id=$userid';
+        '${MyConstant().domain}/Sulaiman_food/edit_infomation.php?isAdd=true&nameShop=$nameShop&addressShop=$address&phoneShop=$phone&urlImage=$urlImage&latitude=$lat&longitude=$lng&shopid=$shopid&userid=$userid';
     print(urlImage);
 
     await Dio().get(url).then((value) {

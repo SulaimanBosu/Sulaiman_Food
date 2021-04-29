@@ -5,6 +5,7 @@ class UserModel {
   String user;
   String password;
   String token;
+  String shopId;
 
   UserModel(
       {this.userId,
@@ -12,7 +13,8 @@ class UserModel {
       this.name,
       this.user,
       this.password,
-      this.token});
+      this.token,
+      this.shopId});
 
   UserModel.fromJson(Map<String, dynamic> json) {
     userId = json['User_id'];
@@ -21,6 +23,7 @@ class UserModel {
     user = json['User'];
     password = json['Password'];
     token = json['Token'];
+    shopId = json['Shop_id'];
   }
 
   Map<String, dynamic> toJson() {
@@ -31,6 +34,7 @@ class UserModel {
     data['User'] = this.user;
     data['Password'] = this.password;
     data['Token'] = this.token;
+    data['Shop_id'] = this.shopId;
     return data;
   }
 }

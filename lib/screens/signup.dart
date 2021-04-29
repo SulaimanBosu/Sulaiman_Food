@@ -28,7 +28,7 @@ class _SignUpState extends State<SignUp> {
           ),
         ),
         child: ListView(
-          padding: EdgeInsets.all(30.0),
+          padding: EdgeInsets.all(10.0),
           children: <Widget>[
             myLogo(),
             MyStyle().mySizebox(),
@@ -40,7 +40,9 @@ class _SignUpState extends State<SignUp> {
             MyStyle().mySizebox(),
             passwordForm(),
             MyStyle().mySizebox(),
-            MyStyle().showTitleH2('ประเภทสมาชิก : '),
+            Container(
+                margin: EdgeInsets.only(left: 20.0, right: 20.0),
+                child: MyStyle().showTitleH2('ประเภทสมาชิก : ')),
             MyStyle().mySizebox(),
             userRadio(),
             shopRadio(),
@@ -55,6 +57,7 @@ class _SignUpState extends State<SignUp> {
   }
 
   Widget registerButton() => Container(
+        margin: EdgeInsets.only(left: 20.0, right: 20.0),
         width: 300.0,
         child: RaisedButton(
           color: MyStyle().darkColor,
@@ -82,7 +85,6 @@ class _SignUpState extends State<SignUp> {
         ),
       );
 
-
   Future<Null> checkUser() async {
     String url =
         '${MyConstant().domain}/Sulaiman_food/getUserWhereUser.php?isAdd=true&user=$user';
@@ -101,7 +103,6 @@ class _SignUpState extends State<SignUp> {
     }
   }
 
-
   Future<Null> registerThread() async {
     String url =
         '${MyConstant().domain}/Sulaiman_food/addUser.php?isAdd=true&name=$name&user=$user&password=$password&chooseType=$chooseType';
@@ -111,7 +112,7 @@ class _SignUpState extends State<SignUp> {
       print('res = $response');
 
       if (response.toString() == 'true') {
-       // Navigator.pop(context);
+        // Navigator.pop(context);
         routeToSignIn(SignIn());
       } else {
         normalDialog(context, 'ล้มเหลว กรุณาลองใหม่อีกครั้งค่ะ');
@@ -121,16 +122,19 @@ class _SignUpState extends State<SignUp> {
     }
   }
 
-    void routeToSignIn(Widget myWidget ) {
-    MaterialPageRoute route = MaterialPageRoute(builder: (context) => myWidget,);
+  void routeToSignIn(Widget myWidget) {
+    MaterialPageRoute route = MaterialPageRoute(
+      builder: (context) => myWidget,
+    );
     Navigator.pushAndRemoveUntil(context, route, (route) => false);
   }
 
   Widget userRadio() => Row(
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Container(
-            width: 250.0,
+            margin: EdgeInsets.only(left: 20.0, right: 20.0),
+            width: 110.0,
             child: Row(
               children: <Widget>[
                 Radio(
@@ -153,10 +157,11 @@ class _SignUpState extends State<SignUp> {
       );
 
   Widget shopRadio() => Row(
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Container(
-            width: 250.0,
+            margin: EdgeInsets.only(left: 20.0, right: 20.0),
+            width: 150.0,
             child: Row(
               children: <Widget>[
                 Radio(
@@ -179,10 +184,11 @@ class _SignUpState extends State<SignUp> {
       );
 
   Widget riderRadio() => Row(
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Container(
-            width: 250.0,
+            margin: EdgeInsets.only(left: 20.0, right: 20.0),
+            width: 110.0,
             child: Row(
               children: <Widget>[
                 Radio(

@@ -21,7 +21,6 @@ class _AddInfoShopState extends State<AddInfoShop> {
   File file;
   final picker = ImagePicker();
   String nameShop, address, phone, urlImage;
-  
 
   @override
   void initState() {
@@ -38,7 +37,6 @@ class _AddInfoShopState extends State<AddInfoShop> {
     });
     print('Lat = $lat,  Lng = $lng');
   }
-
 
 //โฟกัสตำแหน่งที่ตั้งปัจบันเสมอ
   Future<LocationData> findLocationData() async {
@@ -123,11 +121,11 @@ class _AddInfoShopState extends State<AddInfoShop> {
           margin: EdgeInsets.only(left: 20.0, right: 20.0),
           child: FloatingActionButton.extended(
             onPressed: () {
-                // MaterialPageRoute route = MaterialPageRoute(
-                //   builder: (value) => MainShop(),
-                // );
-                // Navigator.pushAndRemoveUntil(context, route, (route) => false);
-                Navigator.pop(context);
+              // MaterialPageRoute route = MaterialPageRoute(
+              //   builder: (value) => MainShop(),
+              // );
+              // Navigator.pushAndRemoveUntil(context, route, (route) => false);
+              Navigator.pop(context);
             },
             icon: Icon(
               Icons.cancel,
@@ -142,7 +140,6 @@ class _AddInfoShopState extends State<AddInfoShop> {
       ],
     );
   }
-
 
 //เพิ่มรูปภาพไปยังโฟลเดอร์ที่เก็บรูป พร้อมเปลี่ยนชื่อรูป
   Future<Null> uploadImage() async {
@@ -167,7 +164,6 @@ class _AddInfoShopState extends State<AddInfoShop> {
       });
     } catch (e) {}
   }
-
 
 //เพิ่มลิ้งรูปภาพและรายละเอียดอื่นๆไปยัง SQL
   Future<Null> addInfomationShop() async {
@@ -211,8 +207,8 @@ class _AddInfoShopState extends State<AddInfoShop> {
     try {
       final pickedFile = await picker.getImage(
         source: imageSource,
-        maxHeight: 800.0,
-        maxWidth: 800.0,
+        maxHeight: 600.0,
+        maxWidth: 600.0,
       );
 
       setState(() {
@@ -224,7 +220,6 @@ class _AddInfoShopState extends State<AddInfoShop> {
       });
     } catch (e) {}
   }
-
 
 //โชว์ตัวเลือกสำหรับเข้าถึงรูปภาพจากกล้องหรือในLibrary
   void _showPicker(context) {
@@ -279,7 +274,7 @@ class _AddInfoShopState extends State<AddInfoShop> {
       zoom: 16.0,
     );
 
-    return Container(
+    return Container(margin: EdgeInsets.only(left: 10.0, right: 10.0),
       height: 300,
       child: GoogleMap(
         initialCameraPosition: cameraPosition,
@@ -299,7 +294,6 @@ class _AddInfoShopState extends State<AddInfoShop> {
         ),
       );
 
-
 //โชว์ภาพตัวอย่างก่อนเลือกรูปและหลังเลือกรูป
   Column showImage() {
     return Column(
@@ -307,8 +301,8 @@ class _AddInfoShopState extends State<AddInfoShop> {
       children: [
         Container(
           //width: MediaQuery.of(context).size.width,
-          //margin: EdgeInsets.all(16.0),
-          width: 240.0,
+          margin: EdgeInsets.all(10.0),
+          width: 300.0,
           child: file == null ? Image.asset('') : Image.file(file),
         ),
       ],
@@ -338,6 +332,8 @@ class _AddInfoShopState extends State<AddInfoShop> {
           Container(
             width: 300.0,
             child: TextField(
+              keyboardType: TextInputType.multiline,
+              maxLines: 3,
               onChanged: (value) => address = value.trim(),
               decoration: InputDecoration(
                 labelText: 'ที่อยู่ร้านค้า',

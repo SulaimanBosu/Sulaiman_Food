@@ -57,7 +57,6 @@ class _SignInState extends State<SignIn> {
     );
   }
 
-
   Widget loginButton() => Container(
         width: 300.0,
         child: RaisedButton(
@@ -85,28 +84,27 @@ class _SignInState extends State<SignIn> {
     try {
       Response response = await Dio().get(url);
       print('res = $response');
-      if(response.toString() != 'null'){
-
-      var result = json.decode(response.data);
-      print('result = $result');
-      for (var map in result) {
-        UserModel userModel = UserModel.fromJson(map);
-        if (password == userModel.password) {
-          String chooseType = userModel.chooseType;
-          if (chooseType == 'User') {
-            routeToService(MainUser(), userModel);
-          } else if (chooseType == 'Shop') {
-            routeToService(MainShop(), userModel);
-          } else if (chooseType == 'Rider') {
-            routeToService(MainRider(), userModel);
+      if (response.toString() != 'null') {
+        var result = json.decode(response.data);
+        print('result = $result');
+        for (var map in result) {
+          UserModel userModel = UserModel.fromJson(map);
+          if (password == userModel.password) {
+            String chooseType = userModel.chooseType;
+            if (chooseType == 'User') {
+              routeToService(MainUser(), userModel);
+            } else if (chooseType == 'Shop') {
+              routeToService(MainShop(), userModel);
+            } else if (chooseType == 'Rider') {
+              routeToService(MainRider(), userModel);
+            } else {
+              normalDialog(context, 'ไม่พบประเภพของสมาชิก กรุณาลองอีกครั้งค่ะ');
+            }
           } else {
-            normalDialog(context, 'ไม่พบประเภพของสมาชิก กรุณาลองอีกครั้งค่ะ');
+            normalDialog(context, 'รหัสผ่านผิด กรุณาลองใหม่');
           }
-        } else {
-          normalDialog(context, 'รหัสผ่านผิด กรุณาลองใหม่');
         }
-       }
-      } else{
+      } else {
         normalDialog(context, 'ไม่พบ User Name');
       }
     } catch (e) {
@@ -115,17 +113,23 @@ class _SignInState extends State<SignIn> {
   }
 
   Future<void> routeToService(Widget myWidget, UserModel userModel) async {
-
-   SharedPreferences preferences = await SharedPreferences.getInstance();
-    preferences.setString( 'User_id', userModel.userId);
-    preferences.setString( 'ChooseType', userModel.chooseType);
-    preferences.setString( 'User', userModel.user);
-    preferences.setString( 'Name', userModel.name);
-
-    MaterialPageRoute route = MaterialPageRoute(
-      builder: (context) => myWidget,
-    );
-    Navigator.pushAndRemoveUntil(context, route, (route) => false);
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.setString('User_id', userModel.userId);
+    preferences.setString('ChooseType', userModel.chooseType);
+    preferences.setString('User', userModel.user);
+    preferences.setString('Name', userModel.name);
+    if (userModel.shopId == null || userModel.shopId.isEmpty) {
+      MaterialPageRoute route = MaterialPageRoute(
+        builder: (context) => myWidget,
+      );
+      Navigator.pushAndRemoveUntil(context, route, (route) => false);
+    } else {
+      preferences.setString('Shop_id', userModel.shopId);
+      MaterialPageRoute route = MaterialPageRoute(
+        builder: (context) => myWidget,
+      );
+      Navigator.pushAndRemoveUntil(context, route, (route) => false);
+    }
   }
 
   Widget userForm() => Container(

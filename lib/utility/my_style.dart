@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:percent_indicator/percent_indicator.dart';
+
 
 class MyStyle {
   Color darkColor = Colors.blue.shade900;
@@ -10,6 +10,18 @@ class MyStyle {
       child: CircularProgressIndicator(),
     );
   }
+
+  TextStyle mainTitle = TextStyle(
+    fontSize: 20.0,
+    fontWeight: FontWeight.bold,
+    color: Colors.white,
+  );
+
+  TextStyle mainH2Title = TextStyle(
+      fontSize: 16.0,
+      fontWeight: FontWeight.bold,
+      color: Colors.white70,
+      fontStyle: FontStyle.italic);
 
   SizedBox mySizebox() => SizedBox(
         width: 8.0,
@@ -86,9 +98,9 @@ class MyStyle {
               onPressed: () {
                 Navigator.of(context).pop();
                 // ใส่เงื่อนไขการกดตกลง
-                MaterialPageRoute route = MaterialPageRoute(builder: (value) => prossedYes);
+                MaterialPageRoute route =
+                    MaterialPageRoute(builder: (value) => prossedYes);
                 Navigator.pushAndRemoveUntil(context, route, (route) => false);
-                
               },
             ),
             // ignore: deprecated_member_use

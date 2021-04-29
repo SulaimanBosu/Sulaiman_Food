@@ -82,7 +82,7 @@ class _MainShopState extends State<MainShop> {
         leading: Icon(Icons.home),
         title: Text(
           'รายการอาหารที่ลูกค้าสั่ง',
-          style: TextStyle(fontSize: 22.0),
+          style: TextStyle(fontSize: 20.0),
         ),
         subtitle: Text('รายการอาหารที่รอส่ง'),
         onTap: () {
@@ -97,9 +97,9 @@ class _MainShopState extends State<MainShop> {
         leading: Icon(Icons.fastfood),
         title: Text(
           'เมนูอาหาร',
-          style: TextStyle(fontSize: 22.0),
+          style: TextStyle(fontSize: 20.0),
         ),
-        subtitle: Text('เมนูอาหารของร้าน'),
+        subtitle: Text('เพิ่ม แก้ไขเมนูอาหาร'),
         onTap: () {
           setState(() {
             currentWidget = ListMenuShop();
@@ -113,9 +113,9 @@ class _MainShopState extends State<MainShop> {
         leading: Icon(Icons.info),
         title: Text(
           'รายละเอียดร้านอาหาร',
-          style: TextStyle(fontSize: 22.0),
+          style: TextStyle(fontSize: 20.0),
         ),
-        subtitle: Text('รายละเอียดร้าน Edit...'),
+        subtitle: Text('เพิ่ม แก้ไขรายละเอียดร้าน'),
         onTap: () {
           setState(() {
             currentWidget = InfomationShop();
@@ -129,7 +129,7 @@ class _MainShopState extends State<MainShop> {
       leading: Icon(Icons.logout),
       title: Text(
         'Sign Out',
-        style: TextStyle(fontSize: 22.0),
+        style: TextStyle(fontSize: 20.0),
       ),
       subtitle: Text('ออกจากระบบ'),
       onTap: () {

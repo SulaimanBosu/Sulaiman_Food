@@ -5,9 +5,11 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sulaimanfood/screens/add_info_shop.dart';
 import 'package:sulaimanfood/utility/myConstant.dart';
 import 'package:sulaimanfood/utility/my_style.dart';
 import 'package:sulaimanfood/utility/normal_dialog.dart';
+import 'package:sulaimanfood/widget/infomation_shop.dart';
 
 class AddFoodMenu extends StatefulWidget {
   @override
@@ -17,7 +19,7 @@ class AddFoodMenu extends StatefulWidget {
 class _AddFoodMenuState extends State<AddFoodMenu> {
   File file;
   final picker = ImagePicker();
-  String foodname, detail, price, urlImage;
+  String foodname, detail, price;
 
   @override
   Widget build(BuildContext context) {
@@ -141,8 +143,8 @@ class _AddFoodMenuState extends State<AddFoodMenu> {
     try {
       final pickedFile = await picker.getImage(
         source: imageSource,
-        maxHeight: 800.0,
-        maxWidth: 800.0,
+        maxHeight: 400.0,
+        maxWidth: 600.0,
       );
 
       setState(() {
@@ -155,49 +157,50 @@ class _AddFoodMenuState extends State<AddFoodMenu> {
     } catch (e) {}
   }
 
-  //เพิ่มรูปภาพไปยังโฟลเดอร์ที่เก็บรูป พร้อมเปลี่ยนชื่อรูป
-  Future<Null> uploadImage() async {
-    Random random = Random();
-    int i = random.nextInt(1000000);
-    String nameImage = 'Foodmenu$i.jpg';
-    String url = '${MyConstant().domain}/Sulaiman_food/saveImagemenu.php';
-
-    try {
-      Map<String, dynamic> map = Map();
-      map['file'] =
-          await MultipartFile.fromFile(file.path, filename: nameImage);
-
-      FormData formData = FormData.fromMap(map);
-
-      await Dio().post(url, data: formData).then((value) {
-        print('Respone ==>> $value');
-
-        urlImage = '/Sulaiman_food/Foodmenu/$nameImage';
-        print('Url Image = $urlImage');
-        addDetailFoodmenu();
-      });
-    } catch (e) {}
-  }
-
 //เพิ่มลิ้งรูปภาพและรายละเอียดอื่นๆไปยัง SQL
   Future<Null> addDetailFoodmenu() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String userid = preferences.getString('User_id');
-    String url =
-        '${MyConstant().domain}/Sulaiman_food/add_foodmenu.php?isAdd=true&nameShop=$foodname&addressShop=$detail&phoneShop=$price&urlImage=$urlImage&id=$userid';
+    Random random = Random();
+    int i = random.nextInt(1000000);
+    String nameImage = 'Foodmenu$i.jpg';
+    String urlImage = '/Sulaiman_food/Shop/imageFood/$nameImage';
 
-    await Dio().get(url).then((value) {
-      if (value.toString() == 'true') {
-        Navigator.pop(context);
-      } else {
-        normalDialog(context, 'อัพโหลดล้มเหลว กรุณาลองใหม่อีกครั้งคะ');
-      }
-    });
+    String urladdData =
+        '${MyConstant().domain}/Sulaiman_food/add_foodmenu.php?isAdd=true&foodname=$foodname&fooddetail=$detail&price=$price&urlImage=$urlImage&userid=$userid';
+
+    await Dio().get(urladdData).then(
+      (value) async {
+        print('ResponeAddData ==>> $value');
+        if (value.toString() == 'true') {
+          Navigator.pop(context);
+          //เพิ่มรูปภาพไปยังโฟลเดอร์ที่เก็บรูป พร้อมเปลี่ยนชื่อรูป
+          String urlpic =
+              '${MyConstant().domain}/Sulaiman_food/saveImagemenu.php';
+          Map<String, dynamic> map = Map();
+          map['file'] =
+              await MultipartFile.fromFile(file.path, filename: nameImage);
+          FormData formData = FormData.fromMap(map);
+          await Dio().post(urlpic, data: formData).then((value) {
+            print('ResponeUpimage ==>> $value');
+            print('Url Image = $urlImage');
+          });
+
+          Navigator.pop(context);
+        } else if (value.toString() == 'noShop') {
+          errorDialog('กรุณาเพิ่มรายละเอียดร้านค้าด้วยคะ');
+          Navigator.pop(context);
+        } else {
+          normalDialog(context, 'อัพโหลดล้มเหลว กรุณาลองใหม่อีกครั้งคะ');
+        }
+      },
+    );
   }
 
   Widget nameForm() => Container(
         width: 300.0,
-        child: TextField(onChanged: (value) => foodname = value.trim(),
+        child: TextField(
+          onChanged: (value) => foodname = value.trim(),
           decoration: InputDecoration(
             prefixIcon: Icon(Icons.fastfood),
             labelText: 'ชื่ออาหาร',
@@ -208,7 +211,9 @@ class _AddFoodMenuState extends State<AddFoodMenu> {
 
   Widget priceForm() => Container(
         width: 300.0,
-        child: TextField(onChanged: (value) => price = value.trim(),
+        child: TextField(
+          keyboardType: TextInputType.number,
+          onChanged: (value) => price = value.trim(),
           decoration: InputDecoration(
             prefixIcon: Icon(Icons.attach_money),
             labelText: 'ราคา',
@@ -219,7 +224,8 @@ class _AddFoodMenuState extends State<AddFoodMenu> {
 
   Widget detailForm() => Container(
         width: 300.0,
-        child: TextField(onChanged: (value) => detail = value.trim(),
+        child: TextField(
+          onChanged: (value) => detail = value.trim(),
           keyboardType: TextInputType.multiline,
           maxLines: 5,
           decoration: InputDecoration(
@@ -244,12 +250,11 @@ class _AddFoodMenuState extends State<AddFoodMenu> {
               } else if (detail == null || detail.isEmpty) {
                 normalDialog(context, 'กรุณากรอกรายละเอียดของอาหารด้วยคะ');
               } else if (price == null || price.isEmpty) {
-                normalDialog(context, 'กรุณากรอกราครของอาหารด้วยคะ');
+                normalDialog(context, 'กรุณากรอกราคาของอาหารด้วยคะ');
               } else if (file == null) {
                 normalDialog(context, 'กรุณาเพิ่มรูปภาพของอาหารด้วยคะ');
               } else {
-                uploadImage();
-                // addInfomationShop();
+                addDetailFoodmenu();
               }
             },
             icon: Icon(
@@ -279,6 +284,53 @@ class _AddFoodMenuState extends State<AddFoodMenu> {
           ),
         )
       ],
+    );
+  }
+
+  errorDialog(String text) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AlertDialog(
+              title: Row(
+                children: [
+                  Text('ไม่พบร้านค้า'),
+                ],
+              ),
+              content: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          text,
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                // ignore: deprecated_member_use
+                FlatButton(
+                  child: Text("OK"),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -16,7 +17,7 @@ class InfomationShop extends StatefulWidget {
   _InfomationShopState createState() => _InfomationShopState();
 }
 
-String nameShop, address, phone, urlImage;
+String nameShop, address, phone, urlImage, shopId;
 
 class _InfomationShopState extends State<InfomationShop> {
   UserModel userModel;
@@ -25,13 +26,13 @@ class _InfomationShopState extends State<InfomationShop> {
   void initState() {
     super.initState();
     readCurrentData();
+
     // readDataInfomation();
   }
 
   Future<Null> readCurrentData() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String userid = preferences.getString('User_id');
-    print('User id  ===>  $userid');
 
     String url =
         '${MyConstant().domain}/Sulaiman_food/get_infomation.php?isAdd=true&id=$userid';
@@ -44,12 +45,13 @@ class _InfomationShopState extends State<InfomationShop> {
     for (var map in result) {
       setState(() {
         infomationShop = InfomationShopModel.fromJson(map);
+        shopId = infomationShop.shopId;
         nameShop = infomationShop.nameShop;
         address = infomationShop.addressShop;
         phone = infomationShop.phoneShop;
         urlImage = infomationShop.urlImage;
       });
-      addSharedSopid();
+      addSharedShopid();
     }
   }
 
@@ -79,7 +81,7 @@ class _InfomationShopState extends State<InfomationShop> {
   //   });
   // }
 
-  Future<Null> addSharedSopid() async {
+  Future<Null> addSharedShopid() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     preferences.setString('Shop_id', infomationShop.shopId);
   }
@@ -92,7 +94,7 @@ class _InfomationShopState extends State<InfomationShop> {
 
         infomationShop == null
             ? MyStyle().showProgress()
-            : nameShop == null || nameShop.isEmpty
+            : shopId == 'null' || shopId.isEmpty
                 ? showNodata(context)
                 : showifoShop(),
         //refresh(),
@@ -100,6 +102,8 @@ class _InfomationShopState extends State<InfomationShop> {
       ],
     );
   }
+
+  buildPrint() => print(userModel.shopId);
 
   // Center refresh() {
   //   return Center(
@@ -171,10 +175,25 @@ class _InfomationShopState extends State<InfomationShop> {
 
   Container showImage() {
     return Container(
-      margin: EdgeInsetsDirectional.only(start: 16.0, end: 16),
+      margin: EdgeInsetsDirectional.only(start: 10.0, end: 10),
       // width: 380.00,
       // height: 300.00,
-      child: Image.network('${MyConstant().domain}$urlImage'),
+      child: Card(
+        semanticContainer: true,
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        child: CachedNetworkImage(
+          imageUrl: '${MyConstant().domain}$urlImage',
+          progressIndicatorBuilder: (context, url, downloadProgress) =>
+              MyStyle().showProgress(),
+          errorWidget: (context, url, error) => Icon(Icons.error),
+          fit: BoxFit.cover,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        elevation: 5,
+        margin: EdgeInsets.all(10),
+      ),
     );
   }
 
@@ -204,17 +223,30 @@ class _InfomationShopState extends State<InfomationShop> {
     return Container(
       padding: EdgeInsets.all(10.0),
       height: 300.0,
-      child: GoogleMap(
-        initialCameraPosition: position,
-        mapType: MapType.normal,
-        onMapCreated: (controller) {},
-        markers: shopMarker(),
+      child: Card(
+        semanticContainer: true,
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        child: GoogleMap(
+          initialCameraPosition: position,
+          mapType: MapType.normal,
+          onMapCreated: (controller) {},
+          markers: shopMarker(),
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        elevation: 5,
+        margin: EdgeInsets.all(5.0),
       ),
     );
   }
 
-  Widget showNodata(BuildContext context) =>
-      MyStyle().titleCenter(context, 'ยังไม่มีข้อมูลร้านค้าของคุณ');
+  Widget showNodata(BuildContext context) => Center(
+        child: Text(
+          'ยังไม่มีข้อมูลร้านค้าของคุณ',
+          style: TextStyle(fontSize: 20.0),
+        ),
+      );
 
   // Widget showdata(BuildContext context) {
   //   if (infomationShop == null) {
@@ -251,11 +283,11 @@ class _InfomationShopState extends State<InfomationShop> {
 
   void routeAddInfomation() {
     Widget widget =
-        infomationShop.nameShop.isEmpty ? AddInfoShop() : EditInfoShop();
+        shopId == 'null' || shopId.isEmpty ? AddInfoShop() : EditInfoShop();
 
     MaterialPageRoute route = MaterialPageRoute(
       builder: (value) => widget,
     );
-    Navigator.push( context, route).then((value) => readCurrentData());
+    Navigator.push(context, route).then((value) => readCurrentData());
   }
 }

@@ -5,11 +5,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sulaimanfood/screens/add_info_shop.dart';
 import 'package:sulaimanfood/utility/myConstant.dart';
 import 'package:sulaimanfood/utility/my_style.dart';
 import 'package:sulaimanfood/utility/normal_dialog.dart';
-import 'package:sulaimanfood/widget/infomation_shop.dart';
 
 class AddFoodMenu extends StatefulWidget {
   @override
@@ -25,33 +23,36 @@ class _AddFoodMenuState extends State<AddFoodMenu> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('เพิ่มเมนูอาหาร'),
+        title: Text('เมนูอาหาร'),
       ),
-      body: SingleChildScrollView(
-        child: Column(children: [
-          MyStyle().mySizebox(),
-          MyStyle().mySizebox(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Center(child: showTitle('รูปอาหาร')),
-            ],
-          ),
-          showImage(),
-          addImageButton(),
-          MyStyle().mySizebox(),
-          showTitle('รายละเอียดอาหาร'),
-          nameForm(),
-          MyStyle().mySizebox(),
-          priceForm(),
-          MyStyle().mySizebox(),
-          detailForm(),
-          MyStyle().mySizebox(),
-          groupButton(),
-          MyStyle().mySizebox(),
-          MyStyle().mySizebox(),
-          MyStyle().mySizebox(),
-        ]),
+      body: Container(
+        color: Colors.lightBlueAccent,
+        child: SingleChildScrollView(
+          child: Column(children: [
+            MyStyle().mySizebox(),
+            MyStyle().mySizebox(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(child: showTitle('เพิ่มเมนูอาหาร')),
+              ],
+            ),
+            showImage(),
+            addImageButton(),
+            MyStyle().mySizebox(),
+            showTitle('รายละเอียดอาหาร'),
+            nameForm(),
+            MyStyle().mySizebox(),
+            priceForm(),
+            MyStyle().mySizebox(),
+            detailForm(),
+            MyStyle().mySizebox(),
+            groupButton(),
+            MyStyle().mySizebox(),
+            MyStyle().mySizebox(),
+            MyStyle().mySizebox(),
+          ]),
+        ),
       ),
     );
   }
@@ -74,13 +75,30 @@ class _AddFoodMenuState extends State<AddFoodMenu> {
       children: [
         Center(
           child: Container(
-            //width: MediaQuery.of(context).size.width,
-            margin: EdgeInsets.all(16.0),
-            //width: 240.0,
-            child: file == null
-                ? Image.asset('images/add_image.png')
-                : Image.file(file),
-          ),
+              //width: MediaQuery.of(context).size.width,
+              margin: EdgeInsets.all(16.0),
+              width: 300.0,
+              child: file == null
+                  ? Card(
+                      semanticContainer: true,
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      child: Image.asset('images/add_image.png'),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      elevation: 5,
+                      margin: EdgeInsets.all(0),
+                    )
+                  : Card(
+                      semanticContainer: true,
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      child: Image.file(file),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      elevation: 5,
+                      margin: EdgeInsets.all(0),
+                    )),
         ),
       ],
     );
@@ -200,10 +218,16 @@ class _AddFoodMenuState extends State<AddFoodMenu> {
   Widget nameForm() => Container(
         width: 300.0,
         child: TextField(
+          cursorColor: Colors.white,
+       //   style: TextStyle(color: Colors.white),
           onChanged: (value) => foodname = value.trim(),
           decoration: InputDecoration(
-            prefixIcon: Icon(Icons.fastfood),
+            prefixIcon: Icon(
+              Icons.fastfood,
+              color: Colors.white,
+            ),
             labelText: 'ชื่ออาหาร',
+         //   labelStyle: TextStyle(color: Colors.white),
             border: OutlineInputBorder(),
           ),
         ),
@@ -212,11 +236,17 @@ class _AddFoodMenuState extends State<AddFoodMenu> {
   Widget priceForm() => Container(
         width: 300.0,
         child: TextField(
+          cursorColor: Colors.white,
+     //     style: TextStyle(color: Colors.white),
           keyboardType: TextInputType.number,
           onChanged: (value) => price = value.trim(),
           decoration: InputDecoration(
-            prefixIcon: Icon(Icons.attach_money),
+            prefixIcon: Icon(
+              Icons.attach_money,
+              color: Colors.white,
+            ),
             labelText: 'ราคา',
+           // labelStyle: TextStyle(color: Colors.white),
             border: OutlineInputBorder(),
           ),
         ),
@@ -225,12 +255,18 @@ class _AddFoodMenuState extends State<AddFoodMenu> {
   Widget detailForm() => Container(
         width: 300.0,
         child: TextField(
+          cursorColor: Colors.white,
+        //  style: TextStyle(color: Colors.white),
           onChanged: (value) => detail = value.trim(),
           keyboardType: TextInputType.multiline,
           maxLines: 5,
           decoration: InputDecoration(
-            prefixIcon: Icon(Icons.details_outlined),
+            prefixIcon: Icon(
+              Icons.details_outlined,
+              color: Colors.white,
+            ),
             labelText: 'รายละเอียด',
+        //    labelStyle: TextStyle(color: Colors.white),
             border: OutlineInputBorder(),
           ),
         ),

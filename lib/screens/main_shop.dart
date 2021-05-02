@@ -34,8 +34,8 @@ class _MainShopState extends State<MainShop> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:
-            Text(nameUser == null ? 'Main Shop' : 'ยินดีต้อนรับคุณ$nameUser'),
+       // title:
+      //      Text(nameUser == null ? 'Main Shop' : 'ยินดีต้อนรับคุณ$nameUser'),
         actions: <Widget>[
           IconButton(
               icon: Icon(Icons.exit_to_app),

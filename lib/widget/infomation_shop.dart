@@ -88,18 +88,21 @@ class _InfomationShopState extends State<InfomationShop> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        //   showdata(context),
+    return Container(
+      color: Colors.lightBlueAccent,
+      child: Stack(
+        children: [
+          //   showdata(context),
 
-        infomationShop == null
-            ? MyStyle().showProgress()
-            : shopId == 'null' || shopId.isEmpty
-                ? showNodata(context)
-                : showifoShop(),
-        //refresh(),
-        addAndEditButton(),
-      ],
+          infomationShop == null
+              ? MyStyle().showProgress()
+              : shopId == 'null' || shopId.isEmpty
+                  ? showNodata(context)
+                  : showifoShop(),
+          //refresh(),
+          addAndEditButton(),
+        ],
+      ),
     );
   }
 
@@ -192,7 +195,7 @@ class _InfomationShopState extends State<InfomationShop> {
           borderRadius: BorderRadius.circular(20.0),
         ),
         elevation: 5,
-        margin: EdgeInsets.all(10),
+        margin: EdgeInsets.all(5),
       ),
     );
   }

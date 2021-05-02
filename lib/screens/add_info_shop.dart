@@ -53,33 +53,36 @@ class _AddInfoShopState extends State<AddInfoShop> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Infomation Shop'),
+        title: Text('รายละเอียดร้าน'),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            MyStyle().mySizebox(),
-            MyStyle().mySizebox(),
-            MyStyle().mySizebox(),
-            showTitle('รายละเอียดร้านค้า'),
-            MyStyle().mySizebox(),
-            nameShopform(),
-            MyStyle().mySizebox(),
-            addressShopform(),
-            MyStyle().mySizebox(),
-            phoneShopform(),
-            MyStyle().mySizebox(),
-            showImage(),
-            MyStyle().mySizebox(),
-            addImageButton(),
-            MyStyle().mySizebox(),
-            MyStyle().mySizebox(),
-            lat == null ? MyStyle().showProgress() : showMap(),
-            MyStyle().mySizebox(),
-            lat == null ? MyStyle().showProgress() : groupButton(),
-            MyStyle().mySizebox(),
-            MyStyle().mySizebox(),
-          ],
+      body: Container(
+        color: Colors.lightBlueAccent,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              MyStyle().mySizebox(),
+              MyStyle().mySizebox(),
+              MyStyle().mySizebox(),
+              showTitle('เพิ่มร้านค้า'),
+              MyStyle().mySizebox(),
+              showImage(),
+              MyStyle().mySizebox(),
+              addImageButton(),
+              MyStyle().mySizebox(),
+              nameShopform(),
+              MyStyle().mySizebox(),
+              addressShopform(),
+              MyStyle().mySizebox(),
+              phoneShopform(),
+              MyStyle().mySizebox(),
+              MyStyle().mySizebox(),
+              lat == null ? MyStyle().showProgress() : showMap(),
+              MyStyle().mySizebox(),
+              lat == null ? MyStyle().showProgress() : groupButton(),
+              MyStyle().mySizebox(),
+              MyStyle().mySizebox(),
+            ],
+          ),
         ),
       ),
     );
@@ -274,7 +277,8 @@ class _AddInfoShopState extends State<AddInfoShop> {
       zoom: 16.0,
     );
 
-    return Container(margin: EdgeInsets.only(left: 10.0, right: 10.0),
+    return Container(
+      margin: EdgeInsets.only(left: 10.0, right: 10.0),
       height: 300,
       child: GoogleMap(
         initialCameraPosition: cameraPosition,
@@ -303,7 +307,27 @@ class _AddInfoShopState extends State<AddInfoShop> {
           //width: MediaQuery.of(context).size.width,
           margin: EdgeInsets.all(10.0),
           width: 300.0,
-          child: file == null ? Image.asset('') : Image.file(file),
+          child: file == null
+              ? Card(
+                  semanticContainer: true,
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  child: Image.asset('images/add_image.png'),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  elevation: 5,
+                  margin: EdgeInsets.all(0),
+                )
+              : Card(
+                  semanticContainer: true,
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  child: Image.file(file),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  elevation: 5,
+                  margin: EdgeInsets.all(0),
+                ),
         ),
       ],
     );
@@ -315,10 +339,14 @@ class _AddInfoShopState extends State<AddInfoShop> {
           Container(
             width: 300.0,
             child: TextField(
+              cursorColor: Colors.white,
               onChanged: (value) => nameShop = value.trim(),
               decoration: InputDecoration(
                 labelText: 'ชื่อร้านค้า',
-                prefixIcon: Icon(Icons.account_box),
+                prefixIcon: Icon(
+                  Icons.account_box,
+                  color: Colors.white,
+                ),
                 border: OutlineInputBorder(),
               ),
             ),
@@ -332,12 +360,16 @@ class _AddInfoShopState extends State<AddInfoShop> {
           Container(
             width: 300.0,
             child: TextField(
+              cursorColor: Colors.white,
               keyboardType: TextInputType.multiline,
               maxLines: 3,
               onChanged: (value) => address = value.trim(),
               decoration: InputDecoration(
                 labelText: 'ที่อยู่ร้านค้า',
-                prefixIcon: Icon(Icons.house),
+                prefixIcon: Icon(
+                  Icons.house,
+                  color: Colors.white,
+                ),
                 border: OutlineInputBorder(),
               ),
             ),
@@ -351,11 +383,15 @@ class _AddInfoShopState extends State<AddInfoShop> {
           Container(
             width: 300.0,
             child: TextField(
+              cursorColor: Colors.white,
               onChanged: (value) => phone = value.trim(),
               keyboardType: TextInputType.phone,
               decoration: InputDecoration(
                 labelText: 'เบอร์โทรร้านค้า',
-                prefixIcon: Icon(Icons.phone),
+                prefixIcon: Icon(
+                  Icons.phone,
+                  color: Colors.white,
+                ),
                 border: OutlineInputBorder(),
               ),
             ),

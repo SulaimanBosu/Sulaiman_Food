@@ -12,13 +12,13 @@ class MyStyle {
   }
 
   TextStyle mainTitle = TextStyle(
-    fontSize: 20.0,
+    fontSize: 16.0,
     fontWeight: FontWeight.bold,
     color: Colors.white,
   );
 
   TextStyle mainH2Title = TextStyle(
-      fontSize: 16.0,
+      fontSize: 15.0,
       fontWeight: FontWeight.bold,
       color: Colors.white70,
       fontStyle: FontStyle.italic);
@@ -88,6 +88,48 @@ class MyStyle {
               height: 50,
               fit: BoxFit.contain,
             ),
+            Text(textTitle)
+          ]),
+          content: Text(textContent),
+          actions: <Widget>[
+            // ignore: deprecated_member_use
+            FlatButton(
+              child: Text("ตกลง"),
+              onPressed: () {
+                Navigator.of(context).pop();
+                // ใส่เงื่อนไขการกดตกลง
+                MaterialPageRoute route =
+                    MaterialPageRoute(builder: (value) => prossedYes);
+                Navigator.pushAndRemoveUntil(context, route, (route) => false);
+              },
+            ),
+            // ignore: deprecated_member_use
+            FlatButton(
+              child: Text("ยกเลิก"),
+              onPressed: () {
+                // ใส่เงื่อนไขการกดยกเลิก
+
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
+   confirmDialog(
+    BuildContext context,
+    String textTitle,
+    String textContent,
+    Widget prossedYes,
+  ) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(children: [
             Text(textTitle)
           ]),
           content: Text(textContent),

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -86,7 +87,15 @@ class _EditInfoShopState extends State<EditInfoShop> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: infomationShop == null ? MyStyle().showProgress() : showContent(),
+      body: infomationShop == null
+          ? Container(
+              color: Colors.lightBlueAccent,
+              child: MyStyle().showProgress(),
+            )
+          : Container(
+              color: Colors.lightBlueAccent,
+              child: showContent(),
+            ),
       appBar: AppBar(
         title: Text('แก้ไขรายละเอียด'),
       ),
@@ -124,8 +133,34 @@ class _EditInfoShopState extends State<EditInfoShop> {
         // width: 250.0,
         // height: 200.0,
         child: file == null
-            ? Image.network('${MyConstant().domain}$urlImage')
-            : Image.file(file),
+            ? Card(
+                semanticContainer: true,
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                child: CachedNetworkImage(
+                  imageUrl: '${MyConstant().domain}$urlImage',
+                  progressIndicatorBuilder: (context, url, downloadProgress) =>
+                      MyStyle().showProgress(),
+                  // CircularProgressIndicator(
+                  //     ),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
+                  fit: BoxFit.cover,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                elevation: 5,
+                margin: EdgeInsets.all(0),
+              )
+            : Card(
+                semanticContainer: true,
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                child: Image.file(file),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                elevation: 5,
+                margin: EdgeInsets.all(0),
+              ),
       );
 
   Widget addImageButton() {
@@ -245,10 +280,14 @@ class _EditInfoShopState extends State<EditInfoShop> {
             margin: EdgeInsets.only(top: 16.0),
             width: 300.0,
             child: TextFormField(
+              cursorColor: Colors.white,
               initialValue: nameShop,
               onChanged: (value) => nameShop = value,
               decoration: InputDecoration(
-                prefixIcon: Icon(Icons.account_box),
+                prefixIcon: Icon(
+                  Icons.account_box,
+                  color: Colors.white,
+                ),
                 border: OutlineInputBorder(),
                 labelText: 'ชื่อร้านค้า',
               ),
@@ -264,12 +303,16 @@ class _EditInfoShopState extends State<EditInfoShop> {
             margin: EdgeInsets.only(top: 16.0),
             width: 300.0,
             child: TextFormField(
+              cursorColor: Colors.white,
               keyboardType: TextInputType.multiline,
               maxLines: 3,
               initialValue: address,
               onChanged: (value) => address = value,
               decoration: InputDecoration(
-                prefixIcon: Icon(Icons.house),
+                prefixIcon: Icon(
+                  Icons.house,
+                  color: Colors.white,
+                ),
                 border: OutlineInputBorder(),
                 labelText: 'ที่อยู่ร้านค้า',
               ),
@@ -285,10 +328,14 @@ class _EditInfoShopState extends State<EditInfoShop> {
             margin: EdgeInsets.only(top: 16.0),
             width: 300.0,
             child: TextFormField(
+              cursorColor: Colors.white,
               initialValue: phone,
               onChanged: (value) => phone = value,
               decoration: InputDecoration(
-                prefixIcon: Icon(Icons.phone),
+                prefixIcon: Icon(
+                  Icons.phone,
+                  color: Colors.white,
+                ),
                 border: OutlineInputBorder(),
                 labelText: 'เบอร์ติดต่อร้านค้า',
               ),
@@ -306,12 +353,22 @@ class _EditInfoShopState extends State<EditInfoShop> {
     );
 
     return Container(
-      height: 300,
-      child: GoogleMap(
-        initialCameraPosition: cameraPosition,
-        mapType: MapType.normal,
-        onMapCreated: (controller) {},
-        markers: myMarker(),
+      padding: EdgeInsets.all(10.0),
+      height: 300.0,
+      child: Card(
+        semanticContainer: true,
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        child: GoogleMap(
+          initialCameraPosition: cameraPosition,
+          mapType: MapType.normal,
+          onMapCreated: (controller) {},
+          markers: myMarker(),
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        elevation: 5,
+        margin: EdgeInsets.all(5.0),
       ),
     );
   }

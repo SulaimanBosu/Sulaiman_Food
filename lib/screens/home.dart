@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sulaimanfood/screens/main_rider.dart';
 import 'package:sulaimanfood/screens/main_shop.dart';
@@ -51,19 +50,22 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(),
       drawer: showDrawer(),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            MyStyle().mySizebox(),
-            MyStyle().mySizebox(),
-            MyStyle().mySizebox(),
-            MyStyle().mySizebox(),
-            MyStyle().mySizebox(),
-           // showMap(),
-            MyStyle().mySizebox(),
-          //  saveButton(),
-            MyStyle().mySizebox(),
-          ],
+      body: Container(
+        color: Colors.lightBlueAccent,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              MyStyle().mySizebox(),
+              MyStyle().mySizebox(),
+              MyStyle().mySizebox(),
+              MyStyle().mySizebox(),
+              MyStyle().mySizebox(),
+              // showMap(),
+              MyStyle().mySizebox(),
+              //  saveButton(),
+              MyStyle().mySizebox(),
+            ],
+          ),
         ),
       ),
     ); //Scaffold

@@ -5,6 +5,7 @@ class FoodMenuModel {
   String price;
   String imagePath;
   String shopId;
+  String shopName;
   String userId;
 
   FoodMenuModel(
@@ -14,6 +15,7 @@ class FoodMenuModel {
       this.price,
       this.imagePath,
       this.shopId,
+      this.shopName,
       this.userId});
 
   FoodMenuModel.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@ class FoodMenuModel {
     price = json['Price'];
     imagePath = json['Image_Path'];
     shopId = json['Shop_id'];
+    shopName = json['Name_shop'];
     userId = json['User_id'];
   }
 
@@ -34,6 +37,7 @@ class FoodMenuModel {
     data['Price'] = this.price;
     data['Image_Path'] = this.imagePath;
     data['Shop_id'] = this.shopId;
+    data['Name_shop'] = this.shopName;
     data['User_id'] = this.userId;
     return data;
   }

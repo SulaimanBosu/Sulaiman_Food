@@ -66,23 +66,34 @@ class _MainShopState extends State<MainShop> {
   //    );
   // }
 
-  Drawer showDrawer() => Drawer(
-        child: ListView(
-          children: <Widget>[
+    Drawer showDrawer() => Drawer(
+        child: Stack(
+          children: [
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
             showHeadDrawer(),
             homeMenu(),
             foodMenu(),
             infomationMenu(),
-            signOutMenu(),
+              ],
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                signOutMenu(),
+              ],
+            ),
           ],
         ),
       );
+
 
   ListTile homeMenu() => ListTile(
         leading: Icon(Icons.home),
         title: Text(
           'รายการอาหารที่ลูกค้าสั่ง',
-          style: TextStyle(fontSize: 20.0),
+          style: TextStyle(fontSize: 18.0),
         ),
         subtitle: Text('รายการอาหารที่รอส่ง'),
         onTap: () {
@@ -97,7 +108,7 @@ class _MainShopState extends State<MainShop> {
         leading: Icon(Icons.fastfood),
         title: Text(
           'เมนูอาหาร',
-          style: TextStyle(fontSize: 20.0),
+          style: TextStyle(fontSize: 18.0),
         ),
         subtitle: Text('เพิ่ม แก้ไขเมนูอาหาร'),
         onTap: () {
@@ -113,7 +124,7 @@ class _MainShopState extends State<MainShop> {
         leading: Icon(Icons.info),
         title: Text(
           'รายละเอียดร้านอาหาร',
-          style: TextStyle(fontSize: 20.0),
+          style: TextStyle(fontSize: 18.0),
         ),
         subtitle: Text('เพิ่ม แก้ไขรายละเอียดร้าน'),
         onTap: () {
@@ -124,20 +135,26 @@ class _MainShopState extends State<MainShop> {
         },
       );
 
-  ListTile signOutMenu() {
-    return ListTile(
-      leading: Icon(Icons.logout),
-      title: Text(
-        'Sign Out',
-        style: TextStyle(fontSize: 20.0),
+  Widget signOutMenu() {
+    return Container(
+      decoration: BoxDecoration(color: Colors.red.shade600),
+      child: ListTile(
+        leading: Icon(
+          Icons.logout,
+          color: Colors.white,
+        ),
+        title: Text(
+          'Sign Out',
+          style: TextStyle(color: Colors.white, fontSize: 18.0),
+        ),
+        subtitle: Text(
+          'ออกจากระบบ',
+          style: TextStyle(color: Colors.white),
+        ),
+        onTap: () {
+          signOutProcess(context);
+        },
       ),
-      subtitle: Text('ออกจากระบบ'),
-      onTap: () {
-        signOutProcess(context);
-        // Navigator.pop(context);
-        // MaterialPageRoute route = MaterialPageRoute(builder: (value) => Home());
-        // Navigator.pushAndRemoveUntil(context, route, (route) => false);
-      },
     );
   }
 
@@ -149,14 +166,14 @@ class _MainShopState extends State<MainShop> {
         ),
         currentAccountPicture: MyStyle().showlogo(),
         accountName: Text(
-          'Name',
+          nameUser,
           style: TextStyle(
               color: MyStyle().darkColor,
               fontSize: 16,
               fontWeight: FontWeight.bold),
         ),
         accountEmail: Text(
-          'Login',
+          '  LogOut',
           style: TextStyle(color: Colors.black54),
         ));
   }

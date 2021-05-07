@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sulaimanfood/screens/main_rider.dart';
-import 'package:sulaimanfood/screens/main_shop.dart';
+import 'package:sulaimanfood/screens/shop/main_shop.dart';
 import 'package:sulaimanfood/screens/main_user.dart';
 import 'package:sulaimanfood/screens/signin.dart';
 import 'package:sulaimanfood/screens/signup.dart';

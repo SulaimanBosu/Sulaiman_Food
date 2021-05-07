@@ -4,9 +4,9 @@ import 'package:sulaimanfood/model/foodMenu_Model.dart';
 import 'package:sulaimanfood/screens/home.dart';
 import 'package:sulaimanfood/utility/my_style.dart';
 import 'package:sulaimanfood/utility/signout_process.dart';
-import 'package:sulaimanfood/widget/show_list_menu_all.dart';
-import 'package:sulaimanfood/widget/show_list_order_all.dart';
-import 'package:sulaimanfood/widget/show_list_shop_all.dart';
+import 'package:sulaimanfood/widget/user/show_list_menu_all.dart';
+import 'package:sulaimanfood/widget/user/show_list_order_all.dart';
+import 'package:sulaimanfood/widget/user/show_list_shop_all.dart';
 
 class MainUser extends StatefulWidget {
   @override
@@ -53,7 +53,10 @@ class _MainUserState extends State<MainUser> {
         ],
       ),
       drawer: showDrawer(),
-      body: currentWidget,
+      body: Container(
+        color: Colors.lightBlueAccent,
+        child: currentWidget,
+      ),
     );
   }
 

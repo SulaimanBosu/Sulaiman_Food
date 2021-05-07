@@ -3,9 +3,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sulaimanfood/utility/ProgressIndicator.dart';
 import 'package:sulaimanfood/utility/my_style.dart';
 import 'package:sulaimanfood/utility/signout_process.dart';
-import 'package:sulaimanfood/widget/infomation_shop.dart';
-import 'package:sulaimanfood/widget/list_menu_shop.dart';
-import 'package:sulaimanfood/widget/order_list_shop.dart';
+import 'package:sulaimanfood/widget/shop/infomation_shop.dart';
+import 'package:sulaimanfood/widget/shop/list_menu_shop.dart';
+import 'package:sulaimanfood/widget/shop/order_list_shop.dart';
 
 class MainShop extends StatefulWidget {
   @override

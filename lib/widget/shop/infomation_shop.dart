@@ -7,8 +7,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sulaimanfood/model/infomationShop_model.dart';
 import 'package:sulaimanfood/model/user_model.dart';
-import 'package:sulaimanfood/screens/add_info_shop.dart';
-import 'package:sulaimanfood/screens/edit_info_shop.dart';
+import 'package:sulaimanfood/screens/shop/add_info_shop.dart';
+import 'package:sulaimanfood/screens/shop/edit_info_shop.dart';
 import 'package:sulaimanfood/utility/myConstant.dart';
 import 'package:sulaimanfood/utility/my_style.dart';
 

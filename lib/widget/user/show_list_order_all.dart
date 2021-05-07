@@ -8,8 +8,9 @@ class ShowListOrderAll extends StatefulWidget {
 class _ShowListOrderAllState extends State<ShowListOrderAll> {
   @override
   Widget build(BuildContext context) {
-    return Text(
-      'รายการอาหารที่สั่ง'
+    return Container(
+      color: Colors.lightBlueAccent,
+      child: Text('รายการอาหารที่สั่ง'),
     );
   }
 }

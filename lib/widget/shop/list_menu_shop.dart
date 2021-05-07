@@ -7,8 +7,8 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sulaimanfood/model/foodMenu_Model.dart';
 import 'package:sulaimanfood/model/user_model.dart';
-import 'package:sulaimanfood/screens/add_food_menu.dart';
-import 'package:sulaimanfood/screens/edit_food_menu.dart';
+import 'package:sulaimanfood/screens/shop/add_food_menu.dart';
+import 'package:sulaimanfood/screens/shop/edit_food_menu.dart';
 import 'package:sulaimanfood/utility/myConstant.dart';
 import 'package:sulaimanfood/utility/my_style.dart';
 

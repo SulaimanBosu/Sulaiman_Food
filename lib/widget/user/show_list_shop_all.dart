@@ -62,7 +62,7 @@ class _ShowListShopAllState extends State<ShowListShopAll> {
     return Container(
       color: Colors.lightBlueAccent,
       child: shopCards.length == 0
-          ? MyStyle().showProgress()
+          ? MyStyle().showProgress2('กรุณารอสักครู่...')
           : GridView.extent(
               maxCrossAxisExtent: 240,
               mainAxisSpacing: 10,

@@ -95,7 +95,7 @@ class _InfomationShopState extends State<InfomationShop> {
           //   showdata(context),
 
           infomationShop == null
-              ? MyStyle().showProgress()
+              ? MyStyle().showProgress2('กรุณารอสักครู่...')
               : shopId == 'null' || shopId.isEmpty
                   ? showNodata(context)
                   : showifoShop(),

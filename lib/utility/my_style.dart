@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
 
+import 'package:flutter/material.dart';
 
 class MyStyle {
   Color darkColor = Colors.blue.shade900;
@@ -7,7 +8,34 @@ class MyStyle {
 
   Widget showProgress() {
     return Center(
-      child: CircularProgressIndicator(),
+      child: CircularProgressIndicator(
+        backgroundColor: Colors.white,
+        valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+      ),
+    );
+  }
+
+  Widget showProgress2(String text) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircularProgressIndicator(
+            backgroundColor: Colors.white,
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Text(
+            text,
+            style: TextStyle(
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w700,
+                fontSize: 15),
+          ),
+        ],
+      ),
     );
   }
 
@@ -61,7 +89,7 @@ class MyStyle {
         ),
       );
 
-        Text showTitleH3(String title) => Text(
+  Text showTitleH3(String title) => Text(
         title,
         style: TextStyle(
           fontSize: 16.0,
@@ -122,13 +150,15 @@ class MyStyle {
               },
             ),
           ],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.0),
+          ),
         );
       },
     );
   }
 
-
-   confirmDialog(
+  confirmDialog(
     BuildContext context,
     String textTitle,
     String textContent,
@@ -138,9 +168,7 @@ class MyStyle {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Row(children: [
-            Text(textTitle)
-          ]),
+          title: Row(children: [Text(textTitle)]),
           content: Text(textContent),
           actions: <Widget>[
             // ignore: deprecated_member_use
@@ -164,6 +192,9 @@ class MyStyle {
               },
             ),
           ],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.0),
+          ),
         );
       },
     );

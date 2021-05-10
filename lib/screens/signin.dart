@@ -62,12 +62,14 @@ class _SignInState extends State<SignIn> {
         child: RaisedButton(
           color: MyStyle().darkColor,
           onPressed: () {
+            MyStyle().showProgress2('กรุณารอสักครู่...');
             if (user == null ||
                 user.isEmpty ||
                 password == null ||
                 password.isEmpty) {
               normalDialog(context, 'กรุณากรอกข้อมูลให้ครบค่ะ');
             } else {
+              MyStyle().showProgress2('กรุณารอสักครู่...');
               checkAuthen();
             }
           },

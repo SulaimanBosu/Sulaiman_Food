@@ -62,6 +62,7 @@ class _SignUpState extends State<SignUp> {
         child: RaisedButton(
           color: MyStyle().darkColor,
           onPressed: () {
+            MyStyle().showProgress2('กรุณารอสักครู่...');
             // print('name = $name, user = $user, password = $password, chooseType = $chooseType');
             if (name == null ||
                 name.isEmpty ||

@@ -40,7 +40,9 @@ class _ShopInfoState extends State<ShopInfo> {
       ),
       title: Text(
         'รายละเอียดร้าน',
-        style: TextStyle(fontSize: 18),
+        style: TextStyle(
+          fontSize: 16,
+        ),
       ),
     );
   }
@@ -53,7 +55,9 @@ class _ShopInfoState extends State<ShopInfo> {
       ),
       title: Text(
         'เมนูของร้าน',
-        style: TextStyle(fontSize: 18),
+        style: TextStyle(
+          fontSize: 16,
+        ),
       ),
     );
   }
@@ -64,18 +68,17 @@ class _ShopInfoState extends State<ShopInfo> {
       appBar: AppBar(
         title: Text(shopModels.nameShop),
       ),
-      body: Container(
-          color: Colors.lightBlueAccent,
-          child: listwidgets.length == 0
-              ? MyStyle().showProgress()
-              : listwidgets[indexPage]),
+      body: listwidgets.length == 0
+          ? MyStyle().showProgress2('กรุณารอสักครู่...')
+          : listwidgets[indexPage],
       bottomNavigationBar: showBottomNavigationBar(),
     );
   }
 
   BottomNavigationBar showBottomNavigationBar() => BottomNavigationBar(
-        backgroundColor: Colors.grey.shade300,
-        selectedItemColor: Colors.redAccent,
+        backgroundColor: Colors.lightBlueAccent,
+        selectedItemColor: Colors.redAccent, unselectedItemColor: Colors.white,
+       // selectedFontSize: 16,
         // selectedFontSize: 24,
         currentIndex: indexPage,
         onTap: (value) {

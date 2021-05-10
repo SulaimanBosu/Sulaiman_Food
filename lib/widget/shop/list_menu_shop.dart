@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -25,7 +26,7 @@ class _ListMenuShopState extends State<ListMenuShop> {
   bool loadStatus = true;
   // ignore: deprecated_member_use
   List<FoodMenuModel> foodMenuModels = List();
-
+  double time = 0.0;
   @override
   void initState() {
     super.initState();
@@ -49,7 +50,7 @@ class _ListMenuShopState extends State<ListMenuShop> {
       });
 
       var result = json.decode(value.data);
-      print('Result ==> $result');
+      //  print('Result ==> $result');
       if (result.toString() != 'null') {
         for (var map in result) {
           FoodMenuModel foodMenuModel = FoodMenuModel.fromJson(map);
@@ -71,7 +72,9 @@ class _ListMenuShopState extends State<ListMenuShop> {
       color: Colors.lightBlueAccent,
       child: Stack(
         children: [
-          loadStatus ? MyStyle().showProgress() : showContent(),
+          loadStatus
+              ? MyStyle().showProgress2('กรุณารอสักครู่...')
+              : showContent(),
           addMenuButton(),
         ],
       ),
@@ -163,6 +166,9 @@ class _ListMenuShopState extends State<ListMenuShop> {
                   },
                 ),
               ],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0),
+              ),
             ),
           ],
         );
@@ -527,6 +533,9 @@ class _ListMenuShopState extends State<ListMenuShop> {
                 )
             // ignore: deprecated_member_use
           ],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.0),
+          ),
         );
       },
     );
@@ -552,6 +561,9 @@ class _ListMenuShopState extends State<ListMenuShop> {
             ),
             // ignore: deprecated_member_use
           ],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.0),
+          ),
         );
       },
     );

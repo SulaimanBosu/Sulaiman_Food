@@ -413,6 +413,9 @@ class _EditFoodMenuState extends State<EditFoodMenu> {
                   },
                 ),
               ],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0),
+              ),
             ),
           ],
         );

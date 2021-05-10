@@ -8,7 +8,8 @@ Future<void> normalDialog(BuildContext context, String message) async {
     builder: (context) => SimpleDialog(
       title: Text(message),
       children: [
-        Row(mainAxisAlignment: MainAxisAlignment.end,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
             OutlinedButton(
                 onPressed: () => Navigator.pop(context),
@@ -19,6 +20,9 @@ Future<void> normalDialog(BuildContext context, String message) async {
           ],
         )
       ],
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(30.0),
+      ),
     ),
   );
 }

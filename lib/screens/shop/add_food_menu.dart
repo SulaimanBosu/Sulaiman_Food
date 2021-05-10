@@ -18,7 +18,7 @@ class _AddFoodMenuState extends State<AddFoodMenu> {
   File file;
   final picker = ImagePicker();
   String foodname, detail, price;
-
+  String progress;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -186,10 +186,9 @@ class _AddFoodMenuState extends State<AddFoodMenu> {
 
     String urladdData =
         '${MyConstant().domain}/Sulaiman_food/add_foodmenu.php?isAdd=true&foodname=$foodname&fooddetail=$detail&price=$price&urlImage=$urlImage&userid=$userid';
-
     await Dio().get(urladdData).then(
       (value) async {
-        print('ResponeAddData ==>> $value');
+        //  print('ResponeAddData ==>> $value');
         if (value.toString() == 'true') {
           Navigator.pop(context);
           //เพิ่มรูปภาพไปยังโฟลเดอร์ที่เก็บรูป พร้อมเปลี่ยนชื่อรูป
@@ -199,11 +198,11 @@ class _AddFoodMenuState extends State<AddFoodMenu> {
           map['file'] =
               await MultipartFile.fromFile(file.path, filename: nameImage);
           FormData formData = FormData.fromMap(map);
-          await Dio().post(urlpic, data: formData).then((value) {
-            print('ResponeUpimage ==>> $value');
-            print('Url Image = $urlImage');
-          });
 
+          await Dio().post(urlpic, data: formData).then((value) {
+            //  print('ResponeUpimage ==>> $value');
+            //   print('Url Image = $urlImage');
+          });
           Navigator.pop(context);
         } else if (value.toString() == 'noShop') {
           errorDialog('กรุณาเพิ่มรายละเอียดร้านค้าด้วยคะ');
@@ -219,7 +218,7 @@ class _AddFoodMenuState extends State<AddFoodMenu> {
         width: 300.0,
         child: TextField(
           cursorColor: Colors.white,
-       //   style: TextStyle(color: Colors.white),
+          //   style: TextStyle(color: Colors.white),
           onChanged: (value) => foodname = value.trim(),
           decoration: InputDecoration(
             prefixIcon: Icon(
@@ -227,7 +226,7 @@ class _AddFoodMenuState extends State<AddFoodMenu> {
               color: Colors.white,
             ),
             labelText: 'ชื่ออาหาร',
-         //   labelStyle: TextStyle(color: Colors.white),
+            //   labelStyle: TextStyle(color: Colors.white),
             border: OutlineInputBorder(),
           ),
         ),
@@ -237,7 +236,7 @@ class _AddFoodMenuState extends State<AddFoodMenu> {
         width: 300.0,
         child: TextField(
           cursorColor: Colors.white,
-     //     style: TextStyle(color: Colors.white),
+          //     style: TextStyle(color: Colors.white),
           keyboardType: TextInputType.number,
           onChanged: (value) => price = value.trim(),
           decoration: InputDecoration(
@@ -246,7 +245,7 @@ class _AddFoodMenuState extends State<AddFoodMenu> {
               color: Colors.white,
             ),
             labelText: 'ราคา',
-           // labelStyle: TextStyle(color: Colors.white),
+            // labelStyle: TextStyle(color: Colors.white),
             border: OutlineInputBorder(),
           ),
         ),
@@ -256,7 +255,7 @@ class _AddFoodMenuState extends State<AddFoodMenu> {
         width: 300.0,
         child: TextField(
           cursorColor: Colors.white,
-        //  style: TextStyle(color: Colors.white),
+          //  style: TextStyle(color: Colors.white),
           onChanged: (value) => detail = value.trim(),
           keyboardType: TextInputType.multiline,
           maxLines: 5,
@@ -266,7 +265,7 @@ class _AddFoodMenuState extends State<AddFoodMenu> {
               color: Colors.white,
             ),
             labelText: 'รายละเอียด',
-        //    labelStyle: TextStyle(color: Colors.white),
+            //    labelStyle: TextStyle(color: Colors.white),
             border: OutlineInputBorder(),
           ),
         ),
@@ -363,6 +362,9 @@ class _AddFoodMenuState extends State<AddFoodMenu> {
                   },
                 ),
               ],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0),
+              ),
             ),
           ],
         );

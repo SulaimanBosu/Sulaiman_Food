@@ -90,8 +90,7 @@ class _EditInfoShopState extends State<EditInfoShop> {
       body: infomationShop == null
           ? Container(
               color: Colors.lightBlueAccent,
-              child: MyStyle().showProgress(),
-            )
+              child: MyStyle().showProgress2('กรุณารอสักครู่...'))
           : Container(
               color: Colors.lightBlueAccent,
               child: showContent(),
@@ -445,84 +444,87 @@ class _EditInfoShopState extends State<EditInfoShop> {
     }
   }
 
-  Future<Null> confirmDialog() async {
-    showDialog(
-      context: context,
-      builder: (context) => Container(
-        child: SimpleDialog(
-          backgroundColor: Color.fromARGB(255, 255, 255, 255),
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Center(
-                  child: Text(
-                    'ยืนยันการแก้ไขรายละเอียด',
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          children: [
-            MyStyle().mySizebox(),
-            MyStyle().mySizebox(),
-            dialogButton(),
-          ],
-        ),
-      ),
-    );
-  }
+  // Future<Null> confirmDialog() async {
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) => Container(
+  //       child: SimpleDialog(
+  //         backgroundColor: Color.fromARGB(255, 255, 255, 255),
+  //         title: Row(
+  //           mainAxisAlignment: MainAxisAlignment.center,
+  //           children: [
+  //             Expanded(
+  //               child: Center(
+  //                 child: Text(
+  //                   'ยืนยันการแก้ไขรายละเอียด',
+  //                   style: TextStyle(
+  //                     fontSize: 16.0,
+  //                     fontWeight: FontWeight.bold,
+  //                   ),
+  //                 ),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //         children: [
+  //           MyStyle().mySizebox(),
+  //           MyStyle().mySizebox(),
+  //           dialogButton(),
+  //         ],
+  //         shape: RoundedRectangleBorder(
+  //           borderRadius: BorderRadius.circular(30.0),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
-  Row dialogButton() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          margin: EdgeInsets.only(left: 2.0, right: 5.0),
-          child: FloatingActionButton.extended(
-            onPressed: () {
-              Navigator.pop(context);
-              if (file == null) {
-                addInfomationShop(urlImage);
-              } else {
-                uploadImage();
-              }
-            },
-            icon: Icon(
-              Icons.save_alt_rounded,
-              color: Colors.black54,
-            ),
-            label: Text(
-              'ยืนยัน',
-              style: TextStyle(color: Colors.black54),
-            ),
-            backgroundColor: Color.fromARGB(105, 105, 105, 105),
-          ),
-        ),
-        Container(
-          margin: EdgeInsets.only(left: 5.0, right: 2.0),
-          child: FloatingActionButton.extended(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(
-              Icons.cancel,
-              color: Colors.black54,
-            ),
-            label: Text(
-              'ยกเลิก',
-              style: TextStyle(color: Colors.black54),
-            ),
-            backgroundColor: Color.fromARGB(105, 105, 105, 105),
-          ),
-        )
-      ],
-    );
-  }
+  // Row dialogButton() {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.center,
+  //     children: [
+  //       Container(
+  //         margin: EdgeInsets.only(left: 2.0, right: 5.0),
+  //         child: FloatingActionButton.extended(
+  //           onPressed: () {
+  //             Navigator.pop(context);
+  //             if (file == null) {
+  //               addInfomationShop(urlImage);
+  //             } else {
+  //               uploadImage();
+  //             }
+  //           },
+  //           icon: Icon(
+  //             Icons.save_alt_rounded,
+  //             color: Colors.black54,
+  //           ),
+  //           label: Text(
+  //             'ยืนยัน',
+  //             style: TextStyle(color: Colors.black54),
+  //           ),
+  //           backgroundColor: Color.fromARGB(105, 105, 105, 105),
+  //         ),
+  //       ),
+  //       Container(
+  //         margin: EdgeInsets.only(left: 5.0, right: 2.0),
+  //         child: FloatingActionButton.extended(
+  //           onPressed: () {
+  //             Navigator.pop(context);
+  //           },
+  //           icon: Icon(
+  //             Icons.cancel,
+  //             color: Colors.black54,
+  //           ),
+  //           label: Text(
+  //             'ยกเลิก',
+  //             style: TextStyle(color: Colors.black54),
+  //           ),
+  //           backgroundColor: Color.fromARGB(105, 105, 105, 105),
+  //         ),
+  //       )
+  //     ],
+  //   );
+  // }
 
   confirmDialog2() async {
     showDialog(
@@ -577,6 +579,9 @@ class _EditInfoShopState extends State<EditInfoShop> {
                   },
                 ),
               ],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0),
+              ),
             ),
           ],
         );

@@ -50,7 +50,7 @@ class _ShowListMenuAllState extends State<ShowListMenuAll> {
   @override
   Widget build(BuildContext context) {
     return foodCards.length == 0
-        ? MyStyle().showProgress()
+        ? MyStyle().showProgress2('กรุณารอสักครู่...')
         : GridView.extent(
             maxCrossAxisExtent: 240,
             mainAxisSpacing: 10,

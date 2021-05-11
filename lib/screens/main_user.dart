@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sulaimanfood/model/foodMenu_Model.dart';
 import 'package:sulaimanfood/screens/home.dart';
+import 'package:sulaimanfood/screens/user/show_cart.dart';
 import 'package:sulaimanfood/utility/ProgressIndicator.dart';
 import 'package:sulaimanfood/utility/my_style.dart';
 import 'package:sulaimanfood/utility/signout_process.dart';
 import 'package:sulaimanfood/widget/user/show_list_menu_all.dart';
-import 'package:sulaimanfood/widget/user/show_list_order_all.dart';
 import 'package:sulaimanfood/widget/user/show_list_shop_all.dart';
 
 class MainUser extends StatefulWidget {
@@ -45,6 +45,7 @@ class _MainUserState extends State<MainUser> {
       appBar: AppBar(
         title: Text(nameUser == null ? 'Main User' : ''),
         actions: <Widget>[
+          MyStyle().iconShowCart(context),
           IconButton(
               icon: Icon(Icons.exit_to_app),
               onPressed: () {
@@ -78,6 +79,7 @@ class _MainUserState extends State<MainUser> {
                 list_menu(),
                 list_shop(),
                 list_order(),
+                menuCart(),
               ],
             ),
             Column(
@@ -108,7 +110,7 @@ class _MainUserState extends State<MainUser> {
     );
   }
 
-// ignore: non_constant_identifier_names
+  // ignore: non_constant_identifier_names
   ListTile list_shop() {
     return ListTile(
       onTap: () {
@@ -126,7 +128,7 @@ class _MainUserState extends State<MainUser> {
     );
   }
 
-// ignore: non_constant_identifier_names
+  // ignore: non_constant_identifier_names
   ListTile list_order() {
     return ListTile(
       onTap: () {
@@ -189,6 +191,24 @@ class _MainUserState extends State<MainUser> {
         'LogOut',
         style: TextStyle(color: Colors.black54),
       ),
+    );
+  }
+
+  Widget menuCart() {
+    return ListTile(
+      leading: Icon(Icons.add_shopping_cart),
+      title: Text(
+        'ตะกร้า',
+        style: TextStyle(fontSize: 18.0),
+      ),
+      subtitle: Text('ตะกร้าของฉัน'),
+      onTap: () {
+        Navigator.pop(context);
+        MaterialPageRoute route = MaterialPageRoute(
+          builder: (context) => ShowCart(),
+        );
+        Navigator.push(context, route);
+      },
     );
   }
 }

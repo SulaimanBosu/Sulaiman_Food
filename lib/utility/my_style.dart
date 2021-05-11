@@ -1,10 +1,18 @@
-import 'dart:async';
+
 
 import 'package:flutter/material.dart';
+import 'package:sulaimanfood/screens/user/show_cart.dart';
 
 class MyStyle {
   Color darkColor = Colors.blue.shade900;
   Color primaryColor = Colors.green.shade400;
+
+  Widget iconShowCart(BuildContext context){
+    return IconButton(icon: Icon(Icons.local_grocery_store), onPressed: (){
+              MaterialPageRoute route = MaterialPageRoute(builder: (context) => ShowCart(),);
+        Navigator.push(context, route);
+    });
+  }
 
   Widget showProgress() {
     return Center(
@@ -85,6 +93,15 @@ class MyStyle {
         style: TextStyle(
           fontSize: 18.0,
           color: Colors.blue.shade900,
+          fontWeight: FontWeight.bold,
+        ),
+      );
+
+        Text showTitleCart(String title) => Text(
+        title,
+        style: TextStyle(
+          fontSize: 18.0,
+          color: Colors.black87,
           fontWeight: FontWeight.bold,
         ),
       );

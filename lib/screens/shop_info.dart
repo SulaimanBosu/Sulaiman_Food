@@ -66,6 +66,9 @@ class _ShopInfoState extends State<ShopInfo> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          MyStyle().iconShowCart(context),
+        ],
         title: Text(shopModels.nameShop),
       ),
       body: listwidgets.length == 0
@@ -78,7 +81,7 @@ class _ShopInfoState extends State<ShopInfo> {
   BottomNavigationBar showBottomNavigationBar() => BottomNavigationBar(
         backgroundColor: Colors.lightBlueAccent,
         selectedItemColor: Colors.redAccent, unselectedItemColor: Colors.white,
-       // selectedFontSize: 16,
+        // selectedFontSize: 16,
         // selectedFontSize: 24,
         currentIndex: indexPage,
         onTap: (value) {

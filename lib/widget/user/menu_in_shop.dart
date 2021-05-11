@@ -6,11 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
+import 'package:sulaimanfood/model/cart_model.dart';
 import 'package:sulaimanfood/model/foodMenu_Model.dart';
 import 'package:sulaimanfood/model/infomationShop_model.dart';
 import 'package:sulaimanfood/utility/myConstant.dart';
 import 'package:sulaimanfood/utility/my_api.dart';
 import 'package:sulaimanfood/utility/my_style.dart';
+import 'package:sulaimanfood/utility/normal_dialog.dart';
+import 'package:sulaimanfood/utility/sqlite_helper.dart';
+import 'package:toast/toast.dart';
 
 class MenuInShop extends StatefulWidget {
   final InfomationShopModel shopModel;
@@ -434,7 +438,53 @@ class _MenuInShopState extends State<MenuInShop> {
     distanceString = myFormat.format(distance);
     int transport = MyApi().calculateTransport(distance);
 
-    print(
-        'idshop = $shopid , Nameshop = $nameshop, Foodid = $foodid, Foodname = $foodname, Price = $price, Amount = $amount, Sum = $sum, Distance = $distanceString, transport = $transport');
+    //print(
+    //     'idshop = $shopid , Nameshop = $nameshop, Foodid = $foodid, Foodname = $foodname, Price = $price, Amount = $amount, Sum = $sum, Distance = $distanceString, transport = $transport');
+    Map<String, dynamic> map = Map();
+
+    map['Shop_id'] = shopid;
+    map['Name_shop'] = nameshop;
+    map['Food_id'] = foodid;
+    map['Food_Name'] = foodname;
+    map['Price'] = price;
+    map['Amount'] = amount.toString();
+    map['Sum'] = sum.toString();
+    map['Distance'] = distanceString;
+    map['Transport'] = transport.toString();
+
+    //print('Map == ${map.toString()}');
+
+    CartModel cartModel = CartModel.fromJson(map);
+
+    var object = await SQLiteHelper().readDataFromSQLite();
+
+    print('object == ${object.length}');
+
+    if (object.length == 0) {
+      await SQLiteHelper().insertDataToSQLite(cartModel).then((value) {
+        print('Insert Success');
+        showToast('Insert Success');
+      });
+    } else {
+      String shopidSQLite = object[0].shopId;
+      print('shopidSQLite == $shopidSQLite');
+      if (shopid == shopidSQLite) {
+        await SQLiteHelper().insertDataToSQLite(cartModel).then((value) {
+          print('Insert Success');
+          showToast('Insert Success');
+        });
+      } else {
+        normalDialog(
+            context, 'มีรายการอาหารของร้าน ${object[0].nameShop} อยู่แล้ว');
+      }
+    }
+  }
+
+  void showToast(String string) {
+    Toast.show(
+      string,
+      context,
+      duration: Toast.LENGTH_LONG,
+    );
   }
 }

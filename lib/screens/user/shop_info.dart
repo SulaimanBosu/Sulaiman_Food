@@ -41,7 +41,7 @@ class _ShopInfoState extends State<ShopInfo> {
       title: Text(
         'รายละเอียดร้าน',
         style: TextStyle(
-          fontSize: 16,
+          fontSize: 16,fontFamily: 'FC-Minimal-Regular',
         ),
       ),
     );
@@ -56,7 +56,7 @@ class _ShopInfoState extends State<ShopInfo> {
       title: Text(
         'เมนูของร้าน',
         style: TextStyle(
-          fontSize: 16,
+          fontSize: 16,fontFamily: 'FC-Minimal-Regular',
         ),
       ),
     );
@@ -69,7 +69,7 @@ class _ShopInfoState extends State<ShopInfo> {
         actions: [
           MyStyle().iconShowCart(context),
         ],
-        title: Text(shopModels.nameShop),
+        title: Center(child: Text('ร้าน '+shopModels.nameShop,style: MyStyle().text2,)),
       ),
       body: listwidgets.length == 0
           ? MyStyle().showProgress2('กรุณารอสักครู่...')
@@ -79,8 +79,8 @@ class _ShopInfoState extends State<ShopInfo> {
   }
 
   BottomNavigationBar showBottomNavigationBar() => BottomNavigationBar(
-        backgroundColor: Colors.lightBlueAccent,
-        selectedItemColor: Colors.redAccent, unselectedItemColor: Colors.white,
+        backgroundColor: Colors.white,
+        selectedItemColor: Colors.blueAccent, unselectedItemColor: Colors.black54,
         // selectedFontSize: 16,
         // selectedFontSize: 24,
         currentIndex: indexPage,

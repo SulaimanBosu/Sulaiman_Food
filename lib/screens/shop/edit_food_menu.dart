@@ -1,18 +1,22 @@
+import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:image_picker/image_picker.dart';
+
 import 'package:sulaimanfood/model/foodMenu_Model.dart';
 import 'package:sulaimanfood/utility/myConstant.dart';
 import 'package:sulaimanfood/utility/my_style.dart';
 import 'package:sulaimanfood/utility/normal_dialog.dart';
 
 class EditFoodMenu extends StatefulWidget {
-  final FoodMenuModel foodModel;
-  EditFoodMenu({Key key, this.foodModel}) : super(key: key);
+  final String foodID, foodNAME;
+  EditFoodMenu({Key key, this.foodID, this.foodNAME}) : super(key: key);
 
   @override
   _EditFoodMenuState createState() => _EditFoodMenuState();
@@ -23,94 +27,226 @@ class _EditFoodMenuState extends State<EditFoodMenu> {
   File file;
   final picker = ImagePicker();
   String foodid, foodName, price, foodDetial, imagePaht;
+  bool editStatus = false;
 
   @override
   void initState() {
     super.initState();
+    readCurrentData();
+  }
 
-    foodModel = widget.foodModel;
-    foodid = foodModel.foodId;
-    foodName = foodModel.foodName;
-    price = foodModel.price;
-    foodDetial = foodModel.foodDetail;
-    imagePaht = foodModel.imagePath;
+  Future<Null> readCurrentData() async {
+    String url =
+        '${MyConstant().domain}/Sulaiman_food/get_ForEdit_foodmenu.php?isAdd=true&id=${widget.foodID}';
+    Response response = await Dio().get(url);
+    print('response ==> $response');
+
+    var result = json.decode(response.data);
+    print('result ==> $result');
+
+    for (var map in result) {
+      setState(() {
+        foodModel = FoodMenuModel.fromJson(map);
+        foodid = foodModel.foodId;
+        foodName = foodModel.foodName;
+        price = foodModel.price;
+        foodDetial = foodModel.foodDetail;
+        imagePaht = foodModel.imagePath;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('แก้ไขเมนู $foodName'),
-      ),
-      body: Container(
-        color: Colors.lightBlueAccent,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              MyStyle().mySizebox(),
-              showImage(),
-              // MyStyle().mySizebox(),
-              addImageButton(),
-              MyStyle().mySizebox(),
-              nameFoodForm(),
-              priceForm(),
-              detailFood(),
-              MyStyle().mySizebox(),
-              groupButton(),
-              MyStyle().mySizebox(),
-              MyStyle().mySizebox(),
-              MyStyle().mySizebox(),
-              MyStyle().mySizebox(),
-            ],
+        title: Text(
+          'แก้ไขเมนู ${widget.foodNAME}',
+          style: TextStyle(
+            fontSize: 22.0,
+            color: Colors.black45,
+            fontFamily: 'FC-Minimal-Regular',
           ),
+        ),
+      ),
+      body: foodModel == null
+          ? progress(context)
+          : editStatus
+              ? progress2(context)
+              : buildContent(),
+    );
+  }
+
+  Container buildContent() {
+    return Container(
+      //   color: Colors.lightBlueAccent,
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            MyStyle().mySizebox(),
+            showImage(),
+            // MyStyle().mySizebox(),
+            addImageButton(),
+            MyStyle().mySizebox(),
+            nameFoodForm(),
+            priceForm(),
+            detailFood(),
+            MyStyle().mySizebox(),
+            groupButton(),
+            MyStyle().mySizebox(),
+            MyStyle().mySizebox(),
+            MyStyle().mySizebox(),
+            MyStyle().mySizebox(),
+          ],
         ),
       ),
     );
   }
 
-  //โชว์ภาพตัวอย่างก่อนเลือกรูปและหลังเลือกรูป
-  Column showImage() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Center(
-          child: Container(
-            //width: MediaQuery.of(context).size.width,
-            margin: EdgeInsets.all(10.0),
-            //width: 240.0,
-            child: file == null
-                ? Card(
-                    semanticContainer: true,
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    child: CachedNetworkImage(
-                      imageUrl: '${MyConstant().domain}$imagePaht',
-                      progressIndicatorBuilder:
-                          (context, url, downloadProgress) =>
-                              MyStyle().showProgress(),
-                      // CircularProgressIndicator(
-                      //     ),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
-                      fit: BoxFit.cover,
+  Widget progress(BuildContext context) {
+    return Container(
+        child: new Stack(
+      children: <Widget>[
+        Container(
+          alignment: AlignmentDirectional.center,
+          decoration: new BoxDecoration(
+            color: Colors.white,
+          ),
+          child: new Container(
+            decoration: new BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: new BorderRadius.circular(10.0)),
+            width: MediaQuery.of(context).size.width * 0.4,
+            height: MediaQuery.of(context).size.width * 0.3,
+            alignment: AlignmentDirectional.center,
+            child: new Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                new Center(
+                  child: new SizedBox(
+                    height: MediaQuery.of(context).size.width * 0.1,
+                    width: MediaQuery.of(context).size.width * 0.1,
+                    child: new CircularProgressIndicator(
+                      value: null,
+                      backgroundColor: Colors.white,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+                      strokeWidth: 7.0,
                     ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    elevation: 5,
-                    margin: EdgeInsets.all(0),
-                  )
-                : Card(
-                    semanticContainer: true,
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    child: Image.file(file),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    elevation: 5,
-                    margin: EdgeInsets.all(0),
                   ),
+                ),
+                new Container(
+                  margin: const EdgeInsets.only(top: 25.0),
+                  child: new Center(
+                    child: new Text(
+                      'ดาวน์โหลด...',
+                      style: new TextStyle(
+                        fontSize: 18.0,
+                        color: Colors.black45,
+                        fontFamily: 'FC-Minimal-Regular',
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ],
+    ));
+  }
+
+  Widget progress2(BuildContext context) {
+    return Container(
+        child: new Stack(
+      children: <Widget>[
+        buildContent(),
+        Container(
+          alignment: AlignmentDirectional.center,
+          decoration: new BoxDecoration(
+            color: Colors.white70,
+          ),
+          child: new Container(
+            decoration: new BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: new BorderRadius.circular(10.0)),
+            width: MediaQuery.of(context).size.width * 0.4,
+            height: MediaQuery.of(context).size.width * 0.3,
+            alignment: AlignmentDirectional.center,
+            child: new Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                new Center(
+                  child: new SizedBox(
+                    height: MediaQuery.of(context).size.width * 0.1,
+                    width: MediaQuery.of(context).size.width * 0.1,
+                    child: new CircularProgressIndicator(
+                      value: null,
+                      backgroundColor: Colors.white,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+                      strokeWidth: 7.0,
+                    ),
+                  ),
+                ),
+                new Container(
+                  margin: const EdgeInsets.only(top: 25.0),
+                  child: new Center(
+                    child: new Text(
+                      'อัพเดต...',
+                      style: new TextStyle(
+                        fontSize: 18.0,
+                        color: Colors.black45,
+                        fontFamily: 'FC-Minimal-Regular',
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ));
+  }
+
+  //โชว์ภาพตัวอย่างก่อนเลือกรูปและหลังเลือกรูป
+  Container showImage() {
+    return Container(
+      padding: EdgeInsetsDirectional.only(start: 10.0, end: 10.0, bottom: 10),
+      width: MediaQuery.of(context).size.width * 0.9,
+      height: MediaQuery.of(context).size.width * 0.6,
+      child: Container(
+        child: file == null
+            ? Card(
+                semanticContainer: true,
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                child: CachedNetworkImage(
+                  imageUrl: '${MyConstant().domain}$imagePaht',
+                  progressIndicatorBuilder: (context, url, downloadProgress) =>
+                      MyStyle().showProgress(),
+                  // CircularProgressIndicator(
+                  //     ),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
+                  fit: BoxFit.cover,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                elevation: 5,
+                margin: EdgeInsets.all(0),
+              )
+            : Card(
+                semanticContainer: true,
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                child: Image.file(file),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                elevation: 5,
+                margin: EdgeInsets.all(0),
+              ),
+      ),
     );
   }
 
@@ -120,16 +256,17 @@ class _EditFoodMenuState extends State<EditFoodMenu> {
       width: 200.0,
       // ignore: deprecated_member_use
       child: FloatingActionButton.extended(
+        backgroundColor: Colors.white,
         onPressed: () {
           _showPicker(context);
         },
         icon: Icon(
           Icons.add_photo_alternate,
-          color: Colors.white,
+          color: Colors.black54,
         ),
         label: Text(
           'เพิ่มรูปภาพ',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.black54),
         ),
       ),
     );
@@ -209,6 +346,15 @@ class _EditFoodMenuState extends State<EditFoodMenu> {
                 await MultipartFile.fromFile(file.path, filename: nameImage);
             FormData formData = FormData.fromMap(map);
             await Dio().post(urlpic, data: formData).then((value) {
+              if (value.toString() == 'successfully') {
+                setState(() {
+                  editStatus = false;
+                });
+                // setState(() {
+                //   _onLoading();
+                //   new Future.delayed(new Duration(seconds: 3),);
+                // });
+              }
               print('ResponeUpimage ==>> $value');
               print('Url Image = $urlImage');
             });
@@ -216,6 +362,9 @@ class _EditFoodMenuState extends State<EditFoodMenu> {
             Navigator.pop(context);
           } else {
             normalDialog(context, 'อัพโหลดล้มเหลว กรุณาลองใหม่อีกครั้งคะ');
+            setState(() {
+              editStatus = false;
+            });
           }
         },
       );
@@ -226,13 +375,28 @@ class _EditFoodMenuState extends State<EditFoodMenu> {
         (value) {
           print('ResponeAddData ==>> $value');
           if (value.toString() == 'true') {
+            setState(() {
+              editStatus = false;
+            });
             Navigator.pop(context);
           } else {
+            setState(() {
+              editStatus = false;
+            });
             normalDialog(context, 'อัพโหลดล้มเหลว กรุณาลองใหม่อีกครั้งคะ');
           }
         },
       );
     }
+  }
+
+  void _onLoading() {
+    Timer(Duration(seconds: 20), () {
+      setState(() {
+        editStatus = false;
+        normalDialog(context, 'อัพโหลดล้มเหลว กรุณาลองใหม่อีกครั้งคะ');
+      });
+    });
   }
 
   Widget nameFoodForm() => Row(
@@ -242,18 +406,23 @@ class _EditFoodMenuState extends State<EditFoodMenu> {
             margin: EdgeInsets.only(top: 16.0),
             width: 300.0,
             child: TextFormField(
-              cursorColor: Colors.white,
+              cursorColor: Colors.black54,
               initialValue: foodModel.foodName,
               onChanged: (value) => foodName = value,
-              // style: TextStyle(color: Colors.white),
+              style: MyStyle().text2,
               decoration: InputDecoration(
                 prefixIcon: Icon(
                   Icons.fastfood,
-                  color: Colors.white,
+                  color: Colors.black54,
                 ),
                 labelText: 'ชื่อเมนู',
-                //  labelStyle: TextStyle(color: Colors.white),
-                border: OutlineInputBorder(),
+                labelStyle: TextStyle(color: Colors.black54),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.black54),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.redAccent),
+                ),
               ),
             ),
           ),
@@ -267,19 +436,24 @@ class _EditFoodMenuState extends State<EditFoodMenu> {
             margin: EdgeInsets.only(top: 16.0),
             width: 300.0,
             child: TextFormField(
-              cursorColor: Colors.white,
+              cursorColor: Colors.black54,
               keyboardType: TextInputType.number,
               initialValue: foodModel.price,
               onChanged: (value) => price = value,
-              // style: TextStyle(color: Colors.white),
+              style: MyStyle().text2,
               decoration: InputDecoration(
                 prefixIcon: Icon(
                   Icons.attach_money,
-                  color: Colors.white,
+                  color: Colors.black54,
                 ),
                 labelText: 'ราคา',
-                //  labelStyle: TextStyle(color: Colors.white),
-                border: OutlineInputBorder(),
+                labelStyle: TextStyle(color: Colors.black54),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.black54),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.redAccent),
+                ),
               ),
             ),
           ),
@@ -293,20 +467,25 @@ class _EditFoodMenuState extends State<EditFoodMenu> {
             margin: EdgeInsets.only(top: 16.0),
             width: 300.0,
             child: TextFormField(
-              cursorColor: Colors.white,
+              cursorColor: Colors.black54,
               keyboardType: TextInputType.multiline,
               maxLines: 5,
               initialValue: foodModel.foodDetail,
               onChanged: (value) => foodDetial = value,
-              // style: TextStyle(color: Colors.white),
+              style: MyStyle().text2,
               decoration: InputDecoration(
                 prefixIcon: Icon(
                   Icons.details_outlined,
-                  color: Colors.white,
+                  color: Colors.black54,
                 ),
                 labelText: 'รายละเอียด',
-                //  labelStyle: TextStyle(color: Colors.white),
-                border: OutlineInputBorder(),
+                labelStyle: TextStyle(color: Colors.black54),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.black54),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.redAccent),
+                ),
               ),
             ),
           ),
@@ -321,6 +500,7 @@ class _EditFoodMenuState extends State<EditFoodMenu> {
         Container(
           margin: EdgeInsets.only(left: 20.0, right: 20.0),
           child: FloatingActionButton.extended(
+            backgroundColor: Colors.white,
             onPressed: () {
               if (foodName == null || foodName.isEmpty) {
                 normalDialog(context, 'กรุณากรอกชื่อเมนูอาหารด้วยคะ');
@@ -336,27 +516,28 @@ class _EditFoodMenuState extends State<EditFoodMenu> {
             },
             icon: Icon(
               Icons.save,
-              color: Colors.white,
+              color: Colors.black54,
             ),
             label: Text(
               'บันทึก',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: Colors.black54),
             ),
           ),
         ),
         Container(
           margin: EdgeInsets.only(left: 20.0, right: 20.0),
           child: FloatingActionButton.extended(
+            backgroundColor: Colors.white,
             onPressed: () {
               Navigator.pop(context);
             },
             icon: Icon(
               Icons.cancel,
-              color: Colors.white,
+              color: Colors.black54,
             ),
             label: Text(
               'ยกเลิก',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: Colors.black54),
             ),
           ),
         )
@@ -372,9 +553,16 @@ class _EditFoodMenuState extends State<EditFoodMenu> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             AlertDialog(
-              title: Row(
+              title: Column(
                 children: [
-                  Text('Confirm'),
+                  Row(
+                    children: [
+                      Text('Confirm'),
+                    ],
+                  ),
+                  Divider(
+                    color: Colors.black54,
+                  ),
                 ],
               ),
               content: Center(
@@ -400,8 +588,12 @@ class _EditFoodMenuState extends State<EditFoodMenu> {
                 FlatButton(
                   child: Text("ยืนยัน"),
                   onPressed: () {
-                    Navigator.pop(context);
                     editDetailFoodmenu();
+                    _onLoading();
+                    setState(() {
+                      editStatus = true;
+                    });
+                    Navigator.pop(context);
                   },
                 ),
                 // ignore: deprecated_member_use
@@ -414,7 +606,7 @@ class _EditFoodMenuState extends State<EditFoodMenu> {
                 ),
               ],
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30.0),
+                borderRadius: BorderRadius.circular(20.0),
               ),
             ),
           ],

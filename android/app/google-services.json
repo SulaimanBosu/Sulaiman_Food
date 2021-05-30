@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "330300478300",
+    "project_id": "sulaimanfood-8d12a",
+    "storage_bucket": "sulaimanfood-8d12a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:330300478300:android:2f6307edb2b79e05082799",
+        "android_client_info": {
+          "package_name": "com.travel_thailand.sulaimanfood"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "330300478300-dqe0a37efljlcj39idmoe7rp68a4nl2u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANQCRI-M6gocLcqD3lG51WCBYEUBfFXZY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "330300478300-dqe0a37efljlcj39idmoe7rp68a4nl2u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

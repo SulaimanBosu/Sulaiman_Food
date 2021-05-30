@@ -12,8 +12,7 @@ import 'package:sulaimanfood/screens/shop/add_food_menu.dart';
 import 'package:sulaimanfood/screens/shop/edit_food_menu.dart';
 import 'package:sulaimanfood/utility/myConstant.dart';
 import 'package:sulaimanfood/utility/my_style.dart';
-
-import 'package:toast/toast.dart';
+import 'package:sulaimanfood/utility/normal_dialog.dart';
 
 class ListMenuShop extends StatefulWidget {
   @override
@@ -24,16 +23,43 @@ class _ListMenuShopState extends State<ListMenuShop> {
   UserModel userModel;
   bool status = true;
   bool loadStatus = true;
+  bool deleteStatus = false;
   // ignore: deprecated_member_use
   List<FoodMenuModel> foodMenuModels = List();
-  double time = 0.0;
+
   @override
   void initState() {
     super.initState();
     readFoodMenu();
   }
 
+  void _onDelete() {
+    Timer(Duration(seconds: 20), () {
+      if (deleteStatus == true) {
+        setState(() {
+          deleteStatus = false;
+          deleteFailDialog(context);
+        });
+      }
+    });
+  }
+
+  void _onLoading() {
+    Timer(
+      Duration(seconds: 20),
+      () {
+        if (loadStatus == true) {
+          setState(() {
+            loadStatus = false;
+            normalDialog(context, 'เชื่อมต่อล้มเหลว');
+          });
+        } else {}
+      },
+    );
+  }
+
   Future<Null> readFoodMenu() async {
+    _onLoading();
     if (foodMenuModels.length != 0) {
       foodMenuModels.clear();
     }
@@ -56,11 +82,13 @@ class _ListMenuShopState extends State<ListMenuShop> {
           FoodMenuModel foodMenuModel = FoodMenuModel.fromJson(map);
           setState(() {
             foodMenuModels.add(foodMenuModel);
+            deleteStatus = false;
+            status = false;
           });
         }
       } else {
         setState(() {
-          status = false;
+          status = true;
         });
       }
     });
@@ -69,25 +97,28 @@ class _ListMenuShopState extends State<ListMenuShop> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.lightBlueAccent,
+      // color: Colors.lightBlueAccent,
       child: Stack(
         children: [
           loadStatus
-              ? MyStyle().showProgress2('กรุณารอสักครู่...')
-              : showContent(),
-          addMenuButton(),
+              ? progress(context)
+              : status
+                  ? noDATA()
+                  : showContent(),
+          addMenuButton()
         ],
       ),
     );
   }
 
   Widget showContent() {
-    return status
-        ? //showListFoodMenu()
-        showListFoodMenu2()
-        : Center(
-            child: Text('ยังไม่มีรายการอาหาร'),
-          );
+    return deleteStatus ? progress2(context) : showListFoodMenu2();
+  }
+
+  Center noDATA() {
+    return Center(
+      child: MyStyle().showtext_2('ยังไม่มีรายการอาหาร'),
+    );
   }
 
   Widget addMenuButton() {
@@ -134,9 +165,16 @@ class _ListMenuShopState extends State<ListMenuShop> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             AlertDialog(
-              title: Row(
+              title: Column(
                 children: [
-                  Text('ไม่พบร้านค้า'),
+                  Row(
+                    children: [
+                      Text('ไม่พบร้านค้า'),
+                    ],
+                  ),
+                  Divider(
+                    color: Colors.black54,
+                  ),
                 ],
               ),
               content: Center(
@@ -177,139 +215,6 @@ class _ListMenuShopState extends State<ListMenuShop> {
     );
   }
 
-  Widget showListFoodMenu() => ListView.separated(
-        padding: EdgeInsetsDirectional.only(top: 20.0, bottom: 20.0),
-        itemCount: foodMenuModels.length,
-        itemBuilder: (context, index) => Container(
-          child: Slidable(
-            key: Key(foodMenuModels[index].foodName),
-            actionPane: SlidableDrawerActionPane(),
-            actionExtentRatio: 0.25,
-            child: Container(
-              child: Row(
-                children: [
-                  Container(
-                    padding: EdgeInsetsDirectional.only(
-                      start: 10.0,
-                      end: 10.0,
-                    ),
-                    width: MediaQuery.of(context).size.width * 0.4,
-                    height: MediaQuery.of(context).size.width * 0.3,
-                    child: Card(
-                      semanticContainer: true,
-                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                      child: Image.network(
-                        '${MyConstant().domain}${foodMenuModels[index].imagePath}',
-                        fit: BoxFit.cover,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      elevation: 5,
-                      margin: EdgeInsets.all(10),
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsetsDirectional.only(start: 10.0, end: 5.0),
-                    //   padding: EdgeInsets.all(5.0),
-                    width: MediaQuery.of(context).size.width * 0.6,
-                    height: MediaQuery.of(context).size.width * 0.3,
-                    child: SingleChildScrollView(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            //padding: EdgeInsetsDirectional.only(top: 0.0,bottom: 10.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    foodMenuModels[index].foodName,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: MyStyle().mainTitle,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  'ราคา ${foodMenuModels[index].price} บาท',
-                                  overflow: TextOverflow.ellipsis,
-                                  style: MyStyle().mainH2Title,
-                                ),
-                              ),
-                              // IconButton(
-                              //     icon: Icon(
-                              //       Icons.delete_sweep_outlined,
-                              //       color: Colors.white,
-                              //     ),
-                              //     onPressed: null),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  foodMenuModels[index].foodDetail,
-                                  // overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            actions: <Widget>[
-              IconSlideAction(
-                caption: 'Archive',
-                color: Colors.blue,
-                icon: Icons.archive,
-                onTap: () => Toast.show('Archive on $index', context,
-                    duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM),
-              ),
-              IconSlideAction(
-                caption: 'Share',
-                color: Colors.indigo,
-                icon: Icons.share,
-                onTap: () => Toast.show('Share on $index', context,
-                    duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM),
-              ),
-            ],
-            secondaryActions: <Widget>[
-              IconSlideAction(
-                caption: 'Edit',
-                color: Colors.black45,
-                icon: Icons.edit,
-                onTap: () => Toast.show('Edit on $index', context,
-                    duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM),
-              ),
-              IconSlideAction(
-                  caption: 'Delete',
-                  color: Colors.red,
-                  icon: Icons.delete,
-                  onTap: () {
-                    confirmDeleteDialog(foodMenuModels[index]);
-                  }),
-            ],
-          ),
-        ),
-        separatorBuilder: (context, index) {
-          return Divider(
-            color: Colors.black54,
-          );
-        },
-      );
-
   Widget showListFoodMenu2() => ListView.builder(
         padding: EdgeInsetsDirectional.only(top: 0.0, bottom: 20.0),
         itemCount: foodMenuModels.length,
@@ -320,8 +225,8 @@ class _ListMenuShopState extends State<ListMenuShop> {
             actionExtentRatio: 0.25,
             child: Container(
               decoration: index % 2 == 0
-                  ? new BoxDecoration(color: Colors.lightBlueAccent)
-                  : new BoxDecoration(color: Colors.lightBlue),
+                  ? new BoxDecoration(color: Colors.white10)
+                  : new BoxDecoration(color: Colors.grey.shade300),
               child: Container(
                 padding: EdgeInsetsDirectional.only(top: 0.0, bottom: 0.0),
                 child: Row(
@@ -357,7 +262,7 @@ class _ListMenuShopState extends State<ListMenuShop> {
                     Container(
                       //  padding: EdgeInsetsDirectional.only(start: 5.0, end: 5.0),
                       //   padding: EdgeInsets.all(5.0),
-                      width: MediaQuery.of(context).size.width * 0.6,
+                      width: MediaQuery.of(context).size.width * 0.488,
                       height: MediaQuery.of(context).size.width * 0.3,
                       child: SingleChildScrollView(
                         padding:
@@ -390,12 +295,6 @@ class _ListMenuShopState extends State<ListMenuShop> {
                                     style: MyStyle().mainH2Title,
                                   ),
                                 ),
-                                // IconButton(
-                                //     icon: Icon(
-                                //       Icons.delete_sweep_outlined,
-                                //       color: Colors.white,size: 20,
-                                //     ),
-                                //     onPressed: null),
                               ],
                             ),
                             Row(
@@ -406,36 +305,27 @@ class _ListMenuShopState extends State<ListMenuShop> {
                                     foodMenuModels[index].foodDetail,
                                     //overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
-                                        color: Colors.white70,
+                                        color: Colors.black45,
                                         fontSize: 14.0,
+                                        fontFamily: 'FC-Minimal-Regular',
                                         fontStyle: FontStyle.italic),
-                                  ),
-                                ),
-                                // IconButton(
-                                //     icon: Icon(
-                                //       Icons.delete_sweep_outlined,
-                                //       color: Colors.white,size: 20,
-                                //     ),
-                                //     onPressed: null),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    '7.0 km(27 min) | 50B',
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                        color: Colors.white70,
-                                        fontSize: 10.0,
-                                        fontStyle: FontStyle.normal),
                                   ),
                                 ),
                               ],
                             ),
                           ],
                         ),
+                      ),
+                    ),
+                    Expanded(
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.delete_sweep_outlined,
+                          color: Colors.black45,
+                          size: 30,
+                        ),
+                        // ignore: unnecessary_statements
+                        onPressed: () {},
                       ),
                     ),
                   ],
@@ -466,7 +356,8 @@ class _ListMenuShopState extends State<ListMenuShop> {
                 onTap: () {
                   MaterialPageRoute route = MaterialPageRoute(
                     builder: (context) => EditFoodMenu(
-                      foodModel: foodMenuModels[index],
+                      foodID: foodMenuModels[index].foodId,
+                      foodNAME: foodMenuModels[index].foodName,
                     ),
                   );
                   Navigator.push(context, route).then(
@@ -486,37 +377,36 @@ class _ListMenuShopState extends State<ListMenuShop> {
         ),
       );
 
-  Future<Null> confirmDeleteDialog(
-    FoodMenuModel foodMenuModel,
-  ) async {
+  Future<Null> confirmDeleteDialog(FoodMenuModel foodMenuModel) async {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Row(children: [Text('Delete Confirm')]),
+          title: Column(
+            children: [
+              Row(
+                children: [
+                  Text('Delete Confirm'),
+                ],
+              ),
+              Divider(
+                color: Colors.black54,
+              ),
+            ],
+          ),
           content: Text('คุณต้องการลบเมนู ${foodMenuModel.foodName}'),
           actions: <Widget>[
             Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
               // ignore: deprecated_member_use
               FlatButton(
-                child: Text("ตกลง"),
+                child: Text("ลบ"),
                 onPressed: () async {
-                  //  Navigator.pop(context);
+                  Navigator.pop(context);
                   //  deleteDialog(context);
-                  String url =
-                      '${MyConstant().domain}/Sulaiman_food/delete_foodmenu.php?isAdd=true&Food_id=${foodMenuModel.foodId}';
-                  Response response =
-                      // ignore: missing_return
-                      await Dio().get(url).then((value) {
-                    foodMenuModels.clear();
-
-                    // ignore: unused_element
-                    readFoodMenu();
-                    if (value.toString() == 'true') {
-                      Navigator.pop(context);
-                    } else {}
+                  detelefood(foodMenuModel.foodId);
+                  setState(() {
+                    deleteStatus = true;
                   });
-                  print('response == $response');
                 },
                 // ignore: deprecated_member_use
               ),
@@ -524,7 +414,6 @@ class _ListMenuShopState extends State<ListMenuShop> {
               FlatButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  // readFoodMenu();
                 },
                 child: Text('ยกเลิก'),
               ),
@@ -534,137 +423,170 @@ class _ListMenuShopState extends State<ListMenuShop> {
             // ignore: deprecated_member_use
           ],
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30.0),
+            borderRadius: BorderRadius.circular(20.0),
           ),
         );
       },
     );
   }
 
-  Future<Null> deleteDialog(
-    BuildContext context,
-  ) async {
+  Future<Null> deleteFailDialog(BuildContext context) async {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Row(children: [Text('Delete Confirm')]),
-          content: Text('ลบเรียบร้อย'),
+          title: Column(
+            children: [
+              Row(children: [Text('Delete Menu')]),
+              Divider(
+                color: Colors.black54,
+              ),
+            ],
+          ),
+          content: Text('ลบไม่สำเร็จ ลองใหม่อีกครั้ง'),
           actions: <Widget>[
             // ignore: deprecated_member_use
             FlatButton(
               child: Text("ตกลง"),
               onPressed: () {
-                print('ลบเรียบร้อย');
                 Navigator.pop(context);
               },
             ),
             // ignore: deprecated_member_use
           ],
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30.0),
+            borderRadius: BorderRadius.circular(20.0),
           ),
         );
       },
     );
   }
 
-  Widget showListFoodMenu3() => ListView.separated(
-        padding: EdgeInsetsDirectional.only(top: 20.0, bottom: 20.0),
-        itemCount: foodMenuModels.length,
-        itemBuilder: (context, index) => Column(
-          children: [
-            Column(
-              children: [
-                Container(
-                  padding: EdgeInsetsDirectional.only(
-                    start: 10.0,
-                    end: 10.0,
+  Future<Null> detelefood(String foodId) async {
+    deleteStatus = true;
+    _onDelete();
+    String url =
+        '${MyConstant().domain}/Sulaiman_food/delete_foodmenu.php?isAdd=true&Food_id=${foodId.toString()}';
+    Response response =
+        // ignore: missing_return
+        await Dio().get(url).then((value) {
+      foodMenuModels.clear();
+
+      // ignore: unused_element
+      readFoodMenu();
+      if (value.toString() == 'true') {
+      } else {
+        _onDelete();
+      }
+    });
+    print('response == $response');
+  }
+
+  Widget progress(BuildContext context) {
+    return Container(
+        child: new Stack(
+      children: <Widget>[
+        showListFoodMenu2(),
+        Container(
+          alignment: AlignmentDirectional.center,
+          decoration: new BoxDecoration(
+            color: Colors.white70,
+          ),
+          child: new Container(
+            decoration: new BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: new BorderRadius.circular(10.0)),
+            width: MediaQuery.of(context).size.width * 0.4,
+            height: MediaQuery.of(context).size.width * 0.3,
+            alignment: AlignmentDirectional.center,
+            child: new Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                new Center(
+                  child: new SizedBox(
+                    height: MediaQuery.of(context).size.width * 0.1,
+                    width: MediaQuery.of(context).size.width * 0.1,
+                    child: new CircularProgressIndicator(
+                      value: null,
+                      backgroundColor: Colors.white,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+                      strokeWidth: 7.0,
+                    ),
                   ),
-                  width: MediaQuery.of(context).size.width * 1,
-                  height: MediaQuery.of(context).size.width * 0.6,
-                  child: Card(
-                    semanticContainer: true,
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    child: CachedNetworkImage(
-                      imageUrl:
-                          '${MyConstant().domain}${foodMenuModels[index].imagePath}',
-                      progressIndicatorBuilder:
-                          (context, url, downloadProgress) =>
-                              MyStyle().showProgress(),
-                      // CircularProgressIndicator(
-                      //     ),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
-                      fit: BoxFit.cover,
+                ),
+                new Container(
+                  margin: const EdgeInsets.only(top: 25.0),
+                  child: new Center(
+                    child: new Text(
+                      'ดาวน์โหลด...',
+                      style: new TextStyle(
+                        fontSize: 18.0,
+                        color: Colors.black45,
+                        fontFamily: 'FC-Minimal-Regular',
+                      ),
                     ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    elevation: 5,
-                    margin: EdgeInsets.all(10),
                   ),
                 ),
               ],
             ),
-            Container(
-              padding: EdgeInsetsDirectional.only(start: 10.0, end: 5.0),
-              //   padding: EdgeInsets.all(5.0),
-              width: MediaQuery.of(context).size.width * 1,
-              height: MediaQuery.of(context).size.width * 0.3,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    //padding: EdgeInsetsDirectional.only(top: 0.0,bottom: 10.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(Icons.star_outline_rounded),
-                        Expanded(
-                          child: Text(
-                            foodMenuModels[index].foodName,
-                            overflow: TextOverflow.ellipsis,
-                            style: MyStyle().mainTitle,
-                          ),
-                        ),
-                      ],
+          ),
+        ),
+      ],
+    ));
+  }
+
+  Widget progress2(BuildContext context) {
+    return Container(
+        child: new Stack(
+      children: <Widget>[
+        showListFoodMenu2(),
+        Container(
+          alignment: AlignmentDirectional.center,
+          decoration: new BoxDecoration(
+            color: Colors.white70,
+          ),
+          child: new Container(
+            decoration: new BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: new BorderRadius.circular(10.0)),
+            width: MediaQuery.of(context).size.width * 0.4,
+            height: MediaQuery.of(context).size.width * 0.3,
+            alignment: AlignmentDirectional.center,
+            child: new Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                new Center(
+                  child: new SizedBox(
+                    height: MediaQuery.of(context).size.width * 0.1,
+                    width: MediaQuery.of(context).size.width * 0.1,
+                    child: new CircularProgressIndicator(
+                      value: null,
+                      backgroundColor: Colors.white,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+                      strokeWidth: 7.0,
                     ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(Icons.attach_money_outlined),
-                      Expanded(
-                        child: Text(
-                          'ราคา ${foodMenuModels[index].price} บาท',
-                          overflow: TextOverflow.ellipsis,
-                          style: MyStyle().mainH2Title,
-                        ),
+                ),
+                new Container(
+                  margin: const EdgeInsets.only(top: 25.0),
+                  child: new Center(
+                    child: new Text(
+                      'กำลังลบ...',
+                      style: new TextStyle(
+                        fontSize: 18.0,
+                        color: Colors.black45,
+                        fontFamily: 'FC-Minimal-Regular',
                       ),
-                    ],
+                    ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(Icons.details),
-                      Expanded(
-                        child: Text(
-                          foodMenuModels[index].foodDetail,
-                          overflow: TextOverflow.ellipsis,
-                          style: MyStyle().mainH2Title,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
-        separatorBuilder: (context, index) {
-          return Divider(
-            color: Colors.black54,
-          );
-        },
-      );
+      ],
+    ));
+  }
 }

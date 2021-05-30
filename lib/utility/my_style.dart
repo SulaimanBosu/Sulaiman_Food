@@ -1,17 +1,31 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:sulaimanfood/screens/user/show_cart.dart';
+import 'package:toast/toast.dart';
 
 class MyStyle {
   Color darkColor = Colors.blue.shade900;
   Color primaryColor = Colors.green.shade400;
 
-  Widget iconShowCart(BuildContext context){
-    return IconButton(icon: Icon(Icons.local_grocery_store), onPressed: (){
-              MaterialPageRoute route = MaterialPageRoute(builder: (context) => ShowCart(),);
-        Navigator.push(context, route);
-    });
+  Widget iconShowCart(BuildContext context) {
+    return IconButton(
+        icon: Icon(
+          Icons.local_grocery_store,
+          color: Colors.black54,
+        ),
+        onPressed: () {
+          MaterialPageRoute route = MaterialPageRoute(
+            builder: (context) => ShowCart(),
+          );
+          Navigator.push(context, route);
+        });
+  }
+
+  void showToast(BuildContext context, String string) {
+    Toast.show(
+      string,
+      context,
+      duration: Toast.LENGTH_LONG,
+    );
   }
 
   Widget showProgress() {
@@ -50,14 +64,43 @@ class MyStyle {
   TextStyle mainTitle = TextStyle(
     fontSize: 16.0,
     fontWeight: FontWeight.bold,
-    color: Colors.white,
+    color: Colors.black54,
   );
 
   TextStyle mainH2Title = TextStyle(
-      fontSize: 15.0,
-      fontWeight: FontWeight.bold,
-      color: Colors.white70,
-      fontStyle: FontStyle.italic);
+    fontSize: 14.0,
+    // fontWeight: FontWeight.bold,
+    color: Colors.black45,
+    // fontStyle: FontStyle.italic,
+    fontFamily: 'FC-Minimal-Regular',
+  );
+
+    TextStyle text2 = TextStyle(
+    fontSize: 18.0,
+    // fontWeight: FontWeight.bold,
+    color: Colors.black45,
+    // fontStyle: FontStyle.italic,
+    fontFamily: 'FC-Minimal-Regular',
+  );
+      Text showtext_1(String title) => Text(
+        title,
+        style: mainH2Title,
+      );
+
+    Text showtext_2(String title) => Text(
+        title,
+        style: text2,
+      );
+
+        Text showTitle_2(String title) => Text(
+        title,
+        style: TextStyle(
+                  fontSize: 24.0,
+                 // fontWeight: FontWeight.bold,
+                  color: Colors.black45,
+                  fontFamily: 'FC-Minimal-Regular',
+                ),
+      );
 
   SizedBox mySizebox() => SizedBox(
         width: 8.0,
@@ -79,6 +122,14 @@ class MyStyle {
     );
   }
 
+  Text showText(String title) => Text(
+        title,
+        style: TextStyle(
+          color: Colors.black54,
+          fontStyle: FontStyle.italic,
+        ),
+      );
+
   Text showTitle(String title) => Text(
         title,
         style: TextStyle(
@@ -97,10 +148,19 @@ class MyStyle {
         ),
       );
 
-        Text showTitleCart(String title) => Text(
+  Text showTitleH2white(String title) => Text(
         title,
         style: TextStyle(
-          fontSize: 18.0,
+          fontSize: 14.0,
+          color: Colors.white,
+          fontWeight: FontWeight.w500,
+        ),
+      );
+
+  Text showTitleCart(String title) => Text(
+        title,
+        style: TextStyle(
+          fontSize: 10.0,
           color: Colors.black87,
           fontWeight: FontWeight.bold,
         ),
@@ -115,14 +175,7 @@ class MyStyle {
         ),
       );
 
-  Text showTitle_2(String title) => Text(
-        title,
-        style: TextStyle(
-          fontSize: 18.0,
-          color: Colors.black54,
-          fontWeight: FontWeight.bold,
-        ),
-      );
+
 
   confirmDialog2(
     BuildContext context,
@@ -229,6 +282,59 @@ class MyStyle {
       image: DecorationImage(
           image: AssetImage('images/$namePic'), fit: BoxFit.cover),
     );
+  }
+
+    Widget progress(BuildContext context) {
+    return Container(
+        child: new Stack(
+      children: <Widget>[
+        Container(
+          alignment: AlignmentDirectional.center,
+          decoration: new BoxDecoration(
+            color: Colors.white70,
+          ),
+          child: new Container(
+            decoration: new BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: new BorderRadius.circular(10.0)),
+            width: MediaQuery.of(context).size.width * 0.4,
+            height: MediaQuery.of(context).size.width * 0.3,
+            alignment: AlignmentDirectional.center,
+            child: new Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                new Center(
+                  child: new SizedBox(
+                    height: MediaQuery.of(context).size.width * 0.1,
+                    width: MediaQuery.of(context).size.width * 0.1,
+                    child: new CircularProgressIndicator(
+                      value: null,
+                      backgroundColor: Colors.white,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+                      strokeWidth: 7.0,
+                    ),
+                  ),
+                ),
+                new Container(
+                  margin: const EdgeInsets.only(top: 25.0),
+                  child: new Center(
+                    child: new Text(
+                      'ดาวน์โหลด...',
+                      style: new TextStyle(
+                        fontSize: 18.0,
+                        color: Colors.black45,
+                        fontFamily: 'FC-Minimal-Regular',
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ));
   }
 
   MyStyle();

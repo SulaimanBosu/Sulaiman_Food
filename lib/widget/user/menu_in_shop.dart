@@ -28,10 +28,15 @@ class _MenuInShopState extends State<MenuInShop> {
   String shopid;
   // ignore: deprecated_member_use
   List<FoodMenuModel> foodModels = List();
+  // ignore: deprecated_member_use
+  List<CartModel> cartModels = List();
   int amount = 1;
   double lat1, lng1, lat2, lng2, distance;
   String distanceString;
   Location location = Location();
+  int total;
+  String sum;
+  int _sum;
 
   @override
   void initState() {
@@ -95,22 +100,23 @@ class _MenuInShopState extends State<MenuInShop> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.lightBlueAccent,
+      // color: Colors.lightBlueAccent,
       child: foodModels.length == 0
-          ? MyStyle().showProgress2('ดาวน์โหลด...')
+          ? progress(context)
+          //MyStyle().showProgress2('ดาวน์โหลด...')
           : showContent(),
     );
   }
 
   Widget showContent() {
     return foodModels.length != 0
-        ? showListFoodMenu2()
+        ? showListFoodMenu1()
         : Center(
             child: Text('ยังไม่มีรายการอาหาร'),
           );
   }
 
-  Widget showListFoodMenu2() => ListView.builder(
+  Widget showListFoodMenu1() => ListView.builder(
         padding: EdgeInsetsDirectional.only(top: 0.0, bottom: 20.0),
         itemCount: foodModels.length,
         itemBuilder: (context, index) => Container(
@@ -120,8 +126,8 @@ class _MenuInShopState extends State<MenuInShop> {
             actionExtentRatio: 0.25,
             child: Container(
               decoration: index % 2 == 0
-                  ? new BoxDecoration(color: Colors.lightBlueAccent)
-                  : new BoxDecoration(color: Colors.lightBlue),
+                  ? new BoxDecoration(color: Colors.white10)
+                  : new BoxDecoration(color: Colors.grey.shade300),
               child: Container(
                 padding: EdgeInsetsDirectional.only(top: 0.0, bottom: 0.0),
                 child: GestureDetector(
@@ -146,15 +152,9 @@ class _MenuInShopState extends State<MenuInShop> {
                                   '${MyConstant().domain}${foodModels[index].imagePath}',
                               progressIndicatorBuilder:
                                   (context, url, downloadProgress) =>
-                                      //       MyStyle().showProgress(),
-                                      Center(
-                                child: CircularProgressIndicator(
-                                  value: downloadProgress.progress,
-                                  backgroundColor: Colors.white,
-                                  valueColor:
-                                      AlwaysStoppedAnimation<Color>(Colors.red),
-                                ),
-                              ),
+                                      MyStyle().showProgress(),
+                              // CircularProgressIndicator(
+                              //     ),
                               errorWidget: (context, url, error) =>
                                   Icon(Icons.error),
                               fit: BoxFit.cover,
@@ -170,7 +170,7 @@ class _MenuInShopState extends State<MenuInShop> {
                       Container(
                         //  padding: EdgeInsetsDirectional.only(start: 5.0, end: 5.0),
                         //   padding: EdgeInsets.all(5.0),
-                        width: MediaQuery.of(context).size.width * 0.6,
+                        width: MediaQuery.of(context).size.width * 0.488,
                         height: MediaQuery.of(context).size.width * 0.3,
                         child: SingleChildScrollView(
                           padding: EdgeInsets.only(
@@ -203,12 +203,6 @@ class _MenuInShopState extends State<MenuInShop> {
                                       style: MyStyle().mainH2Title,
                                     ),
                                   ),
-                                  // IconButton(
-                                  //     icon: Icon(
-                                  //       Icons.delete_sweep_outlined,
-                                  //       color: Colors.white,size: 20,
-                                  //     ),
-                                  //     onPressed: null),
                                 ],
                               ),
                               Row(
@@ -219,17 +213,12 @@ class _MenuInShopState extends State<MenuInShop> {
                                       foodModels[index].foodDetail,
                                       //overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
-                                          color: Colors.white70,
+                                          color: Colors.black45,
                                           fontSize: 14.0,
+                                          fontFamily: 'FC-Minimal-Regular',
                                           fontStyle: FontStyle.italic),
                                     ),
                                   ),
-                                  // IconButton(
-                                  //     icon: Icon(
-                                  //       Icons.delete_sweep_outlined,
-                                  //       color: Colors.white,size: 20,
-                                  //     ),
-                                  //     onPressed: null),
                                 ],
                               ),
                               Row(
@@ -240,7 +229,7 @@ class _MenuInShopState extends State<MenuInShop> {
                                       '7.0 km(27 min) | 50B',
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
-                                          color: Colors.white70,
+                                          color: Colors.black45,
                                           fontSize: 10.0,
                                           fontStyle: FontStyle.normal),
                                     ),
@@ -251,54 +240,249 @@ class _MenuInShopState extends State<MenuInShop> {
                           ),
                         ),
                       ),
+                      Expanded(
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.edit_outlined,
+                            color: Colors.black45,
+                            size: 30,
+                          ),
+                          // ignore: unnecessary_statements
+                          onPressed: () {},
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ),
             ),
-            //   actions: <Widget>[
-            //   IconSlideAction(
-            //     caption: 'Archive',
-            //     color: Colors.blue,
-            //     icon: Icons.archive,
-            //     onTap: () => Toast.show('Archive on $index', context,
-            //         duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM),
-            //   ),
-            //   IconSlideAction(
-            //     caption: 'Share',
-            //     color: Colors.indigo,
-            //     icon: Icons.share,
-            //     onTap: () => Toast.show('Share on $index', context,
-            //         duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM),
-            //   ),
-            // ],
+            actions: <Widget>[
+              IconSlideAction(
+                caption: 'เมนูโปรด',
+                color: Colors.grey.shade400,
+                icon: Icons.favorite_outline_rounded,
+                onTap: () => Toast.show('Archive on $index', context,
+                    duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM),
+              ),
+              IconSlideAction(
+                caption: 'ดูรีวิว',
+                color: Colors.red.shade300,
+                icon: Icons.rate_review,
+                onTap: () => Toast.show('Share on $index', context,
+                    duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM),
+              ),
+            ],
             secondaryActions: <Widget>[
               IconSlideAction(
-                caption: 'แก้ไข',
+                caption: 'เขียนรีวิว',
                 color: Colors.black45,
                 icon: Icons.edit,
                 onTap: () {
-                  // MaterialPageRoute route = MaterialPageRoute(
-                  //   builder: (context) => EditFoodMenu(
-                  //     foodModel: foodMenuModels[index],
-                  //   ),
-                  // );
-                  // Navigator.push(context, route).then(
-                  //   (value) => readFoodMenu(),
-                  // );
+                  Text('เขียนรีวิว');
                 },
               ),
               IconSlideAction(
-                  caption: 'ลบ',
-                  color: Colors.red,
-                  icon: Icons.delete,
+                  caption: 'ให้คะแนน',
+                  color: Colors.lightBlue.shade100,
+                  icon: Icons.stars_rounded,
+                  foregroundColor: Colors.amberAccent.shade700,
                   onTap: () {
-                    // confirmDeleteDialog(foodMenuModels[index]);
+                    Text('ให้คะแนน');
                   }),
             ],
           ),
         ),
       );
+
+  // Widget showListFoodMenu3() => ListView.builder(
+  //       padding: EdgeInsetsDirectional.only(top: 0.0, bottom: 20.0),
+  //       itemCount: foodModels.length,
+  //       itemBuilder: (context, index) => Container(
+  //         child: Slidable(
+  //           key: Key(foodModels[index].foodName),
+  //           actionPane: SlidableDrawerActionPane(),
+  //           actionExtentRatio: 0.25,
+  //           child: Container(
+  //             decoration: index % 2 == 0
+  //                 ? new BoxDecoration(color: Colors.lightBlueAccent)
+  //                 : new BoxDecoration(color: Colors.lightBlue),
+  //             child: Container(
+  //               padding: EdgeInsetsDirectional.only(top: 0.0, bottom: 0.0),
+  //               child: GestureDetector(
+  //                 onTap: () {
+  //                   // print('คุณคลิก index = $index');
+  //                   amount = 1;
+  //                   userOrder(index);
+  //                 },
+  //                 child: Row(
+  //                   children: [
+  //                     Container(
+  //                       padding:
+  //                           EdgeInsetsDirectional.only(start: 0.0, end: 0.0),
+  //                       width: MediaQuery.of(context).size.width * 0.4,
+  //                       height: MediaQuery.of(context).size.width * 0.3,
+  //                       child: Container(
+  //                         child: Card(
+  //                           semanticContainer: true,
+  //                           clipBehavior: Clip.antiAliasWithSaveLayer,
+  //                           child: CachedNetworkImage(
+  //                             imageUrl:
+  //                                 '${MyConstant().domain}${foodModels[index].imagePath}',
+  //                             progressIndicatorBuilder:
+  //                                 (context, url, downloadProgress) =>
+  //                                     //       MyStyle().showProgress(),
+  //                                     Center(
+  //                               child: CircularProgressIndicator(
+  //                                 value: downloadProgress.progress,
+  //                                 backgroundColor: Colors.white,
+  //                                 valueColor:
+  //                                     AlwaysStoppedAnimation<Color>(Colors.red),
+  //                               ),
+  //                             ),
+  //                             errorWidget: (context, url, error) =>
+  //                                 Icon(Icons.error),
+  //                             fit: BoxFit.cover,
+  //                           ),
+  //                           shape: RoundedRectangleBorder(
+  //                             borderRadius: BorderRadius.circular(20.0),
+  //                           ),
+  //                           elevation: 5,
+  //                           margin: EdgeInsets.all(10),
+  //                         ),
+  //                       ),
+  //                     ),
+  //                     Container(
+  //                       //  padding: EdgeInsetsDirectional.only(start: 5.0, end: 5.0),
+  //                       //   padding: EdgeInsets.all(5.0),
+  //                       width: MediaQuery.of(context).size.width * 0.6,
+  //                       height: MediaQuery.of(context).size.width * 0.3,
+  //                       child: SingleChildScrollView(
+  //                         padding: EdgeInsets.only(
+  //                             right: 5.0, top: 15.0, bottom: 5.0),
+  //                         child: Column(
+  //                           mainAxisAlignment: MainAxisAlignment.center,
+  //                           children: [
+  //                             Container(
+  //                               //padding: EdgeInsetsDirectional.only(top: 0.0,bottom: 10.0),
+  //                               child: Row(
+  //                                 mainAxisAlignment: MainAxisAlignment.start,
+  //                                 children: [
+  //                                   Expanded(
+  //                                     child: Text(
+  //                                       foodModels[index].foodName,
+  //                                       overflow: TextOverflow.ellipsis,
+  //                                       style: MyStyle().mainTitle,
+  //                                     ),
+  //                                   ),
+  //                                 ],
+  //                               ),
+  //                             ),
+  //                             Row(
+  //                               mainAxisAlignment: MainAxisAlignment.start,
+  //                               children: [
+  //                                 Expanded(
+  //                                   child: Text(
+  //                                     'ราคา ${foodModels[index].price} บาท',
+  //                                     overflow: TextOverflow.ellipsis,
+  //                                     style: MyStyle().mainH2Title,
+  //                                   ),
+  //                                 ),
+  //                                 // IconButton(
+  //                                 //     icon: Icon(
+  //                                 //       Icons.delete_sweep_outlined,
+  //                                 //       color: Colors.white,size: 20,
+  //                                 //     ),
+  //                                 //     onPressed: null),
+  //                               ],
+  //                             ),
+  //                             Row(
+  //                               mainAxisAlignment: MainAxisAlignment.start,
+  //                               children: [
+  //                                 Expanded(
+  //                                   child: Text(
+  //                                     foodModels[index].foodDetail,
+  //                                     //overflow: TextOverflow.ellipsis,
+  //                                     style: TextStyle(
+  //                                         color: Colors.white70,
+  //                                         fontSize: 14.0,
+  //                                         fontStyle: FontStyle.italic),
+  //                                   ),
+  //                                 ),
+  //                                 // IconButton(
+  //                                 //     icon: Icon(
+  //                                 //       Icons.delete_sweep_outlined,
+  //                                 //       color: Colors.white,size: 20,
+  //                                 //     ),
+  //                                 //     onPressed: null),
+  //                               ],
+  //                             ),
+  //                             Row(
+  //                               mainAxisAlignment: MainAxisAlignment.start,
+  //                               children: [
+  //                                 Expanded(
+  //                                   child: Text(
+  //                                     '7.0 km(27 min) | 50B',
+  //                                     overflow: TextOverflow.ellipsis,
+  //                                     style: TextStyle(
+  //                                         color: Colors.white70,
+  //                                         fontSize: 10.0,
+  //                                         fontStyle: FontStyle.normal),
+  //                                   ),
+  //                                 ),
+  //                               ],
+  //                             ),
+  //                           ],
+  //                         ),
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ),
+  //             ),
+  //           ),
+  //           //   actions: <Widget>[
+  //           //   IconSlideAction(
+  //           //     caption: 'Archive',
+  //           //     color: Colors.blue,
+  //           //     icon: Icons.archive,
+  //           //     onTap: () => Toast.show('Archive on $index', context,
+  //           //         duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM),
+  //           //   ),
+  //           //   IconSlideAction(
+  //           //     caption: 'Share',
+  //           //     color: Colors.indigo,
+  //           //     icon: Icons.share,
+  //           //     onTap: () => Toast.show('Share on $index', context,
+  //           //         duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM),
+  //           //   ),
+  //           // ],
+  //           secondaryActions: <Widget>[
+  //             IconSlideAction(
+  //               caption: 'แก้ไข',
+  //               color: Colors.black45,
+  //               icon: Icons.edit,
+  //               onTap: () {
+  //                 // MaterialPageRoute route = MaterialPageRoute(
+  //                 //   builder: (context) => EditFoodMenu(
+  //                 //     foodModel: foodMenuModels[index],
+  //                 //   ),
+  //                 // );
+  //                 // Navigator.push(context, route).then(
+  //                 //   (value) => readFoodMenu(),
+  //                 // );
+  //               },
+  //             ),
+  //             IconSlideAction(
+  //                 caption: 'ลบ',
+  //                 color: Colors.red,
+  //                 icon: Icons.delete,
+  //                 onTap: () {
+  //                   // confirmDeleteDialog(foodMenuModels[index]);
+  //                 }),
+  //           ],
+  //         ),
+  //       ),
+  //     );
 
   Future<Null> userOrder(int index) async {
     showDialog(
@@ -396,7 +580,7 @@ class _MenuInShopState extends State<MenuInShop> {
                 RaisedButton(
                   onPressed: () {
                     Navigator.pop(context);
-                    print('Amount == $amount');
+                    //  print('Amount == $amount');
                     addOrderToCart(index);
                   },
                   child: Text('สั่งซื้อ'),
@@ -458,21 +642,24 @@ class _MenuInShopState extends State<MenuInShop> {
 
     var object = await SQLiteHelper().readDataFromSQLite();
 
-    print('object == ${object.length}');
+    //  print('object == ${object.length}');
 
     if (object.length == 0) {
       await SQLiteHelper().insertDataToSQLite(cartModel).then((value) {
-        print('Insert Success');
-        showToast('Insert Success');
+        print('Insert Length = 0 Success');
+        showToast('เพิ่มลงตะกร้าเรียบร้อย');
       });
     } else {
       String shopidSQLite = object[0].shopId;
-      print('shopidSQLite == $shopidSQLite');
+      //  print('shopidSQLite == $shopidSQLite');
       if (shopid == shopidSQLite) {
-        await SQLiteHelper().insertDataToSQLite(cartModel).then((value) {
-          print('Insert Success');
-          showToast('Insert Success');
-        });
+        //  apdateSQLite(cartModel, foodid, amount);
+        await SQLiteHelper().insertDataToSQLite(cartModel).then(
+          (value) {
+            print('Insert Success');
+            showToast('เพิ่มลงตะกร้าเรียบร้อย');
+          },
+        );
       } else {
         normalDialog(
             context, 'มีรายการอาหารของร้าน ${object[0].nameShop} อยู่แล้ว');
@@ -486,5 +673,89 @@ class _MenuInShopState extends State<MenuInShop> {
       context,
       duration: Toast.LENGTH_LONG,
     );
+  }
+
+  Future<Null> apdateSQLite(
+      CartModel cartModel, String foodid, int amount) async {
+    var object = await SQLiteHelper().readDataFromSQLite();
+
+    cartModels = object;
+    String foodID = cartModel.foodId;
+    for (var model in object) {
+      String foodidSQLite = model.foodId;
+      for (int i = 1; i < cartModels.length; i++) {}
+
+      String amountSQLite = model.amount;
+      int amountInt = int.parse(amountSQLite);
+      print('Count == $foodID');
+
+      if (foodidSQLite == foodID) {
+        int sumAmount = amountInt + amount;
+        await SQLiteHelper()
+            .apdateAmountToSQLite(foodid, sumAmount)
+            .then((value) {
+          print('Apdate Success');
+          showToast('Apdate Success');
+        });
+      } else {
+        await SQLiteHelper().insertDataToSQLite(cartModel).then((value) {
+          print('Insert length != 0 Success');
+          showToast('เพิ่มลงตะกร้าเรียบร้อย');
+        });
+      }
+    }
+  }
+
+    Widget progress(BuildContext context) {
+    return Container(
+        child: new Stack(
+      children: <Widget>[
+        Container(
+          alignment: AlignmentDirectional.center,
+          decoration: new BoxDecoration(
+            color: Colors.white,
+          ),
+          child: new Container(
+            decoration: new BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: new BorderRadius.circular(10.0)),
+            width: MediaQuery.of(context).size.width * 0.4,
+            height: MediaQuery.of(context).size.width * 0.3,
+            alignment: AlignmentDirectional.center,
+            child: new Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                new Center(
+                  child: new SizedBox(
+                    height: MediaQuery.of(context).size.width * 0.1,
+                    width: MediaQuery.of(context).size.width * 0.1,
+                    child: new CircularProgressIndicator(
+                      value: null,
+                      backgroundColor: Colors.white,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+                      strokeWidth: 7.0,
+                    ),
+                  ),
+                ),
+                new Container(
+                  margin: const EdgeInsets.only(top: 25.0),
+                  child: new Center(
+                    child: new Text(
+                      'ดาวน์โหลด...',
+                      style: new TextStyle(
+                        fontSize: 18.0,
+                        color: Colors.black45,
+                        fontFamily: 'FC-Minimal-Regular',
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ));
   }
 }

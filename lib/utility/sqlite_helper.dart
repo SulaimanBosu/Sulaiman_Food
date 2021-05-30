@@ -49,32 +49,51 @@ class SQLiteHelper {
     }
   }
 
-
-  Future<List<CartModel>> readDataFromSQLite() async{
-      Database database = await connectedDatabase();
-      // ignore: deprecated_member_use
-      List<CartModel> cartModels =List();
-
-      List<Map<String, dynamic>> maps = await database.query(tableDatabase);
-
-      for (var map in maps) {
-        CartModel cartModel = CartModel.fromJson(map);
-        cartModels.add(cartModel);
-      }
-      
-      return cartModels;
-  }
-
-  Future<Null> deleteData(int orderId)async{
+  Future<Null> apdateAmountToSQLite(String foodid, int amount) async {
     Database database = await connectedDatabase();
     try {
-      await database.delete(tableDatabase,where: '$orderid = $orderId');
+      database.rawUpdate(
+          'UPDATE $tableDatabase SET Amount = ? WHERE Food_id = ?',
+          ['$amount', '$foodid']);
+    } catch (e) {
+      print('UPDATE Data ==> ${e.toString()}');
+    }
+  }
+
+  Future<int> getCount(String foodiD) async {
+    //database connection
+    Database database = await connectedDatabase();
+    var x = await database.rawQuery('SELECT COUNT(Food_id) from $tableDatabase WHERE Food_id = ? ',['$foodid']);
+    int count = Sqflite.firstIntValue(x);
+    print('Ni count na $count');
+    return count;
+}
+
+  Future<List<CartModel>> readDataFromSQLite() async {
+    Database database = await connectedDatabase();
+    // ignore: deprecated_member_use
+    List<CartModel> cartModels = List();
+
+    List<Map<String, dynamic>> maps = await database.query(tableDatabase);
+
+    for (var map in maps) {
+      CartModel cartModel = CartModel.fromJson(map);
+      cartModels.add(cartModel);
+    }
+
+    return cartModels;
+  }
+
+  Future<Null> deleteData(int orderId) async {
+    Database database = await connectedDatabase();
+    try {
+      await database.delete(tableDatabase, where: '$orderid = $orderId');
     } catch (e) {
       print('e delete ==> ${e.toString()}');
     }
   }
 
-  Future<Null> deleteAllData() async{
+  Future<Null> deleteAllData() async {
     Database database = await connectedDatabase();
     try {
       await database.delete(tableDatabase);

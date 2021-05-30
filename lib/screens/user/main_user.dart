@@ -1,12 +1,14 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sulaimanfood/model/foodMenu_Model.dart';
+import 'package:sulaimanfood/model/infomationShop_model.dart';
 import 'package:sulaimanfood/screens/home.dart';
 import 'package:sulaimanfood/screens/user/show_cart.dart';
-import 'package:sulaimanfood/utility/ProgressIndicator.dart';
 import 'package:sulaimanfood/utility/my_style.dart';
 import 'package:sulaimanfood/utility/signout_process.dart';
 import 'package:sulaimanfood/widget/user/show_list_menu_all.dart';
+import 'package:sulaimanfood/widget/user/show_list_order_all.dart';
 import 'package:sulaimanfood/widget/user/show_list_shop_all.dart';
 
 class MainUser extends StatefulWidget {
@@ -22,11 +24,13 @@ class _MainUserState extends State<MainUser> {
   // ignore: deprecated_member_use
   List<Widget> foodCards = List();
   Widget currentWidget;
+  Widget statusAppbar;
 
   @override
   void initState() {
     super.initState();
     currentWidget = ShowListMenuAll();
+    statusAppbar = foodmenuAppbar();
     findUser();
     // readfood();
   }
@@ -43,24 +47,79 @@ class _MainUserState extends State<MainUser> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(nameUser == null ? 'Main User' : ''),
+        backgroundColor: Colors.white,
+        title: nameUser == null ? 'Main User' : statusAppbar,
         actions: <Widget>[
           MyStyle().iconShowCart(context),
           IconButton(
-              icon: Icon(Icons.exit_to_app),
-              onPressed: () {
-                signOutProcess(context);
-                routeToHome();
-              })
+            icon: Icon(
+              Icons.search,
+              color: Colors.black54,
+            ),
+            onPressed: () {
+              signOutProcess(context);
+              routeToHome();
+            },
+          ),
+          // IconButton(
+          //   icon: Icon(
+          //     Icons.exit_to_app,
+          //     color: Colors.black54,
+          //   ),
+          //   onPressed: () {
+          //     signOutProcess(context);
+          //     routeToHome();
+          //   },
+          // ),
         ],
       ),
       drawer: showDrawer(),
       body: Container(
-        color: Colors.lightBlueAccent,
+        // color: Colors.lightBlueAccent,
         child: currentWidget,
       ),
     );
   }
+
+  Widget foodmenuAppbar() => Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'เมนูอาหาร',
+            style: TextStyle(
+              fontSize: 16.0,
+              color: Colors.black87,
+              fontStyle: FontStyle.normal,
+            ),
+          ),
+        ],
+      );
+  Widget shopAppbar() => Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'ร้านอาหาร',
+            style: TextStyle(
+              fontSize: 16.0,
+              color: Colors.black87,
+              fontStyle: FontStyle.normal,
+            ),
+          ),
+        ],
+      );
+  Widget orderAppbar() => Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'ประวัติการสั่งซื้อ',
+            style: TextStyle(
+              fontSize: 16.0,
+              color: Colors.black87,
+              fontStyle: FontStyle.normal,
+            ),
+          ),
+        ],
+      );
 
   void routeToHome() {
     MaterialPageRoute route = MaterialPageRoute(
@@ -99,6 +158,7 @@ class _MainUserState extends State<MainUser> {
         Navigator.pop(context);
         setState(() {
           currentWidget = ShowListMenuAll();
+          statusAppbar = foodmenuAppbar();
         });
       },
       leading: Icon(Icons.fastfood),
@@ -117,6 +177,7 @@ class _MainUserState extends State<MainUser> {
         Navigator.pop(context);
         setState(() {
           currentWidget = ShowListShopAll();
+          statusAppbar = shopAppbar();
         });
       },
       leading: Icon(Icons.home),
@@ -134,8 +195,9 @@ class _MainUserState extends State<MainUser> {
       onTap: () {
         Navigator.pop(context);
         setState(() {
-          // currentWidget = ShowListOrderAll();
-          currentWidget = PercentIndicatorDemo();
+          currentWidget = ShowListOrderAll();
+          statusAppbar = orderAppbar();
+          //  currentWidget = PercentIndicatorDemo();
         });
       },
       leading: Icon(Icons.shopping_basket_rounded),

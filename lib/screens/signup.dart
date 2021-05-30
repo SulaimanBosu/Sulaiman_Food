@@ -135,7 +135,7 @@ class _SignUpState extends State<SignUp> {
         children: <Widget>[
           Container(
             margin: EdgeInsets.only(left: 20.0, right: 20.0),
-            width: 110.0,
+            width: MediaQuery.of(context).size.width * 0.7,
             child: Row(
               children: <Widget>[
                 Radio(
@@ -162,7 +162,7 @@ class _SignUpState extends State<SignUp> {
         children: <Widget>[
           Container(
             margin: EdgeInsets.only(left: 20.0, right: 20.0),
-            width: 150.0,
+            width: MediaQuery.of(context).size.width * 0.7,
             child: Row(
               children: <Widget>[
                 Radio(
@@ -189,7 +189,7 @@ class _SignUpState extends State<SignUp> {
         children: <Widget>[
           Container(
             margin: EdgeInsets.only(left: 20.0, right: 20.0),
-            width: 110.0,
+            width: MediaQuery.of(context).size.width * 0.7,
             child: Row(
               children: <Widget>[
                 Radio(

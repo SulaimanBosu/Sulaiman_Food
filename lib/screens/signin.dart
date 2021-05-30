@@ -1,12 +1,14 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sulaimanfood/model/user_model.dart';
 import 'package:sulaimanfood/screens/main_rider.dart';
 import 'package:sulaimanfood/screens/shop/main_shop.dart';
-import 'package:sulaimanfood/screens/main_user.dart';
+import 'package:sulaimanfood/screens/user/main_user.dart';
 import 'package:sulaimanfood/utility/myConstant.dart';
 import 'package:sulaimanfood/utility/my_style.dart';
 import 'package:sulaimanfood/utility/normal_dialog.dart';
@@ -115,11 +117,26 @@ class _SignInState extends State<SignIn> {
   }
 
   Future<void> routeToService(Widget myWidget, UserModel userModel) async {
+    FirebaseMessaging _messaging = FirebaseMessaging.instance;
+    String token = await _messaging.getToken();
+    print('token >>>>>>>>>>>> $token');
+
+    //REGISTER REQUIRED FOR IOS
+    if (Platform.isIOS) {
+      _messaging.requestPermission();
+    }
+
     SharedPreferences preferences = await SharedPreferences.getInstance();
     preferences.setString('User_id', userModel.userId);
     preferences.setString('ChooseType', userModel.chooseType);
     preferences.setString('User', userModel.user);
     preferences.setString('Name', userModel.name);
+    if (userModel.userId != null && userModel.userId.isNotEmpty) {
+      String url =
+          '${MyConstant().domain}/Sulaiman_food/edit_token.php?isAdd=true&Token=$token&userid=${userModel.userId}';
+      await Dio().get(url).then((value) => print('อัพเดท Token เรียบร้อย'));
+    }
+
     if (userModel.shopId == null || userModel.shopId.isEmpty) {
       MaterialPageRoute route = MaterialPageRoute(
         builder: (context) => myWidget,

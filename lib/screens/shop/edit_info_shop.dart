@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
@@ -15,22 +16,29 @@ import 'package:sulaimanfood/utility/my_style.dart';
 import 'package:sulaimanfood/utility/normal_dialog.dart';
 
 class EditInfoShop extends StatefulWidget {
+  final double lat;
+  final double lng;
+  EditInfoShop({Key key, this.lat, this.lng}) : super(key: key);
   @override
   _EditInfoShopState createState() => _EditInfoShopState();
 }
 
 class _EditInfoShopState extends State<EditInfoShop> {
   InfomationShopModel infomationShop;
-  double lat, lng;
+  double lat;
+  double lng;
   String nameShop, address, phone, urlImage, newUrlImage;
   final picker = ImagePicker();
   File file;
+  bool editStatus = false;
   //Location location = Location();
 
   @override
   void initState() {
     super.initState();
     readCurrentData();
+    lat = widget.lat;
+    lng = widget.lng;
     findLatLng();
 
     // location.onLocationChanged.listen((event) {
@@ -89,16 +97,133 @@ class _EditInfoShopState extends State<EditInfoShop> {
     return Scaffold(
       body: infomationShop == null
           ? Container(
-              color: Colors.lightBlueAccent,
-              child: MyStyle().showProgress2('กรุณารอสักครู่...'))
-          : Container(
-              color: Colors.lightBlueAccent,
-              child: showContent(),
-            ),
+              // color: Colors.lightBlueAccent,
+              child: progress(context),
+            )
+          : editStatus
+              ? progress2(context)
+              : Container(
+                  // color: Colors.lightBlueAccent,
+                  child: showContent(),
+                ),
       appBar: AppBar(
-        title: Text('แก้ไขรายละเอียด'),
+        title: Text(
+          'แก้ไขรายละเอียด',
+          style: TextStyle(
+            fontSize: 22.0,
+            color: Colors.black45,
+            fontFamily: 'FC-Minimal-Regular',
+          ),
+        ),
       ),
     );
+  }
+
+  Widget progress(BuildContext context) {
+    return Container(
+        child: new Stack(
+      children: <Widget>[
+        Container(
+          alignment: AlignmentDirectional.center,
+          decoration: new BoxDecoration(
+            color: Colors.white70,
+          ),
+          child: new Container(
+            decoration: new BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: new BorderRadius.circular(10.0)),
+            width: MediaQuery.of(context).size.width * 0.4,
+            height: MediaQuery.of(context).size.width * 0.3,
+            alignment: AlignmentDirectional.center,
+            child: new Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                new Center(
+                  child: new SizedBox(
+                    height: MediaQuery.of(context).size.width * 0.1,
+                    width: MediaQuery.of(context).size.width * 0.1,
+                    child: new CircularProgressIndicator(
+                      value: null,
+                      backgroundColor: Colors.white,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+                      strokeWidth: 7.0,
+                    ),
+                  ),
+                ),
+                new Container(
+                  margin: const EdgeInsets.only(top: 25.0),
+                  child: new Center(
+                    child: new Text(
+                      'ดาวน์โหลด...',
+                      style: new TextStyle(
+                        fontSize: 18.0,
+                        color: Colors.black45,
+                        fontFamily: 'FC-Minimal-Regular',
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ));
+  }
+
+  Widget progress2(BuildContext context) {
+    return Container(
+        child: new Stack(
+      children: <Widget>[
+        showContent(),
+        Container(
+          alignment: AlignmentDirectional.center,
+          decoration: new BoxDecoration(
+            color: Colors.white70,
+          ),
+          child: new Container(
+            decoration: new BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: new BorderRadius.circular(10.0)),
+            width: MediaQuery.of(context).size.width * 0.4,
+            height: MediaQuery.of(context).size.width * 0.3,
+            alignment: AlignmentDirectional.center,
+            child: new Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                new Center(
+                  child: new SizedBox(
+                    height: MediaQuery.of(context).size.width * 0.1,
+                    width: MediaQuery.of(context).size.width * 0.1,
+                    child: new CircularProgressIndicator(
+                      value: null,
+                      backgroundColor: Colors.white,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+                      strokeWidth: 7.0,
+                    ),
+                  ),
+                ),
+                new Container(
+                  margin: const EdgeInsets.only(top: 25.0),
+                  child: new Center(
+                    child: new Text(
+                      'อัพเดต...',
+                      style: new TextStyle(
+                        fontSize: 18.0,
+                        color: Colors.black45,
+                        fontFamily: 'FC-Minimal-Regular',
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ));
   }
 
   Widget showContent() => SingleChildScrollView(
@@ -109,9 +234,17 @@ class _EditInfoShopState extends State<EditInfoShop> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                MyStyle().showTitle('รายละเอียดร้านค้า'),
+                Text(
+                  'รายละเอียดร้านค้า',
+                  style: TextStyle(
+                    fontSize: 24.0,
+                    color: Colors.black45,
+                    fontFamily: 'FC-Minimal-Regular',
+                  ),
+                ),
               ],
             ),
+            MyStyle().mySizebox(),
             showImage(),
             addImageButton(),
             nameShopform(),
@@ -120,17 +253,19 @@ class _EditInfoShopState extends State<EditInfoShop> {
             MyStyle().mySizebox(),
             lat == null ? MyStyle().showProgress() : showMap(),
             MyStyle().mySizebox(),
-            lat == null ? MyStyle().showProgress() : groupButton(),
+            groupButton(),
             MyStyle().mySizebox(),
             MyStyle().mySizebox(),
           ],
         ),
       );
 
-  Widget showImage() => Container(
-        margin: EdgeInsets.all(16.0),
-        // width: 250.0,
-        // height: 200.0,
+  Container showImage() {
+    return Container(
+      padding: EdgeInsetsDirectional.only(start: 10.0, end: 10.0, bottom: 10),
+      width: MediaQuery.of(context).size.width * 0.9,
+      height: MediaQuery.of(context).size.width * 0.6,
+      child: Container(
         child: file == null
             ? Card(
                 semanticContainer: true,
@@ -160,24 +295,27 @@ class _EditInfoShopState extends State<EditInfoShop> {
                 elevation: 5,
                 margin: EdgeInsets.all(0),
               ),
-      );
+      ),
+    );
+  }
 
   Widget addImageButton() {
     return Container(
       width: 200.0,
       // ignore: deprecated_member_use
       child: FloatingActionButton.extended(
+        backgroundColor: Colors.white,
         onPressed: () {
           _showPicker(context);
           ;
         },
         icon: Icon(
           Icons.add_photo_alternate,
-          color: Colors.white,
+          color: Colors.black54,
         ),
         label: Text(
           'เปลี่ยนรูปภาพ',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.black54),
         ),
       ),
     );
@@ -265,8 +403,14 @@ class _EditInfoShopState extends State<EditInfoShop> {
 
     await Dio().get(url).then((value) {
       if (value.toString() == 'true') {
+        setState(() {
+          editStatus = false;
+        });
         Navigator.pop(context);
       } else {
+        setState(() {
+          editStatus = false;
+        });
         normalDialog(context, 'อัพโหลดล้มเหลว กรุณาลองใหม่อีกครั้งคะ');
       }
     });
@@ -279,16 +423,23 @@ class _EditInfoShopState extends State<EditInfoShop> {
             margin: EdgeInsets.only(top: 16.0),
             width: 300.0,
             child: TextFormField(
-              cursorColor: Colors.white,
+              cursorColor: Colors.black54,
               initialValue: nameShop,
+              style: MyStyle().text2,
               onChanged: (value) => nameShop = value,
               decoration: InputDecoration(
                 prefixIcon: Icon(
                   Icons.account_box,
-                  color: Colors.white,
+                  color: Colors.black54,
                 ),
-                border: OutlineInputBorder(),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.black54),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.redAccent),
+                ),
                 labelText: 'ชื่อร้านค้า',
+                labelStyle: TextStyle(color: Colors.black54),
               ),
             ),
           ),
@@ -302,18 +453,25 @@ class _EditInfoShopState extends State<EditInfoShop> {
             margin: EdgeInsets.only(top: 16.0),
             width: 300.0,
             child: TextFormField(
-              cursorColor: Colors.white,
+              cursorColor: Colors.black54,
               keyboardType: TextInputType.multiline,
               maxLines: 3,
               initialValue: address,
+              style: MyStyle().text2,
               onChanged: (value) => address = value,
               decoration: InputDecoration(
                 prefixIcon: Icon(
                   Icons.house,
-                  color: Colors.white,
+                  color: Colors.black54,
                 ),
-                border: OutlineInputBorder(),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.black54),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.redAccent),
+                ),
                 labelText: 'ที่อยู่ร้านค้า',
+                labelStyle: TextStyle(color: Colors.black54),
               ),
             ),
           ),
@@ -327,16 +485,23 @@ class _EditInfoShopState extends State<EditInfoShop> {
             margin: EdgeInsets.only(top: 16.0),
             width: 300.0,
             child: TextFormField(
-              cursorColor: Colors.white,
+              cursorColor: Colors.black54,
               initialValue: phone,
+              style: MyStyle().text2,
               onChanged: (value) => phone = value,
               decoration: InputDecoration(
                 prefixIcon: Icon(
                   Icons.phone,
-                  color: Colors.white,
+                  color: Colors.black54,
                 ),
-                border: OutlineInputBorder(),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.black54),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.redAccent),
+                ),
                 labelText: 'เบอร์ติดต่อร้านค้า',
+                labelStyle: TextStyle(color: Colors.black54),
               ),
             ),
           ),
@@ -394,20 +559,22 @@ class _EditInfoShopState extends State<EditInfoShop> {
         Container(
           margin: EdgeInsets.only(left: 20.0, right: 20.0),
           child: FloatingActionButton.extended(
+            backgroundColor: Colors.white,
             onPressed: () => saveEdit(),
             icon: Icon(
               Icons.save,
-              color: Colors.white,
+              color: Colors.black54,
             ),
             label: Text(
               'บันทึก',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: Colors.black54),
             ),
           ),
         ),
         Container(
           margin: EdgeInsets.only(left: 20.0, right: 20.0),
           child: FloatingActionButton.extended(
+            backgroundColor: Colors.white,
             onPressed: () {
               // MaterialPageRoute route = MaterialPageRoute(
               //   builder: (value) => InfomationShop(),
@@ -417,11 +584,11 @@ class _EditInfoShopState extends State<EditInfoShop> {
             },
             icon: Icon(
               Icons.cancel,
-              color: Colors.white,
+              color: Colors.black54,
             ),
             label: Text(
               'ยกเลิก',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: Colors.black54),
             ),
           ),
         ),
@@ -442,6 +609,15 @@ class _EditInfoShopState extends State<EditInfoShop> {
       // confirmDialog();
       confirmDialog2();
     }
+  }
+
+      void _onLoading() {
+    Timer(Duration(seconds: 20), () {
+      setState(() {
+        editStatus = false;
+        normalDialog(context, 'อัพโหลดล้มเหลว กรุณาลองใหม่อีกครั้งคะ');
+      });
+    });
   }
 
   // Future<Null> confirmDialog() async {
@@ -534,9 +710,16 @@ class _EditInfoShopState extends State<EditInfoShop> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             AlertDialog(
-              title: Row(
+              title: Column(
                 children: [
-                  Text('Confirm'),
+                  Row(
+                    children: [
+                      Text('Confirm'),
+                    ],
+                  ),
+                  Divider(
+                    color: Colors.black54,
+                  ),
                 ],
               ),
               content: Center(
@@ -568,6 +751,10 @@ class _EditInfoShopState extends State<EditInfoShop> {
                     } else {
                       uploadImage();
                     }
+                    setState(() {
+                      editStatus = true;
+                    });
+                    _onLoading();
                   },
                 ),
                 // ignore: deprecated_member_use
@@ -580,7 +767,7 @@ class _EditInfoShopState extends State<EditInfoShop> {
                 ),
               ],
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30.0),
+                borderRadius: BorderRadius.circular(20.0),
               ),
             ),
           ],

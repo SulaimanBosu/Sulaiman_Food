@@ -1,6 +1,15 @@
+import 'dart:convert';
+
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sulaimanfood/model/cart_model.dart';
+import 'package:sulaimanfood/model/user_model.dart';
+import 'package:sulaimanfood/utility/myConstant.dart';
 import 'package:sulaimanfood/utility/my_style.dart';
+import 'package:sulaimanfood/utility/normal_dialog.dart';
 import 'package:sulaimanfood/utility/sqlite_helper.dart';
 
 class ShowCart extends StatefulWidget {
@@ -15,6 +24,7 @@ class _ShowCartState extends State<ShowCart> {
   String sum;
   int _sum;
   bool status = true;
+  bool orderStatus = false;
 
   @override
   void initState() {
@@ -48,13 +58,34 @@ class _ShowCartState extends State<ShowCart> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('ตะกร้าของฉัน'),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'ตะกร้าของฉัน',
+              style: TextStyle(
+                fontSize: 16.0,
+                color: Colors.black87,
+                fontStyle: FontStyle.normal,
+              ),
+            ),
+          ],
+        ),
       ),
       body: status
           ? Center(
-              child: Text('ไม่มีรายการอาหารในตะกร้า'),
+              child: Text(
+                'ไม่มีรายการอาหารในตะกร้า',
+                style: TextStyle(
+                  fontSize: 10.0,
+                  color: Colors.black87,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
             )
-          : buildContent(),
+          : orderStatus
+              ? progress(context)
+              : buildContent(),
     );
   }
 
@@ -64,9 +95,9 @@ class _ShowCartState extends State<ShowCart> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            MyStyle().mySizebox(),
+            // MyStyle().mySizebox(),
             buildNameShop(),
-            MyStyle().mySizebox(),
+            // MyStyle().mySizebox(),
             MyStyle().mySizebox(),
             buildTitle(),
             MyStyle().mySizebox(),
@@ -78,6 +109,7 @@ class _ShowCartState extends State<ShowCart> {
             buildtransport(),
             buildTotal(),
             buildClearCart(),
+            buildOrderButton(),
           ],
         ),
       ),
@@ -88,12 +120,24 @@ class _ShowCartState extends State<ShowCart> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
+        // ignore: deprecated_member_use
         RaisedButton.icon(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5),
+          ),
           onPressed: () {
             confirmDeleteDialog();
           },
           icon: Icon(Icons.delete),
-          label: Text('Clear ตะกร้า'),color: Colors.blue,
+          label: Text(
+            'Clear ตะกร้า',
+            style: TextStyle(
+              fontSize: 10.0,
+              color: Colors.black87,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+          color: Colors.blue.shade200,
         ),
       ],
     );
@@ -101,7 +145,7 @@ class _ShowCartState extends State<ShowCart> {
 
   Widget buildNameShop() {
     return Container(
-      margin: EdgeInsets.only(top: 16, bottom: 2),
+      margin: EdgeInsets.only(top: 12, bottom: 2),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -109,7 +153,7 @@ class _ShowCartState extends State<ShowCart> {
           MyStyle().mySizebox(),
           Text(
             'ร้าน ${cartModels[0].nameShop}',
-            style: TextStyle(fontSize: 18),
+            style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
           ),
         ],
       ),
@@ -157,7 +201,7 @@ class _ShowCartState extends State<ShowCart> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                MyStyle().showTitleCart('  ลบ'),
+                MyStyle().showTitleCart('ลบ'),
               ],
             ),
           ),
@@ -166,7 +210,7 @@ class _ShowCartState extends State<ShowCart> {
     );
   }
 
-  Widget buildListFood() => ListView.separated(
+  Widget buildListFood() => ListView.builder(
         shrinkWrap: true,
         physics: ScrollPhysics(),
         itemCount: cartModels.length,
@@ -176,14 +220,28 @@ class _ShowCartState extends State<ShowCart> {
               children: [
                 Expanded(
                   flex: 3,
-                  child: Text(cartModels[index].foodName),
+                  child: Text(
+                    cartModels[index].foodName,
+                    style: TextStyle(
+                      fontSize: 10.0,
+                      color: Colors.black87,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
                 ),
                 Expanded(
                   flex: 1,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(cartModels[index].price),
+                      Text(
+                        cartModels[index].price,
+                        style: TextStyle(
+                          fontSize: 10.0,
+                          color: Colors.black87,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -192,7 +250,14 @@ class _ShowCartState extends State<ShowCart> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(cartModels[index].amount),
+                      Text(
+                        cartModels[index].amount,
+                        style: TextStyle(
+                          fontSize: 10.0,
+                          color: Colors.black87,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -201,7 +266,14 @@ class _ShowCartState extends State<ShowCart> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(cartModels[index].sum),
+                      Text(
+                        cartModels[index].sum,
+                        style: TextStyle(
+                          fontSize: 10.0,
+                          color: Colors.black87,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -226,11 +298,6 @@ class _ShowCartState extends State<ShowCart> {
             ),
           ],
         ),
-        separatorBuilder: (context, index) {
-          return Divider(
-            color: Colors.black54,
-          );
-        },
       );
 
   Widget builddistance() {
@@ -247,7 +314,11 @@ class _ShowCartState extends State<ShowCart> {
                 MyStyle().mySizebox(),
                 Text(
                   'ระยะทาง ',
-                  style: TextStyle(fontSize: 14),
+                  style: TextStyle(
+                    fontSize: 10.0,
+                    color: Colors.black87,
+                    fontStyle: FontStyle.italic,
+                  ),
                 ),
               ],
             ),
@@ -257,7 +328,14 @@ class _ShowCartState extends State<ShowCart> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Text('${cartModels[0].distance}  กม.'),
+                Text(
+                  '${cartModels[0].distance}  กม.',
+                  style: TextStyle(
+                    fontSize: 10.0,
+                    color: Colors.black87,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
               ],
             ),
           ),
@@ -278,7 +356,14 @@ class _ShowCartState extends State<ShowCart> {
               children: [
                 // Icon(Icons.monetization_on),
                 // MyStyle().mySizebox(),
-                Text('ค่าส่ง  '),
+                Text(
+                  'ค่าส่ง  ',
+                  style: TextStyle(
+                    fontSize: 10.0,
+                    color: Colors.black87,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
               ],
             ),
           ),
@@ -287,7 +372,14 @@ class _ShowCartState extends State<ShowCart> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Text('${cartModels[0].transport}  บาท'),
+                Text(
+                  '${cartModels[0].transport}  บาท',
+                  style: TextStyle(
+                    fontSize: 10.0,
+                    color: Colors.black87,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
               ],
             ),
           ),
@@ -308,7 +400,14 @@ class _ShowCartState extends State<ShowCart> {
               children: [
                 // Icon(Icons.monetization_on),
                 // MyStyle().mySizebox(),
-                Text('ราคารวม  '),
+                Text(
+                  'ราคารวม  ',
+                  style: TextStyle(
+                    fontSize: 10.0,
+                    color: Colors.black87,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
               ],
             ),
           ),
@@ -317,7 +416,14 @@ class _ShowCartState extends State<ShowCart> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Text('${total.toString()}  บาท'),
+                Text(
+                  '${total.toString()}  บาท',
+                  style: TextStyle(
+                    fontSize: 10.0,
+                    color: Colors.black87,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
               ],
             ),
           ),
@@ -335,7 +441,14 @@ class _ShowCartState extends State<ShowCart> {
             Icon(Icons.delete_forever_rounded),
             Text('Delete Confirm')
           ]),
-          content: Text('คุณต้องการลบเมนูทั้งหมดหรือไม่'),
+          content: Text(
+            'คุณต้องการลบเมนูทั้งหมดหรือไม่',
+            style: TextStyle(
+              fontSize: 10.0,
+              color: Colors.black87,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
           actions: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -382,7 +495,14 @@ class _ShowCartState extends State<ShowCart> {
             Icon(Icons.delete_forever_rounded),
             Text('Delete Success')
           ]),
-          content: Text('ลบรายอาหารทั้งหมดเรียบร้อย'),
+          content: Text(
+            'ลบรายอาหารทั้งหมดเรียบร้อย',
+            style: TextStyle(
+              fontSize: 10.0,
+              color: Colors.black87,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
           actions: <Widget>[
             // ignore: deprecated_member_use
             FlatButton(
@@ -401,40 +521,180 @@ class _ShowCartState extends State<ShowCart> {
     );
   }
 
-  // Widget builddistance() => Row(
-  //       mainAxisAlignment: MainAxisAlignment.end,
-  //       children: [
-  //         Row(
-  //           children: [
-  //             Icon(Icons.location_on_outlined),
-  //             MyStyle().mySizebox(),
-  //             Text('ระยะทาง    ${cartModels[0].distance} กม.'),
-  //           ],
-  //         ),
-  //       ],
-  //     );
+  Future<Null> orderThread() async {
+    DateTime dateTimenow = DateTime.now();
+    String datetime = DateFormat('yyyy-MM-dd HH:mm:ss').format(dateTimenow);
+    String shopid = cartModels[0].shopId;
+    String nameshop = cartModels[0].nameShop;
+    String distance = cartModels[0].distance;
+    String transport = cartModels[0].transport;
 
-  // Widget buildtransport() => Row(
-  //       mainAxisAlignment: MainAxisAlignment.end,
-  //       children: [
-  //         Row(
-  //           children: [
-  //             Icon(Icons.location_on_outlined),
-  //             MyStyle().mySizebox(),
-  //             Text('ค่าส่ง    ${cartModels[0].transport} บาท'),
-  //           ],
-  //         ),
-  //       ],
-  //     );
+    List<String> foodids = List();
+    List<String> namefoods = List();
+    List<String> prices = List();
+    List<String> amounts = List();
+    List<String> sums = List();
+    for (var model in cartModels) {
+      foodids.add(model.foodId);
+      namefoods.add(model.foodName);
+      prices.add(model.price);
+      amounts.add(model.amount);
+      sums.add(model.sum);
+    }
 
-  // Widget buildTotal() => Row(
-  //       mainAxisAlignment: MainAxisAlignment.end,
-  //       children: [
-  //         Row(
-  //           children: [
-  //             Text('ราคารวม    ${total.toString()} บาท'),
-  //           ],
-  //         ),
-  //       ],
-  //     );
+    String foodid = foodids.toString();
+    String namefood = namefoods.toString();
+    String price = prices.toString();
+    String amount = amounts.toString();
+    String sum = sums.toString();
+
+    print('วันที่ = $datetime');
+    print('Food id == $foodid');
+    print('namefood == $namefood');
+    print('price == $price');
+    print('amount == $amount');
+    print('sum == $sum');
+
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String userid = preferences.getString('User_id');
+    String username = preferences.getString('Name');
+
+    String url =
+        '${MyConstant().domain}/Sulaiman_food/add_order.php?isAdd=true&Order_datetime=$datetime&Shop_id=$shopid&Name_shop=$nameshop&Distance=$distance&Transport=$transport&Food_id=$foodid&Food_Name=$namefood&Price=$price&Amount=$amount&Sum=$sum&Rider_id=none&Status=Userorder&User_id=$userid&User_name=$username';
+    await Dio().get(url).then((value) {
+      if (value.toString() == 'true') {
+        notificationToShop(shopid);
+      } else {
+        normalDialog(context, 'สั่งอาหารล้มเหลว กรุณาลองใหม่อีกครั้ง');
+      }
+    });
+  }
+
+  Future<Null> clearAllmenuIncart() async {
+    await SQLiteHelper().deleteAllData().then((value) {
+      readSQLite();
+    });
+  }
+
+  Future<Null> notificationToShop(String shopid) async {
+    String urlFindToken =
+        '${MyConstant().domain}/Sulaiman_food/get_shoptoken.php?isAdd=true&Shop_id=$shopid';
+    await Dio().get(urlFindToken).then((value) {
+      var result = jsonDecode(value.data);
+      // print('Result ======>> $result');
+      for (var map in result) {
+        UserModel model = UserModel.fromJson(map);
+        String tokenShop = model.token;
+        print('Token ===>><<===== $tokenShop');
+        sendNotificationToShop(tokenShop);
+      }
+    });
+  }
+
+  Future<Null> sendNotificationToShop(String tokenShop) async {
+    String title = 'มีลูกค้าสั่งอาหาร';
+    String body = 'กรุณากดรับออร์เดอร์ด้วยคะ';
+    String urlsendToken =
+        '${MyConstant().domain}/Sulaiman_food/apiNotification.php?isAdd=true&token=$tokenShop&title=$title&body=$body';
+    await Dio().get(urlsendToken).then((value) {
+      // MyStyle().showToast(context, 'แจ้งเตือนไปยังร้านค้าเรียบร้อย');
+      // print('Value ===========>>> $value');
+      if (value.toString() == '\n\nsuccess') {
+        MyStyle().showToast(context, 'สั่งอาหารเรียบร้อย');
+        setState(() {
+          orderStatus = false;
+        });
+        clearAllmenuIncart();
+      }
+    });
+  }
+
+  Widget buildOrderButton() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        // ignore: deprecated_member_use
+        RaisedButton.icon(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5),
+          ),
+          onPressed: () {
+            _onLoading();
+          },
+          icon: Icon(Icons.fastfood),
+          label: Text(
+            'สั่งอาหาร',
+            style: TextStyle(
+              fontSize: 10.0,
+              color: Colors.black87,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+          color: Colors.blue.shade200,
+        ),
+      ],
+    );
+  }
+
+  // ignore: unused_element
+  void _onLoading() {
+    setState(() {
+      orderStatus = true;
+      new Future.delayed(new Duration(seconds: 3), orderThread);
+    });
+  }
+
+  Widget progress(BuildContext context) {
+    return Container(
+        child: new Stack(
+      children: <Widget>[
+        buildContent(),
+        Container(
+          alignment: AlignmentDirectional.center,
+          decoration: new BoxDecoration(
+            color: Colors.white70,
+          ),
+          child: new Container(
+            decoration: new BoxDecoration(
+                 color: Colors.grey.shade300,
+                borderRadius: new BorderRadius.circular(10.0)),
+            width: MediaQuery.of(context).size.width * 0.4,
+            height: MediaQuery.of(context).size.width * 0.3,
+            alignment: AlignmentDirectional.center,
+            child: new Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                new Center(
+                  child: new SizedBox(
+                    height: MediaQuery.of(context).size.width * 0.1,
+                    width: MediaQuery.of(context).size.width * 0.1,
+                    child: new CircularProgressIndicator(
+                      value: null,
+                      backgroundColor: Colors.white,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+                      strokeWidth: 7.0,
+                    ),
+                  ),
+                ),
+                new Container(
+                  margin: const EdgeInsets.only(top: 25.0),
+                  child: new Center(
+                    child: new Text(
+                      'กำลังสั่งอาหาร...',
+                      style: new TextStyle(
+                        fontSize: 18.0,
+                        color: Colors.black45,
+                        fontFamily: 'FC-Minimal-Regular',
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ));
+  }
 }

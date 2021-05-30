@@ -1,7 +1,12 @@
+import 'dart:async';
+import 'dart:io';
+import 'package:dio/dio.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sulaimanfood/utility/ProgressIndicator.dart';
+import 'package:sulaimanfood/utility/myConstant.dart';
 import 'package:sulaimanfood/utility/my_style.dart';
+
 import 'package:sulaimanfood/utility/signout_process.dart';
 import 'package:sulaimanfood/widget/shop/infomation_shop.dart';
 import 'package:sulaimanfood/widget/shop/list_menu_shop.dart';
@@ -16,11 +21,87 @@ class _MainShopState extends State<MainShop> {
   String nameUser;
   Widget currentWidget = ListMenuShop();
   Widget infoShop = InfomationShop();
+  Widget orderListShop = OrderListShop();
 
   @override
-  void initState() {
+  initState() {
     super.initState();
     findUser();
+    aboutNotification();
+  }
+
+  Future<Null> aboutNotification() async {
+    try {
+      FirebaseMessaging _messaging = FirebaseMessaging.instance;
+      String token = await _messaging.getToken();
+      print('token >>>>>>>>>>>> $token');
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      String userid = preferences.getString('User_id');
+      print('User id ==== $userid');
+
+      if (userid != null && userid.isNotEmpty) {
+        String url =
+            '${MyConstant().domain}/Sulaiman_food/edit_token.php?isAdd=true&Token=$token&userid=$userid';
+        await Dio().get(url).then((value) => print('อัพเดท Token เรียบร้อย'));
+      }
+    } catch (e) {}
+
+    if (Platform.isAndroid) {
+      print('Notiwork Android');
+      FirebaseMessaging messaging = FirebaseMessaging.instance;
+      NotificationSettings settings = await messaging.requestPermission(
+        alert: true,
+        announcement: false,
+        badge: true,
+        carPlay: false,
+        criticalAlert: false,
+        provisional: false,
+        sound: true,
+      );
+
+      if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+        print('ผู้ใช้ ได้อนุญาต');
+        FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+          String title = message.data['title'];
+          String notiMessage = message.data['body'];
+          print('Message data: ${message.data}');
+
+          if (message.notification != null) {
+            print('title ==== ${notiMessage.toString()}');
+            orderDialog(title, notiMessage);
+          }
+        });
+
+        FirebaseMessaging.onMessageOpenedApp
+            .listen((RemoteMessage message) async {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.reload();
+          String title = prefs.getString('title');
+          String notiMessage = prefs.getString('body');
+          if (notiMessage != null && notiMessage.isNotEmpty) {
+            // orderDialog(title, notiMessage);
+            setState(() {
+              currentWidget = OrderListShop();
+            });
+          }
+          await prefs.remove('body');
+          print('send $notiMessage');
+        });
+      } else if (settings.authorizationStatus ==
+          AuthorizationStatus.provisional) {
+        print('ผู้ใช้ ได้อนุญาตชั่วคราว');
+      } else {
+        print('ผู้ใช้ปฏิเสธหรือไม่ยอมรับการอนุญาต');
+      }
+    } else if (Platform.isIOS) {
+      print('Notiwork IOS');
+    } else {}
+  }
+
+  Future<Null> removenoti() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.reload();
+    await prefs.remove('title');
   }
 
   Future<Null> findUser() async {
@@ -34,8 +115,8 @@ class _MainShopState extends State<MainShop> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-       // title:
-      //      Text(nameUser == null ? 'Main Shop' : 'ยินดีต้อนรับคุณ$nameUser'),
+        // title:
+        //      Text(nameUser == null ? 'Main Shop' : 'ยินดีต้อนรับคุณ$nameUser'),
         actions: <Widget>[
           IconButton(
               icon: Icon(Icons.exit_to_app),
@@ -46,15 +127,89 @@ class _MainShopState extends State<MainShop> {
       ),
       drawer: showDrawer(),
       body: currentWidget,
-     
-    //   body: refresh(),
-     );
+
+      //   body: refresh(),
+    );
+  }
+
+  orderDialog(String title, String body) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AlertDialog(
+              title: Column(
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.notifications_active),
+                      MyStyle().mySizebox(),
+                      Text(title),
+                    ],
+                  ),
+                  Divider(
+                    color: Colors.black54,
+                  ),
+                ],
+              ),
+              content: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          body,
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                // ignore: deprecated_member_use
+                FlatButton(
+                  child: Text("เปิดดู"),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    setState(() {
+                      currentWidget = OrderListShop();
+                      removenoti();
+                    });
+                  },
+                ),
+                // ignore: deprecated_member_use
+                FlatButton(
+                  child: Text("ยกเลิก"),
+                  onPressed: () {
+                    // ใส่เงื่อนไขการกดยกเลิก
+                    setState(() {
+                      removenoti();
+                    });
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   // Center refresh() {
   //   return Center(
   //      child: RefreshIndicator(
-  //        onRefresh:()async{ 
+  //        onRefresh:()async{
   //            //my refresh method
   //        },
   //      child:CustomScrollView(
@@ -66,16 +221,16 @@ class _MainShopState extends State<MainShop> {
   //    );
   // }
 
-    Drawer showDrawer() => Drawer(
+  Drawer showDrawer() => Drawer(
         child: Stack(
           children: [
             Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-            showHeadDrawer(),
-            homeMenu(),
-            foodMenu(),
-            infomationMenu(),
+                showHeadDrawer(),
+                homeMenu(),
+                foodMenu(),
+                infomationMenu(),
               ],
             ),
             Column(
@@ -88,12 +243,11 @@ class _MainShopState extends State<MainShop> {
         ),
       );
 
-
   ListTile homeMenu() => ListTile(
         leading: Icon(Icons.home),
         title: Text(
           'รายการอาหารที่ลูกค้าสั่ง',
-          style: TextStyle(fontSize: 18.0),
+          style: TextStyle(fontSize: 16.0),
         ),
         subtitle: Text('รายการอาหารที่รอส่ง'),
         onTap: () {
@@ -108,13 +262,13 @@ class _MainShopState extends State<MainShop> {
         leading: Icon(Icons.fastfood),
         title: Text(
           'เมนูอาหาร',
-          style: TextStyle(fontSize: 18.0),
+          style: TextStyle(fontSize: 16.0),
         ),
         subtitle: Text('เพิ่ม แก้ไขเมนูอาหาร'),
         onTap: () {
           setState(() {
             currentWidget = ListMenuShop();
-           // currentWidget = PercentIndicatorDemo();
+            // currentWidget = PercentIndicatorDemo();
           });
           Navigator.pop(context);
         },
@@ -124,7 +278,7 @@ class _MainShopState extends State<MainShop> {
         leading: Icon(Icons.info),
         title: Text(
           'รายละเอียดร้านอาหาร',
-          style: TextStyle(fontSize: 18.0),
+          style: TextStyle(fontSize: 16.0),
         ),
         subtitle: Text('เพิ่ม แก้ไขรายละเอียดร้าน'),
         onTap: () {

@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sulaimanfood/model/infomationShop_model.dart';
 import 'package:sulaimanfood/model/user_model.dart';
@@ -11,6 +13,7 @@ import 'package:sulaimanfood/screens/shop/add_info_shop.dart';
 import 'package:sulaimanfood/screens/shop/edit_info_shop.dart';
 import 'package:sulaimanfood/utility/myConstant.dart';
 import 'package:sulaimanfood/utility/my_style.dart';
+import 'package:sulaimanfood/utility/normal_dialog.dart';
 
 class InfomationShop extends StatefulWidget {
   @override
@@ -18,68 +21,90 @@ class InfomationShop extends StatefulWidget {
 }
 
 String nameShop, address, phone, urlImage, shopId;
+double lat, lng;
 
 class _InfomationShopState extends State<InfomationShop> {
   UserModel userModel;
   InfomationShopModel infomationShop;
+  bool loadingStatus = true;
+  bool statusData = true;
   @override
   void initState() {
     super.initState();
     readCurrentData();
+    findLatLng();
 
     // readDataInfomation();
+  }
+
+  void _onLoading() {
+    Timer(
+      Duration(seconds: 20),
+      () {
+        if (loadingStatus == true) {
+          setState(() {
+            loadingStatus = false;
+            normalDialog(context, 'เชื่อมต่อล้มเหลว');
+          });
+        } else {}
+      },
+    );
+  }
+
+  //ดึงตำ่แหน่งที่ตั้งปัจจุบัน
+  Future<Null> findLatLng() async {
+    LocationData locationData = await findLocationData();
+    setState(() {
+      lat = locationData.latitude;
+      lng = locationData.longitude;
+    });
+    print('Lat = $lat,  Lng = $lng');
+  }
+
+//โฟกัสตำแหน่งที่ตั้งปัจบันเสมอ
+  Future<LocationData> findLocationData() async {
+    Location location = Location();
+
+    try {
+      return location.getLocation;
+    } catch (e) {
+      return null;
+    }
   }
 
   Future<Null> readCurrentData() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String userid = preferences.getString('User_id');
-
+    _onLoading();
     String url =
         '${MyConstant().domain}/Sulaiman_food/get_infomation.php?isAdd=true&id=$userid';
     Response response = await Dio().get(url);
     //  print('response ==> $response');
+    if (response.data != null) {
+      var result = json.decode(response.data);
+      print('response ==> $result');
 
-    var result = json.decode(response.data);
-    // print('response ==> $result');
-
-    for (var map in result) {
-      setState(() {
-        infomationShop = InfomationShopModel.fromJson(map);
-        shopId = infomationShop.shopId;
-        nameShop = infomationShop.nameShop;
-        address = infomationShop.addressShop;
-        phone = infomationShop.phoneShop;
-        urlImage = infomationShop.urlImage;
-      });
-      addSharedShopid();
+      for (var map in result) {
+        setState(() {
+          infomationShop = InfomationShopModel.fromJson(map);
+          shopId = infomationShop.shopId;
+          nameShop = infomationShop.nameShop;
+          address = infomationShop.addressShop;
+          phone = infomationShop.phoneShop;
+          urlImage = infomationShop.urlImage;
+          loadingStatus = false;
+          if (nameShop != null) {
+            statusData = false;
+          } else {
+            statusData = true;
+          }
+        });
+        addSharedShopid();
+      }
+    } else {
+      _onLoading();
     }
   }
-
-  //   Future<Null> readDataInfomation() async {
-  //   SharedPreferences preferences = await SharedPreferences.getInstance();
-  //   String userid = preferences.getString('User_id');
-
-  //   String url =
-  //       '${MyConstant().domain}/Sulaiman_food/get_infomation.php?isAdd=true&id=$userid';
-  //   await Dio().get(url).then((value) {
-  //     var result = json.decode(value.data);
-  //     print('value = $result');
-  //     for (var map in result) {
-  //       setState(() {
-  //       infomationShop = InfomationShopModel.fromJson(map);
-  //       nameShop = infomationShop.nameShop;
-  //       address = infomationShop.addressShop;
-  //       phone = infomationShop.phoneShop;
-  //       urlImage = infomationShop.urlImage;
-  //       });
-  //     //  print('nameShop = ${infomationShop.nameShop}');
-  //       addSharedSopid();
-
-  //       if (infomationShop.nameShop.isEmpty) {
-  //       } else {}
-  //     }
-  //   });
-  // }
 
   Future<Null> addSharedShopid() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -89,16 +114,16 @@ class _InfomationShopState extends State<InfomationShop> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.lightBlueAccent,
+      // color: Colors.lightBlueAccent,
       child: Stack(
         children: [
           //   showdata(context),
 
-          infomationShop == null
-              ? MyStyle().showProgress2('กรุณารอสักครู่...')
-              : shopId == 'null' || shopId.isEmpty
-                  ? showNodata(context)
-                  : showifoShop(),
+          loadingStatus
+              ? progress(context)
+              : statusData
+                  ? showNodata()
+                  : showinfoShop(),
           //refresh(),
           addAndEditButton(),
         ],
@@ -106,66 +131,126 @@ class _InfomationShopState extends State<InfomationShop> {
     );
   }
 
-  buildPrint() => print(userModel.shopId);
+  Widget progress(BuildContext context) {
+    return Container(
+        child: new Stack(
+      children: <Widget>[
+        Container(
+          alignment: AlignmentDirectional.center,
+          decoration: new BoxDecoration(
+            color: Colors.white,
+          ),
+          child: new Container(
+            decoration: new BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: new BorderRadius.circular(10.0)),
+            width: MediaQuery.of(context).size.width * 0.4,
+            height: MediaQuery.of(context).size.width * 0.3,
+            alignment: AlignmentDirectional.center,
+            child: new Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                new Center(
+                  child: new SizedBox(
+                    height: MediaQuery.of(context).size.width * 0.1,
+                    width: MediaQuery.of(context).size.width * 0.1,
+                    child: new CircularProgressIndicator(
+                      value: null,
+                      backgroundColor: Colors.white,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+                      strokeWidth: 7.0,
+                    ),
+                  ),
+                ),
+                new Container(
+                  margin: const EdgeInsets.only(top: 25.0),
+                  child: new Center(
+                    child: new Text(
+                      'ดาวน์โหลด...',
+                      style: new TextStyle(
+                        fontSize: 18.0,
+                        color: Colors.black45,
+                        fontFamily: 'FC-Minimal-Regular',
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ));
+  }
 
-  // Center refresh() {
-  //   return Center(
-  //     child: RefreshIndicator(
-  //         onRefresh: () async {
-  //           //my refresh method
-  //         },
-  //         child: CustomScrollView(
-  //             slivers: [SliverFillRemaining(child: InfomationShop())])),
-  //   );
-  // }
-
-  Widget showifoShop() => ListView(
+  Widget showinfoShop() => ListView(
         children: [
           MyStyle().mySizebox(),
           MyStyle().mySizebox(),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              MyStyle().showTitle('รายละเอียดร้าน'),
+              Text(
+                'รายละเอียดร้าน',
+                style: TextStyle(
+                  fontSize: 24.0,
+                  color: Colors.black45,
+                  fontFamily: 'FC-Minimal-Regular',
+                ),
+              ),
             ],
           ),
           MyStyle().mySizebox(),
           showImage(),
           MyStyle().mySizebox(),
           Container(
-            margin: EdgeInsetsDirectional.only(start: 10.0, end: 10.0),
+            margin: EdgeInsetsDirectional.only(start: 30.0, end: 30.0),
             child: MyStyle().showTitle_2('ร้าน ${infomationShop.nameShop}'),
           ),
           Container(
             margin: EdgeInsetsDirectional.only(
-              start: 10.0,
-              end: 10.0,
+              start: 30.0,
+              end: 30.0,
             ),
             child: Row(
               children: [
                 MyStyle().showTitle_2('โทร. '),
                 Container(
-                    margin: EdgeInsetsDirectional.only(top: 7.0),
-                    child: Text(phone)),
+                    //  margin: EdgeInsetsDirectional.only(top: 7.0),
+                    child: Text(
+                  phone,
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    color: Colors.black45,
+                    fontFamily: 'FC-Minimal-Regular',
+                  ),
+                )),
               ],
             ),
           ),
           Container(
-            margin: EdgeInsetsDirectional.only(start: 10.0, end: 10.0),
+            margin: EdgeInsetsDirectional.only(start: 30.0, end: 30.0),
             child: Row(
               children: [
-                MyStyle().showTitleH2('ที่อยู่'),
+                MyStyle().showTitle_2('ที่อยู่ :'),
               ],
             ),
           ),
           Container(
-            margin: EdgeInsetsDirectional.only(start: 10.0, end: 10.0),
+            margin: EdgeInsetsDirectional.only(start: 30.0, end: 30.0),
             child: Row(
               children: [
                 Expanded(
+                  flex: 2,
                   child: Text(
                     infomationShop.addressShop,
+                    style: MyStyle().text2,
                   ),
+                ),
+                Expanded(
+                  flex: 3,
+                  child: Text(''),
                 ),
               ],
             ),
@@ -173,21 +258,30 @@ class _InfomationShopState extends State<InfomationShop> {
           MyStyle().mySizebox(),
           MyStyle().mySizebox(),
           showMap(),
+          MyStyle().mySizebox(),
+          MyStyle().mySizebox(),
+          MyStyle().mySizebox(),
+          MyStyle().mySizebox(),
+          MyStyle().mySizebox(),
+          MyStyle().mySizebox(),
         ],
       );
 
   Container showImage() {
     return Container(
-      margin: EdgeInsetsDirectional.only(start: 10.0, end: 10),
-      // width: 380.00,
-      // height: 300.00,
-      child: Card(
+      padding: EdgeInsetsDirectional.only(start: 30.0, end: 30.0, bottom: 10),
+      width: MediaQuery.of(context).size.width * 0.9,
+      height: MediaQuery.of(context).size.width * 0.6,
+      child: Container(
+          child: Card(
         semanticContainer: true,
         clipBehavior: Clip.antiAliasWithSaveLayer,
         child: CachedNetworkImage(
           imageUrl: '${MyConstant().domain}$urlImage',
           progressIndicatorBuilder: (context, url, downloadProgress) =>
               MyStyle().showProgress(),
+          // CircularProgressIndicator(
+          //     ),
           errorWidget: (context, url, error) => Icon(Icons.error),
           fit: BoxFit.cover,
         ),
@@ -195,8 +289,8 @@ class _InfomationShopState extends State<InfomationShop> {
           borderRadius: BorderRadius.circular(20.0),
         ),
         elevation: 5,
-        margin: EdgeInsets.all(5),
-      ),
+        margin: EdgeInsets.all(0),
+      )),
     );
   }
 
@@ -224,7 +318,7 @@ class _InfomationShopState extends State<InfomationShop> {
     CameraPosition position = CameraPosition(target: latLng, zoom: 16.0);
 
     return Container(
-      padding: EdgeInsets.all(10.0),
+      padding: EdgeInsets.only(left: 30, right: 30),
       height: 300.0,
       child: Card(
         semanticContainer: true,
@@ -244,24 +338,9 @@ class _InfomationShopState extends State<InfomationShop> {
     );
   }
 
-  Widget showNodata(BuildContext context) => Center(
-        child: Text(
-          'ยังไม่มีข้อมูลร้านค้าของคุณ',
-          style: TextStyle(fontSize: 20.0),
-        ),
+  showNodata() => Center(
+        child: MyStyle().showtext_2('ยังไม่มีข้อมูลร้านค้าของคุณ'),
       );
-
-  // Widget showdata(BuildContext context) {
-  //   if (infomationShop == null) {
-  //     MyStyle().showProgress();
-  //     if (infomationShop.nameShop == null || infomationShop.nameShop.isEmpty) {
-  //       //  showNodata(context);
-  //       MyStyle().titleCenter(context, 'ยังไม่มีข้อมูลร้านค้าของคุณ');
-  //     } else {
-  //       Text('มีข้อมูลอยู่แล้ว');
-  //     }
-  //   } else {}
-  // }
 
   Row addAndEditButton() {
     return Row(
@@ -285,8 +364,12 @@ class _InfomationShopState extends State<InfomationShop> {
   }
 
   void routeAddInfomation() {
-    Widget widget =
-        shopId == 'null' || shopId.isEmpty ? AddInfoShop() : EditInfoShop();
+    Widget widget = shopId == 'null'
+        ? AddInfoShop()
+        : EditInfoShop(
+            lat: lat,
+            lng: lng,
+          );
 
     MaterialPageRoute route = MaterialPageRoute(
       builder: (value) => widget,

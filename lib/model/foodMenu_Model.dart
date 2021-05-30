@@ -7,6 +7,9 @@ class FoodMenuModel {
   String shopId;
   String shopName;
   String userId;
+  String latitude;
+  String longitude;
+  String urlImage;
 
   FoodMenuModel(
       {this.foodId,
@@ -16,7 +19,11 @@ class FoodMenuModel {
       this.imagePath,
       this.shopId,
       this.shopName,
-      this.userId});
+      this.userId,
+      this.latitude,
+      this.longitude,
+      this.urlImage,
+      });
 
   FoodMenuModel.fromJson(Map<String, dynamic> json) {
     foodId = json['Food_id'];
@@ -27,6 +34,9 @@ class FoodMenuModel {
     shopId = json['Shop_id'];
     shopName = json['Name_shop'];
     userId = json['User_id'];
+    latitude = json['latitude'];
+    longitude = json['longitude'];
+    urlImage = json['Url_image'];
   }
 
   Map<String, dynamic> toJson() {
@@ -39,6 +49,9 @@ class FoodMenuModel {
     data['Shop_id'] = this.shopId;
     data['Name_shop'] = this.shopName;
     data['User_id'] = this.userId;
+    data['latitude'] = this.latitude;
+    data['longitude'] = this.longitude;
+    data['Url_image'] = this.urlImage;
     return data;
   }
 }

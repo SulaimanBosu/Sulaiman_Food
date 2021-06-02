@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -20,49 +21,123 @@ class SignIn extends StatefulWidget {
 
 class _SignInState extends State<SignIn> {
   String user, password;
+  bool loginStatus = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: MyStyle().appbarColor,
         title: Text('Sign In'),
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: RadialGradient(
-            colors: <Color>[Colors.white, MyStyle().primaryColor],
-            center: Alignment(0, -0.3),
-            radius: 1.0,
-          ),
+      body: loginStatus == true ? progress(context) : buildContent(),
+    );
+  }
+
+  Container buildContent() {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: RadialGradient(
+          colors: <Color>[Colors.white, MyStyle().redColor],
+          // center: Alignment(0, -0.3),
+          radius: 1.0,
         ),
-        child: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                MyStyle().showlogo(),
-                MyStyle().mySizebox(),
-                MyStyle().showTitle('Sulaiman Food'),
-                MyStyle().mySizebox(),
-                userForm(),
-                MyStyle().mySizebox(),
-                passwordForm(),
-                MyStyle().mySizebox(),
-                loginButton(),
-                MyStyle().mySizebox(),
-                MyStyle().mySizebox(),
-                MyStyle().mySizebox(),
-              ],
-            ),
+      ),
+      child: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              MyStyle().showlogo(),
+              MyStyle().mySizebox(),
+              MyStyle().showTitle('Sulaiman Food'),
+              MyStyle().mySizebox(),
+              userForm(),
+              MyStyle().mySizebox(),
+              passwordForm(),
+              MyStyle().mySizebox(),
+              loginButton(),
+              MyStyle().mySizebox(),
+              MyStyle().mySizebox(),
+              MyStyle().mySizebox(),
+            ],
           ),
         ),
       ),
     );
   }
 
+  void _onLoading() {
+    Timer(
+      Duration(seconds: 20),
+      () {
+        if (loginStatus == true) {
+          setState(() {
+            loginStatus = false;
+            normalDialog(context, 'การเชื่อมต่อล้มเหลว');
+          });
+        } else {}
+      },
+    );
+  }
+
+  Widget progress(BuildContext context) {
+    return Container(
+        child: new Stack(
+      children: <Widget>[
+        buildContent(),
+        Container(
+          alignment: AlignmentDirectional.center,
+          decoration: new BoxDecoration(
+            color: Colors.white24,
+          ),
+          child: new Container(
+            decoration: new BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: new BorderRadius.circular(10.0)),
+            width: MediaQuery.of(context).size.width * 0.4,
+            height: MediaQuery.of(context).size.width * 0.3,
+            alignment: AlignmentDirectional.center,
+            child: new Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                new Center(
+                  child: new SizedBox(
+                    height: MediaQuery.of(context).size.width * 0.1,
+                    width: MediaQuery.of(context).size.width * 0.1,
+                    child: new CircularProgressIndicator(
+                      value: null,
+                      backgroundColor: Colors.white,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+                      strokeWidth: 7.0,
+                    ),
+                  ),
+                ),
+                new Container(
+                  margin: const EdgeInsets.only(top: 25.0),
+                  child: new Center(
+                    child: new Text(
+                      'เข้าสู่ระบบ...',
+                      style: new TextStyle(
+                        fontSize: 18.0,
+                        color: Colors.black45,
+                        fontFamily: 'FC-Minimal-Regular',
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ));
+  }
+
   Widget loginButton() => Container(
         width: 300.0,
         child: RaisedButton(
-          color: MyStyle().darkColor,
+          color: Colors.black26,
           onPressed: () {
             MyStyle().showProgress2('กรุณารอสักครู่...');
             if (user == null ||
@@ -71,7 +146,10 @@ class _SignInState extends State<SignIn> {
                 password.isEmpty) {
               normalDialog(context, 'กรุณากรอกข้อมูลให้ครบค่ะ');
             } else {
-              MyStyle().showProgress2('กรุณารอสักครู่...');
+              setState(() {
+                loginStatus = true;
+              });
+              _onLoading();
               checkAuthen();
             }
           },
@@ -102,17 +180,29 @@ class _SignInState extends State<SignIn> {
             } else if (chooseType == 'Rider') {
               routeToService(MainRider(), userModel);
             } else {
+              setState(() {
+                loginStatus = false;
+              });
               normalDialog(context, 'ไม่พบประเภพของสมาชิก กรุณาลองอีกครั้งค่ะ');
             }
           } else {
+            setState(() {
+              loginStatus = false;
+            });
             normalDialog(context, 'รหัสผ่านผิด กรุณาลองใหม่');
           }
         }
       } else {
-        normalDialog(context, 'ไม่พบ User Name');
+        setState(() {
+          loginStatus = false;
+        });
+        normalDialog(context, 'ชื่อเข้าใช้ไม่ถูกต้องคะ');
       }
     } catch (e) {
-      normalDialog(context, 'เชื่อมต่อเซอร์เวอร์ล้มเหลว $e');
+      setState(() {
+        loginStatus = false;
+      });
+      normalDialog(context, 'เชื่อมต่อเซอร์เวอร์ล้มเหลว');
     }
   }
 
@@ -134,7 +224,12 @@ class _SignInState extends State<SignIn> {
     if (userModel.userId != null && userModel.userId.isNotEmpty) {
       String url =
           '${MyConstant().domain}/Sulaiman_food/edit_token.php?isAdd=true&Token=$token&userid=${userModel.userId}';
-      await Dio().get(url).then((value) => print('อัพเดท Token เรียบร้อย'));
+      await Dio().get(url).then((value) {
+        print('อัพเดท Token เรียบร้อย');
+        setState(() {
+          loginStatus = false;
+        });
+      });
     }
 
     if (userModel.shopId == null || userModel.shopId.isEmpty) {
@@ -151,42 +246,63 @@ class _SignInState extends State<SignIn> {
     }
   }
 
-  Widget userForm() => Container(
-        width: 300.0,
-        child: TextField(
-          onChanged: (value) => user = value.trim(),
-          decoration: InputDecoration(
-            prefixIcon: Icon(
-              Icons.account_box,
-              color: MyStyle().darkColor,
+  Widget userForm() => Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 300.0,
+            child: TextField(
+              onChanged: (value) => user = value.trim(),
+              decoration: InputDecoration(
+                prefixIcon: Icon(
+                  Icons.account_box,
+                  color: Colors.black54,
+                ),
+                labelStyle: TextStyle(
+                  fontSize: 22.0,
+                  // fontWeight: FontWeight.bold,
+                  color: Colors.black54,
+                  // fontStyle: FontStyle.italic,
+                  fontFamily: 'FC-Minimal-Regular',
+                ),
+                labelText: 'User : ',
+                enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black54)),
+                focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.red)),
+              ),
             ),
-            labelStyle: TextStyle(color: MyStyle().darkColor),
-            labelText: 'User : ',
-            enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: MyStyle().darkColor)),
-            focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: MyStyle().primaryColor)),
           ),
-        ),
+        ],
       );
 
-  Widget passwordForm() => Container(
-        width: 300.0,
-        child: TextField(
-          onChanged: (value) => password = value.trim(),
-          obscureText: true,
-          decoration: InputDecoration(
-            prefixIcon: Icon(
-              Icons.lock,
-              color: MyStyle().darkColor,
+  Widget passwordForm() => Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 300.0,
+            child: TextField(
+              onChanged: (value) => password = value.trim(),
+              decoration: InputDecoration(
+                prefixIcon: Icon(
+                  Icons.lock,
+                  color: Colors.black54,
+                ),
+                labelStyle: TextStyle(
+                  fontSize: 22.0,
+                  // fontWeight: FontWeight.bold,
+                  color: Colors.black54,
+                  // fontStyle: FontStyle.italic,
+                  fontFamily: 'FC-Minimal-Regular',
+                ),
+                labelText: 'Password : ',
+                enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black54)),
+                focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.red)),
+              ),
             ),
-            labelStyle: TextStyle(color: MyStyle().darkColor),
-            labelText: 'Password : ',
-            enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: MyStyle().darkColor)),
-            focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: MyStyle().primaryColor)),
           ),
-        ),
+        ],
       );
 }

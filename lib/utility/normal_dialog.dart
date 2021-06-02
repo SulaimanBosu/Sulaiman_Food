@@ -26,6 +26,7 @@ Future<void> normalDialog(BuildContext context, String message) async {
           children: [
             Text(
               message,
+              overflow: TextOverflow.ellipsis,
               style: MyStyle().text2,
             ),
           ],

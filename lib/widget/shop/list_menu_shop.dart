@@ -51,7 +51,7 @@ class _ListMenuShopState extends State<ListMenuShop> {
         if (loadStatus == true) {
           setState(() {
             loadStatus = false;
-            normalDialog(context, 'เชื่อมต่อล้มเหลว');
+            normalDialog(context, 'การเชื่อมต่อล้มเหลว');
           });
         } else {}
       },
@@ -101,7 +101,7 @@ class _ListMenuShopState extends State<ListMenuShop> {
       child: Stack(
         children: [
           loadStatus
-              ? progress(context)
+              ? MyStyle().progress(context)
               : status
                   ? noDATA()
                   : showContent(),

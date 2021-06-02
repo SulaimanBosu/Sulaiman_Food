@@ -492,9 +492,13 @@ class _MenuInShopState extends State<MenuInShop> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.fastfood),
+              Icon(
+                Icons.fastfood,
+                color: Colors.black45,
+                size: 18,
+              ),
               MyStyle().mySizebox(),
-              Text(foodModels[index].foodName),
+              MyStyle().showtext_2(foodModels[index].foodName),
             ],
           ),
           children: [
@@ -524,7 +528,7 @@ class _MenuInShopState extends State<MenuInShop> {
                     fit: BoxFit.cover,
                   ),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
+                    borderRadius: BorderRadius.circular(10.0),
                   ),
                   elevation: 5,
                   margin: EdgeInsets.all(10),
@@ -536,14 +540,16 @@ class _MenuInShopState extends State<MenuInShop> {
               children: [
                 IconButton(
                     icon: Icon(
-                      Icons.add_circle_outline,
+                      Icons.remove_circle_outline,
                       size: 36,
-                      color: Colors.green,
+                      color: Colors.red,
                     ),
                     onPressed: () {
-                      setState(() {
-                        amount++;
-                      });
+                      if (amount > 1) {
+                        setState(() {
+                          amount--;
+                        });
+                      }
                     }),
                 MyStyle().mySizebox(),
                 MyStyle().mySizebox(),
@@ -560,49 +566,54 @@ class _MenuInShopState extends State<MenuInShop> {
                 MyStyle().mySizebox(),
                 IconButton(
                     icon: Icon(
-                      Icons.remove_circle_outline,
+                      Icons.add_circle_outline,
                       size: 36,
-                      color: Colors.red,
+                      color: Colors.green,
                     ),
                     onPressed: () {
-                      if (amount > 1) {
-                        setState(() {
-                          amount--;
-                        });
-                      }
-                    })
+                      setState(() {
+                        amount++;
+                      });
+                    }),
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 // ignore: deprecated_member_use
-                RaisedButton(
+                RaisedButton.icon(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(
+                    Icons.cancel_outlined,
+                    color: Colors.red,
+                  ),
+                  label: MyStyle().showtext_2('ยกเลิก'),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ), // ignore: deprecated_member_use
+                RaisedButton.icon(
                   onPressed: () {
                     Navigator.pop(context);
                     //  print('Amount == $amount');
                     addOrderToCart(index);
                   },
-                  child: Text('สั่งซื้อ'),
+                  icon: Icon(
+                    Icons.fastfood_outlined,
+                    color: Colors.green,
+                  ),
+                  label: MyStyle().showtext_2('ใส่ตะกร้า'),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                 ),
-                // ignore: deprecated_member_use
-                RaisedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text('ยกเลิก'),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                )
               ],
             )
           ],
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30.0),
+            borderRadius: BorderRadius.circular(15.0),
           ),
         ),
       ),
@@ -706,7 +717,7 @@ class _MenuInShopState extends State<MenuInShop> {
     }
   }
 
-    Widget progress(BuildContext context) {
+  Widget progress(BuildContext context) {
     return Container(
         child: new Stack(
       children: <Widget>[

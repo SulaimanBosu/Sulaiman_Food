@@ -5,6 +5,8 @@ import 'package:toast/toast.dart';
 class MyStyle {
   Color darkColor = Colors.blue.shade900;
   Color primaryColor = Colors.green.shade400;
+  Color redColor = Colors.red;
+  Color appbarColor = Colors.red;
 
   Widget iconShowCart(BuildContext context) {
     return IconButton(
@@ -133,19 +135,22 @@ class MyStyle {
   Text showTitle(String title) => Text(
         title,
         style: TextStyle(
-          fontSize: 28.0,
-          color: Colors.blue.shade900,
-          fontWeight: FontWeight.bold,
-        ),
+    fontSize: 32.0,
+    // fontWeight: FontWeight.bold,
+    color: Colors.black54,
+    // fontStyle: FontStyle.italic,
+    fontFamily: 'FC-Minimal-Regular',
+  ),
       );
 
   Text showTitleH2(String title) => Text(
         title,
         style: TextStyle(
-          fontSize: 18.0,
-          color: Colors.blue.shade900,
-          fontWeight: FontWeight.bold,
-        ),
+                  fontSize: 24.0,
+                 // fontWeight: FontWeight.bold,
+                  color: Colors.black45,
+                  fontFamily: 'FC-Minimal-Regular',
+                ),
       );
 
   Text showTitleH2white(String title) => Text(
@@ -160,10 +165,12 @@ class MyStyle {
   Text showTitleCart(String title) => Text(
         title,
         style: TextStyle(
-          fontSize: 10.0,
-          color: Colors.black87,
-          fontWeight: FontWeight.bold,
-        ),
+    fontSize: 18.0,
+    fontWeight: FontWeight.bold,
+    color: Colors.black45,
+    // fontStyle: FontStyle.italic,
+    fontFamily: 'FC-Minimal-Regular',
+  ),
       );
 
   Text showTitleH3(String title) => Text(

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:sulaimanfood/screens/signin.dart';
@@ -12,46 +14,52 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
   String chooseType, name, user, password;
+  bool registerStatus = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: MyStyle().appbarColor,
         title: Text('Sign Up'),
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: RadialGradient(
-            colors: <Color>[Colors.white, MyStyle().primaryColor],
-            center: Alignment(0, -0.3),
-            radius: 1.0,
-          ),
+      body: registerStatus == true ? progress(context) : buildContent(),
+    );
+  }
+
+  Container buildContent() {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: RadialGradient(
+          colors: <Color>[Colors.white, MyStyle().redColor],
+          // center: Alignment(0, -0.3),
+          radius: 1.0,
         ),
-        child: ListView(
-          padding: EdgeInsets.all(10.0),
-          children: <Widget>[
-            myLogo(),
-            MyStyle().mySizebox(),
-            showAppName(),
-            MyStyle().mySizebox(),
-            nameForm(),
-            MyStyle().mySizebox(),
-            userForm(),
-            MyStyle().mySizebox(),
-            passwordForm(),
-            MyStyle().mySizebox(),
-            Container(
-                margin: EdgeInsets.only(left: 20.0, right: 20.0),
-                child: MyStyle().showTitleH2('ประเภทสมาชิก : ')),
-            MyStyle().mySizebox(),
-            userRadio(),
-            shopRadio(),
-            riderRadio(),
-            MyStyle().mySizebox(),
-            registerButton(),
-            MyStyle().mySizebox(),
-          ],
-        ),
+      ),
+      child: ListView(
+        padding: EdgeInsets.all(10.0),
+        children: <Widget>[
+          myLogo(),
+          MyStyle().mySizebox(),
+          showAppName(),
+          MyStyle().mySizebox(),
+          nameForm(),
+          MyStyle().mySizebox(),
+          userForm(),
+          MyStyle().mySizebox(),
+          passwordForm(),
+          MyStyle().mySizebox(),
+          Container(
+              margin: EdgeInsets.only(left: 20.0, right: 20.0),
+              child: MyStyle().showTitleH2('ประเภทสมาชิก : ')),
+          MyStyle().mySizebox(),
+          userRadio(),
+          shopRadio(),
+          riderRadio(),
+          MyStyle().mySizebox(),
+          registerButton(),
+          MyStyle().mySizebox(),
+        ],
       ),
     );
   }
@@ -60,9 +68,8 @@ class _SignUpState extends State<SignUp> {
         margin: EdgeInsets.only(left: 20.0, right: 20.0),
         width: 300.0,
         child: RaisedButton(
-          color: MyStyle().darkColor,
+          color: Colors.black26,
           onPressed: () {
-            MyStyle().showProgress2('กรุณารอสักครู่...');
             // print('name = $name, user = $user, password = $password, chooseType = $chooseType');
             if (name == null ||
                 name.isEmpty ||
@@ -75,6 +82,10 @@ class _SignUpState extends State<SignUp> {
             } else if (chooseType == null) {
               normalDialog(context, 'โปรดเลือกประเภทสมาชิก');
             } else {
+              setState(() {
+                registerStatus = true;
+              });
+              _onLoading();
               checkUser();
               //registerThread();
             }
@@ -85,6 +96,120 @@ class _SignUpState extends State<SignUp> {
           ),
         ),
       );
+
+  Future<void> registerlDialog(BuildContext context) async {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Column(
+          children: [
+            Row(children: [
+              Icon(
+                Icons.notifications_active,
+                color: Colors.black54,
+              ),
+              MyStyle().mySizebox(),
+              MyStyle().showTitle_2('Register'),
+            ]),
+            Divider(
+              color: Colors.black54,
+            ),
+          ],
+        ),
+        content: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            MyStyle().showtext_2('สมัครสมาชิกเรียบร้อย'),
+          ],
+        ),
+        actions: <Widget>[
+          // ignore: deprecated_member_use
+          FlatButton(
+            child: Text("ตกลง"),
+            onPressed: () {
+              
+              Navigator.pop(context);
+              routeToSignIn(SignIn());
+            },
+          ),
+          // ignore: deprecated_member_use
+        ],
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+      );
+    },
+  );
+}
+
+  Widget progress(BuildContext context) {
+    return Container(
+        child: new Stack(
+      children: <Widget>[
+        buildContent(),
+        Container(
+          alignment: AlignmentDirectional.center,
+          decoration: new BoxDecoration(
+            color: Colors.white24,
+          ),
+          child: new Container(
+            decoration: new BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: new BorderRadius.circular(10.0)),
+            width: MediaQuery.of(context).size.width * 0.4,
+            height: MediaQuery.of(context).size.width * 0.3,
+            alignment: AlignmentDirectional.center,
+            child: new Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                new Center(
+                  child: new SizedBox(
+                    height: MediaQuery.of(context).size.width * 0.1,
+                    width: MediaQuery.of(context).size.width * 0.1,
+                    child: new CircularProgressIndicator(
+                      value: null,
+                      backgroundColor: Colors.white,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+                      strokeWidth: 7.0,
+                    ),
+                  ),
+                ),
+                new Container(
+                  margin: const EdgeInsets.only(top: 25.0),
+                  child: new Center(
+                    child: new Text(
+                      'กำลังสมัครสมาชิก...',
+                      style: new TextStyle(
+                        fontSize: 18.0,
+                        color: Colors.black45,
+                        fontFamily: 'FC-Minimal-Regular',
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ));
+  }
+
+  void _onLoading() {
+    Timer(
+      Duration(seconds: 20),
+      () {
+        if (registerStatus == true) {
+          setState(() {
+            registerStatus = false;
+            normalDialog(context, 'การเชื่อมต่อล้มเหลว');
+          });
+        } else {}
+      },
+    );
+  }
 
   Future<Null> checkUser() async {
     String url =
@@ -97,7 +222,10 @@ class _SignUpState extends State<SignUp> {
       if (response.toString() == 'null') {
         registerThread();
       } else {
-        normalDialog(context, '$user มีอยู่ในระบบแล้วค่ะ');
+        setState(() {
+          registerStatus = false;
+        });
+        normalDialog(context, '$user มีอยู่ในระบบแล้วคะ');
       }
     } catch (e) {
       normalDialog(context, e);
@@ -114,7 +242,11 @@ class _SignUpState extends State<SignUp> {
 
       if (response.toString() == 'true') {
         // Navigator.pop(context);
-        routeToSignIn(SignIn());
+        setState(() {
+          registerStatus = false;
+        });
+        registerlDialog(context);
+        
       } else {
         normalDialog(context, 'ล้มเหลว กรุณาลองใหม่อีกครั้งค่ะ');
       }
@@ -149,7 +281,13 @@ class _SignUpState extends State<SignUp> {
                 ),
                 Text(
                   'ผู้สั่งอาหาร',
-                  style: TextStyle(color: MyStyle().darkColor),
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    // fontWeight: FontWeight.bold,
+                    color: Colors.black54,
+                    // fontStyle: FontStyle.italic,
+                    fontFamily: 'FC-Minimal-Regular',
+                  ),
                 )
               ],
             ),
@@ -176,7 +314,13 @@ class _SignUpState extends State<SignUp> {
                 ),
                 Text(
                   'เจ้าของร้านอาหาร',
-                  style: TextStyle(color: MyStyle().darkColor),
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    // fontWeight: FontWeight.bold,
+                    color: Colors.black54,
+                    // fontStyle: FontStyle.italic,
+                    fontFamily: 'FC-Minimal-Regular',
+                  ),
                 )
               ],
             ),
@@ -203,7 +347,13 @@ class _SignUpState extends State<SignUp> {
                 ),
                 Text(
                   'ผู้ส่งอาหาร',
-                  style: TextStyle(color: MyStyle().darkColor),
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    // fontWeight: FontWeight.bold,
+                    color: Colors.black54,
+                    // fontStyle: FontStyle.italic,
+                    fontFamily: 'FC-Minimal-Regular',
+                  ),
                 )
               ],
             ),
@@ -221,14 +371,20 @@ class _SignUpState extends State<SignUp> {
               decoration: InputDecoration(
                 prefixIcon: Icon(
                   Icons.face,
-                  color: MyStyle().darkColor,
+                  color: Colors.black54,
                 ),
-                labelStyle: TextStyle(color: MyStyle().darkColor),
+                labelStyle: TextStyle(
+                  fontSize: 22.0,
+                  // fontWeight: FontWeight.bold,
+                  color: Colors.black54,
+                  // fontStyle: FontStyle.italic,
+                  fontFamily: 'FC-Minimal-Regular',
+                ),
                 labelText: 'Name : ',
                 enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: MyStyle().darkColor)),
+                    borderSide: BorderSide(color: Colors.black54)),
                 focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: MyStyle().primaryColor)),
+                    borderSide: BorderSide(color: Colors.red)),
               ),
             ),
           ),
@@ -245,14 +401,20 @@ class _SignUpState extends State<SignUp> {
               decoration: InputDecoration(
                 prefixIcon: Icon(
                   Icons.account_box,
-                  color: MyStyle().darkColor,
+                  color: Colors.black54,
                 ),
-                labelStyle: TextStyle(color: MyStyle().darkColor),
+                labelStyle: TextStyle(
+                  fontSize: 22.0,
+                  // fontWeight: FontWeight.bold,
+                  color: Colors.black54,
+                  // fontStyle: FontStyle.italic,
+                  fontFamily: 'FC-Minimal-Regular',
+                ),
                 labelText: 'User : ',
                 enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: MyStyle().darkColor)),
+                    borderSide: BorderSide(color: Colors.black54)),
                 focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: MyStyle().primaryColor)),
+                    borderSide: BorderSide(color: Colors.red)),
               ),
             ),
           ),
@@ -269,14 +431,20 @@ class _SignUpState extends State<SignUp> {
               decoration: InputDecoration(
                 prefixIcon: Icon(
                   Icons.lock,
-                  color: MyStyle().darkColor,
+                  color: Colors.black54,
                 ),
-                labelStyle: TextStyle(color: MyStyle().darkColor),
+                labelStyle: TextStyle(
+                  fontSize: 22.0,
+                  // fontWeight: FontWeight.bold,
+                  color: Colors.black54,
+                  // fontStyle: FontStyle.italic,
+                  fontFamily: 'FC-Minimal-Regular',
+                ),
                 labelText: 'Password : ',
                 enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: MyStyle().darkColor)),
+                    borderSide: BorderSide(color: Colors.black54)),
                 focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: MyStyle().primaryColor)),
+                    borderSide: BorderSide(color: Colors.red)),
               ),
             ),
           ),

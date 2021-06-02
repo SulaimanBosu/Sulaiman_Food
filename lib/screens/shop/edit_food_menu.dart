@@ -28,11 +28,26 @@ class _EditFoodMenuState extends State<EditFoodMenu> {
   final picker = ImagePicker();
   String foodid, foodName, price, foodDetial, imagePaht;
   bool editStatus = false;
+  bool loadingStatus = true;
 
   @override
   void initState() {
     super.initState();
     readCurrentData();
+  }
+
+      void onLoading() {
+    Timer(
+      Duration(seconds: 20),
+      () {
+        if (loadingStatus == true) {
+          setState(() {
+            loadingStatus = false;
+            normalDialog(context, 'การเชื่อมต่อล้มเหลว');
+          });
+        } else {}
+      },
+    );
   }
 
   Future<Null> readCurrentData() async {
@@ -52,6 +67,7 @@ class _EditFoodMenuState extends State<EditFoodMenu> {
         price = foodModel.price;
         foodDetial = foodModel.foodDetail;
         imagePaht = foodModel.imagePath;
+        loadingStatus = false;
       });
     }
   }
@@ -69,8 +85,8 @@ class _EditFoodMenuState extends State<EditFoodMenu> {
           ),
         ),
       ),
-      body: foodModel == null
-          ? progress(context)
+      body: loadingStatus == true
+          ? MyStyle().progress(context)
           : editStatus
               ? progress2(context)
               : buildContent(),
@@ -101,59 +117,6 @@ class _EditFoodMenuState extends State<EditFoodMenu> {
         ),
       ),
     );
-  }
-
-  Widget progress(BuildContext context) {
-    return Container(
-        child: new Stack(
-      children: <Widget>[
-        Container(
-          alignment: AlignmentDirectional.center,
-          decoration: new BoxDecoration(
-            color: Colors.white,
-          ),
-          child: new Container(
-            decoration: new BoxDecoration(
-                color: Colors.grey.shade300,
-                borderRadius: new BorderRadius.circular(10.0)),
-            width: MediaQuery.of(context).size.width * 0.4,
-            height: MediaQuery.of(context).size.width * 0.3,
-            alignment: AlignmentDirectional.center,
-            child: new Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                new Center(
-                  child: new SizedBox(
-                    height: MediaQuery.of(context).size.width * 0.1,
-                    width: MediaQuery.of(context).size.width * 0.1,
-                    child: new CircularProgressIndicator(
-                      value: null,
-                      backgroundColor: Colors.white,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
-                      strokeWidth: 7.0,
-                    ),
-                  ),
-                ),
-                new Container(
-                  margin: const EdgeInsets.only(top: 25.0),
-                  child: new Center(
-                    child: new Text(
-                      'ดาวน์โหลด...',
-                      style: new TextStyle(
-                        fontSize: 18.0,
-                        color: Colors.black45,
-                        fontFamily: 'FC-Minimal-Regular',
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    ));
   }
 
   Widget progress2(BuildContext context) {
@@ -390,12 +353,14 @@ class _EditFoodMenuState extends State<EditFoodMenu> {
     }
   }
 
-  void _onLoading() {
+  void _onEdit() {
     Timer(Duration(seconds: 20), () {
-      setState(() {
-        editStatus = false;
-        normalDialog(context, 'อัพโหลดล้มเหลว กรุณาลองใหม่อีกครั้งคะ');
-      });
+      if (editStatus == true) {
+        setState(() {
+          editStatus = false;
+          normalDialog(context, 'อัพโหลดล้มเหลว กรุณาลองใหม่อีกครั้งคะ');
+        });
+      }
     });
   }
 
@@ -589,7 +554,7 @@ class _EditFoodMenuState extends State<EditFoodMenu> {
                   child: Text("ยืนยัน"),
                   onPressed: () {
                     editDetailFoodmenu();
-                    _onLoading();
+                    _onEdit();
                     setState(() {
                       editStatus = true;
                     });

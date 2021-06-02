@@ -44,7 +44,7 @@ class _InfomationShopState extends State<InfomationShop> {
         if (loadingStatus == true) {
           setState(() {
             loadingStatus = false;
-            normalDialog(context, 'เชื่อมต่อล้มเหลว');
+            normalDialog(context, 'การเชื่อมต่อล้มเหลว');
           });
         } else {}
       },
@@ -120,7 +120,7 @@ class _InfomationShopState extends State<InfomationShop> {
           //   showdata(context),
 
           loadingStatus
-              ? progress(context)
+              ? MyStyle().progress(context)
               : statusData
                   ? showNodata()
                   : showinfoShop(),
@@ -131,58 +131,6 @@ class _InfomationShopState extends State<InfomationShop> {
     );
   }
 
-  Widget progress(BuildContext context) {
-    return Container(
-        child: new Stack(
-      children: <Widget>[
-        Container(
-          alignment: AlignmentDirectional.center,
-          decoration: new BoxDecoration(
-            color: Colors.white,
-          ),
-          child: new Container(
-            decoration: new BoxDecoration(
-                color: Colors.grey.shade300,
-                borderRadius: new BorderRadius.circular(10.0)),
-            width: MediaQuery.of(context).size.width * 0.4,
-            height: MediaQuery.of(context).size.width * 0.3,
-            alignment: AlignmentDirectional.center,
-            child: new Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                new Center(
-                  child: new SizedBox(
-                    height: MediaQuery.of(context).size.width * 0.1,
-                    width: MediaQuery.of(context).size.width * 0.1,
-                    child: new CircularProgressIndicator(
-                      value: null,
-                      backgroundColor: Colors.white,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
-                      strokeWidth: 7.0,
-                    ),
-                  ),
-                ),
-                new Container(
-                  margin: const EdgeInsets.only(top: 25.0),
-                  child: new Center(
-                    child: new Text(
-                      'ดาวน์โหลด...',
-                      style: new TextStyle(
-                        fontSize: 18.0,
-                        color: Colors.black45,
-                        fontFamily: 'FC-Minimal-Regular',
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    ));
-  }
 
   Widget showinfoShop() => ListView(
         children: [

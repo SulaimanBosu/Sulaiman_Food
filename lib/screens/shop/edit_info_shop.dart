@@ -31,6 +31,7 @@ class _EditInfoShopState extends State<EditInfoShop> {
   final picker = ImagePicker();
   File file;
   bool editStatus = false;
+  bool loadingStatus = true;
   //Location location = Location();
 
   @override
@@ -40,11 +41,26 @@ class _EditInfoShopState extends State<EditInfoShop> {
     lat = widget.lat;
     lng = widget.lng;
     findLatLng();
+    onLoading();
 
     // location.onLocationChanged.listen((event) {
     //   lat = event.latitude;
     //   lng = event.longitude;
     //  });
+  }
+
+    void onLoading() {
+    Timer(
+      Duration(seconds: 20),
+      () {
+        if (loadingStatus == true) {
+          setState(() {
+            loadingStatus = false;
+            normalDialog(context, 'การเชื่อมต่อล้มเหลว');
+          });
+        } else {}
+      },
+    );
   }
 
 //ดึงตำ่แหน่งที่ตั้งปัจจุบัน
@@ -88,6 +104,7 @@ class _EditInfoShopState extends State<EditInfoShop> {
         address = infomationShop.addressShop;
         phone = infomationShop.phoneShop;
         urlImage = infomationShop.urlImage;
+        loadingStatus = false;
       });
     }
   }
@@ -95,10 +112,10 @@ class _EditInfoShopState extends State<EditInfoShop> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: infomationShop == null
+      body: loadingStatus == true
           ? Container(
               // color: Colors.lightBlueAccent,
-              child: progress(context),
+              child: MyStyle().progress(context)
             )
           : editStatus
               ? progress2(context)
@@ -117,59 +134,6 @@ class _EditInfoShopState extends State<EditInfoShop> {
         ),
       ),
     );
-  }
-
-  Widget progress(BuildContext context) {
-    return Container(
-        child: new Stack(
-      children: <Widget>[
-        Container(
-          alignment: AlignmentDirectional.center,
-          decoration: new BoxDecoration(
-            color: Colors.white70,
-          ),
-          child: new Container(
-            decoration: new BoxDecoration(
-                color: Colors.grey.shade300,
-                borderRadius: new BorderRadius.circular(10.0)),
-            width: MediaQuery.of(context).size.width * 0.4,
-            height: MediaQuery.of(context).size.width * 0.3,
-            alignment: AlignmentDirectional.center,
-            child: new Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                new Center(
-                  child: new SizedBox(
-                    height: MediaQuery.of(context).size.width * 0.1,
-                    width: MediaQuery.of(context).size.width * 0.1,
-                    child: new CircularProgressIndicator(
-                      value: null,
-                      backgroundColor: Colors.white,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
-                      strokeWidth: 7.0,
-                    ),
-                  ),
-                ),
-                new Container(
-                  margin: const EdgeInsets.only(top: 25.0),
-                  child: new Center(
-                    child: new Text(
-                      'ดาวน์โหลด...',
-                      style: new TextStyle(
-                        fontSize: 18.0,
-                        color: Colors.black45,
-                        fontFamily: 'FC-Minimal-Regular',
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    ));
   }
 
   Widget progress2(BuildContext context) {
@@ -611,7 +575,7 @@ class _EditInfoShopState extends State<EditInfoShop> {
     }
   }
 
-      void _onLoading() {
+      void _onEdit() {
     Timer(Duration(seconds: 20), () {
       setState(() {
         editStatus = false;
@@ -754,7 +718,7 @@ class _EditInfoShopState extends State<EditInfoShop> {
                     setState(() {
                       editStatus = true;
                     });
-                    _onLoading();
+                    _onEdit();
                   },
                 ),
                 // ignore: deprecated_member_use

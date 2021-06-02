@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sulaimanfood/utility/myConstant.dart';
@@ -95,6 +96,16 @@ class _MainShopState extends State<MainShop> {
       }
     } else if (Platform.isIOS) {
       print('Notiwork IOS');
+      FirebaseMessaging messaging = FirebaseMessaging.instance;
+      NotificationSettings settings = await messaging.requestPermission(
+        alert: true,
+        announcement: false,
+        badge: true,
+        carPlay: false,
+        criticalAlert: false,
+        provisional: false,
+        sound: true,
+      );
     } else {}
   }
 
@@ -144,9 +155,9 @@ class _MainShopState extends State<MainShop> {
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.notifications_active),
+                      Icon(Icons.notifications_active,color: Colors.black54,),
                       MyStyle().mySizebox(),
-                      Text(title),
+                      MyStyle().showtext_2(title),
                     ],
                   ),
                   Divider(
@@ -160,13 +171,7 @@ class _MainShopState extends State<MainShop> {
                   children: [
                     Expanded(
                       child: Center(
-                        child: Text(
-                          body,
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                        child: MyStyle().showtext_2(body),
                       ),
                     ),
                   ],
@@ -179,8 +184,20 @@ class _MainShopState extends State<MainShop> {
                   onPressed: () {
                     Navigator.pop(context);
                     setState(() {
-                      currentWidget = OrderListShop();
-                      removenoti();
+                      if (currentWidget == OrderListShop()) {
+                        setState(() {
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      OrderListShop()));
+                          // currentWidget = OrderListShop();
+                          // removenoti();
+                        });
+                      } else {
+                        currentWidget = OrderListShop();
+                        removenoti();
+                      }
                     });
                   },
                 ),

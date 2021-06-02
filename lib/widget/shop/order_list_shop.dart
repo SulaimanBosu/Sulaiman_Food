@@ -116,7 +116,7 @@ class _OrderListShopState extends State<OrderListShop> {
           setState(() {
             loadingStatus = false;
             statusOrder = true;
-            normalDialog(context, 'เชื่อมต่อล้มเหลว');
+            normalDialog(context, 'การเชื่อมต่อล้มเหลว');
           });
         } else {}
       },
@@ -313,7 +313,7 @@ class _OrderListShopState extends State<OrderListShop> {
             ),
           ),
           Expanded(
-            flex: 1,
+            flex: 2,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

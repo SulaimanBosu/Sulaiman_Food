@@ -32,6 +32,8 @@ class _ShopInfoState extends State<ShopInfo> {
     );
   }
 
+
+
   BottomNavigationBarItem aboutShop() {
     return BottomNavigationBarItem(
       icon: Icon(

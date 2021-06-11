@@ -66,7 +66,7 @@ class _ListMenuShopState extends State<ListMenuShop> {
 
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String userid = preferences.getString('User_id');
-    print('User id ==> $userid');
+   // print('User id ==> $userid');
 
     String url =
         '${MyConstant().domain}/Sulaiman_food/get_FoodMenu.php?isAdd=true&id=$userid';

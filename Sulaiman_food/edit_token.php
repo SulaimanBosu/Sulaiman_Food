@@ -17,25 +17,25 @@ if (!$link->set_charset("utf8")) {
 
 
 if (isset($_GET)) {
-	if ($_GET['isAdd'] == 'true') {
-			
-		$id = $_GET['id'];		
-		$CreateDate = $_GET['CreateDate'];
-		$Address = $_GET['Address'];
-		
+	if ($_GET['isAdd'] == 'true') {			
+				
+
+		$Userid = $_GET['userid'];
+		$token = $_GET['Token'];
+
 		
 							
-		$sql = "UPDATE `userung` SET `CreateDate` = '$CreateDate', `Address` = '$Address' WHERE id = '$id'";
+		$sql = "UPDATE `userTABLE` SET `Token` = '$token' WHERE User_id = '$Userid'";
 
 		$result = mysqli_query($link, $sql);
 
-		if ($result) {
+		if ($result){
 			echo "true";
 		} else {
 			echo "false";
 		}
 
-	} else echo "Welcome Master UNG";
+	} else echo "Welcome Sulaiman Food";
    
 }
 

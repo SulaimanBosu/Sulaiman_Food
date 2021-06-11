@@ -677,8 +677,8 @@ class _EditInfoShopState extends State<EditInfoShop> {
               title: Column(
                 children: [
                   Row(
-                    children: [
-                      Text('Confirm'),
+                    children: [Icon(Icons.notification_important),MyStyle().mySizebox(),
+                      MyStyle().showtext_2('Confirm'),
                     ],
                   ),
                   Divider(
@@ -692,13 +692,7 @@ class _EditInfoShopState extends State<EditInfoShop> {
                   children: [
                     Expanded(
                       child: Center(
-                        child: Text(
-                          'ยืนยันการแก้ไขรายละเอียด',
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                        child: MyStyle().showtext_2('ยืนยันการแก้ไขรายละเอียด'),
                       ),
                     ),
                   ],

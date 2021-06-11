@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked_themes/stacked_themes.dart';
 import 'package:sulaimanfood/screens/home.dart';
@@ -21,13 +22,17 @@ Future main() async {
 
 Future<dynamic> firebaseMessagingBackgroundHandler(
     RemoteMessage message) async {
+      int badgeCount = 1;
+      FlutterAppBadger.updateBadgeCount(badgeCount);
+            badgeCount++;
   SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.reload();
 
   if (message.data != null) {
     message.data.forEach((key, value) async {
-    //  print("bg storing key=$key, value=$value");
+      print("bg storing key=$key, value=$value");
       await prefs.setString(key, value);
+
     });
     await prefs.reload();
   

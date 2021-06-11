@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sulaimanfood/utility/myConstant.dart';
 import 'package:sulaimanfood/utility/my_style.dart';
@@ -23,12 +25,22 @@ class _MainShopState extends State<MainShop> {
   Widget currentWidget = ListMenuShop();
   Widget infoShop = InfomationShop();
   Widget orderListShop = OrderListShop();
-
+  int badgeCount = 1;
   @override
   initState() {
     super.initState();
     findUser();
     aboutNotification();
+  }
+
+  // void _addBadge(int count) {
+  //   setState(() {
+  //     FlutterAppBadger.updateBadgeCount(count);
+  //   });
+  // }
+
+  void _removeBadge() {
+    FlutterAppBadger.removeBadge();
   }
 
   Future<Null> aboutNotification() async {
@@ -70,6 +82,11 @@ class _MainShopState extends State<MainShop> {
           if (message.notification != null) {
             print('title ==== ${notiMessage.toString()}');
             orderDialog(title, notiMessage);
+            setState(() {
+              badgeCount++;
+              print('badgeCount =========>>>>>>> $badgeCount');
+
+            });
           }
         });
 
@@ -77,16 +94,20 @@ class _MainShopState extends State<MainShop> {
             .listen((RemoteMessage message) async {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.reload();
+          _removeBadge();
           String title = prefs.getString('title');
           String notiMessage = prefs.getString('body');
+
+          print('send =======================>>>>>>>>>>>>> $message');
           if (notiMessage != null && notiMessage.isNotEmpty) {
             // orderDialog(title, notiMessage);
             setState(() {
               currentWidget = OrderListShop();
+              print('send $notiMessage');
             });
           }
           await prefs.remove('body');
-          print('send $notiMessage');
+          
         });
       } else if (settings.authorizationStatus ==
           AuthorizationStatus.provisional) {
@@ -155,7 +176,10 @@ class _MainShopState extends State<MainShop> {
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.notifications_active,color: Colors.black54,),
+                      Icon(
+                        Icons.notifications_active,
+                        color: Colors.black54,
+                      ),
                       MyStyle().mySizebox(),
                       MyStyle().showtext_2(title),
                     ],

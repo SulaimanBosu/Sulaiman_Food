@@ -17,6 +17,24 @@ if (!$link->set_charset("utf8")) {
 
 if (isset($_GET)) {
 	if ($_GET['isAdd'] == 'true') {
+
+		$sqlUserid = "SELECT MAX(User_id)AS UserID FROM userTABLE";
+		$result = $link->query($sqlUserid);
+                if($result->num_rows > 0) {
+                    while($rs = $result->fetch_assoc()) {
+                       
+						$id = substr($rs['UserID'], -3);
+						if($id==""){
+							$nextUserId ="U00001";
+						}else{
+						$userid = ($id + 1);
+						$maxId = substr("U0000".$userid, -3);
+                        $nextUserId = "U00".$maxId;
+						}
+
+		
+					}
+				}
 		
 		$chooseType = $_GET['chooseType'];		
 		$name = $_GET['name'];
@@ -25,12 +43,15 @@ if (isset($_GET)) {
 		
 		
 							
-		$sql = "INSERT INTO `userTABLE`(`id`,`ChooseType`, `Name`, `User`, `Password`) VALUES (Null,'$chooseType','$name','$user','$password')";
-
+		$sql = "INSERT INTO `userTABLE`(`User_id`,`ChooseType`, `Name`, `User`, `Password`, `Token`) VALUES ('$nextUserId','$chooseType','$name','$user','$password','')";
 		$result = mysqli_query($link, $sql);
 
 		if ($result) {
 			echo "true";
+		// $sql2 = "INSERT INTO infomationShop(User_id)values
+		// ('$nextUserId')";
+		// $result2 = mysqli_query($link, $sql2);
+
 		} else {
 			echo "false";
 		}

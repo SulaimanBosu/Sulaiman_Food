@@ -159,7 +159,6 @@ class _ListMenuShopState extends State<ListMenuShop> {
 
   errorDialog(String text) async {
     showDialog(
-      //    context: context,
       builder: (BuildContext context) {
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,

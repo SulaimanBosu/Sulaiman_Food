@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sulaimanfood/model/distance_model.dart';
 import 'package:sulaimanfood/model/foodMenu_Model.dart';
 import 'package:sulaimanfood/model/infomationShop_model.dart';
 import 'package:sulaimanfood/screens/main_rider.dart';
@@ -46,7 +45,7 @@ class _HomeState extends State<Home> {
   InfomationShopModel shopModel;
 
   List<String> distanceModels = List();
-  DistanceModel distanceModel;
+  List<String> transportModels = List();
   List<String> list = List();
   bool loadStatus = true;
   bool loginStatus = false;
@@ -118,7 +117,10 @@ class _HomeState extends State<Home> {
           print('lat1 = $lat1, lng1 = $lng1, lat2 = $lat2, lng2 = $lng2');
           var myFormat = NumberFormat('#0.00', 'en_US');
           distanceString = myFormat.format(distance);
+          distanceModels.add(distanceString);
+
           transport = MyApi().calculateTransport(distance);
+          transportModels.add(transport.toString());
           print('TranSport == $transport');
 
           print('Distance ==> $distance');
@@ -621,14 +623,12 @@ class _HomeState extends State<Home> {
                         ),
                         MyStyle().mySizebox(),
                         Expanded(
-                            child: Text(
-                          'ค่าส่ง  |  km.',
-                        )
-                            //    'ค่าส่ง $transport |  km.',
-                            //   overflow: TextOverflow.ellipsis,
-                            //   style: MyStyle().mainH2Title,
-
-                            ),
+                          child: Text(
+                            'ค่าส่ง ${transportModels[index]}B. | ${distanceModels[index]} km.',
+                            overflow: TextOverflow.ellipsis,
+                            style: MyStyle().mainH2Title,
+                          ),
+                        ),
                       ],
                     ),
                   ],

@@ -6,7 +6,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
-import 'package:sulaimanfood/model/distance_model.dart';
 import 'package:sulaimanfood/model/foodMenu_Model.dart';
 import 'package:sulaimanfood/model/infomationShop_model.dart';
 import 'package:sulaimanfood/screens/user/food_menu.dart';
@@ -40,7 +39,7 @@ class _ShowListMenuAllState extends State<ShowListMenuAll> {
   InfomationShopModel shopModel;
 
   List<String> distanceModels = List();
-  DistanceModel distanceModel;
+  List<String> transportModels = List();
   List<String> list = List();
 
   @override
@@ -49,8 +48,6 @@ class _ShowListMenuAllState extends State<ShowListMenuAll> {
     readfood();
     readshop();
   }
-
-  
 
   Future<Null> readfood() async {
     LocationData locationData = await findLocationData();
@@ -71,9 +68,13 @@ class _ShowListMenuAllState extends State<ShowListMenuAll> {
           lng2 = double.parse(modelFood.longitude);
           distance = MyApi().calculateDistance(lat1, lng1, lat2, lng2);
           print('lat1 = $lat1, lng1 = $lng1, lat2 = $lat2, lng2 = $lng2');
-           var myFormat = NumberFormat('#0.00', 'en_US');
-           distanceString = myFormat.format(distance);
-           transport = MyApi().calculateTransport(distance);
+          var myFormat = NumberFormat('#0.00', 'en_US');
+
+          distanceString = myFormat.format(distance);
+          distanceModels.add(distanceString);
+
+          transport = MyApi().calculateTransport(distance);
+          transportModels.add(transport.toString());
           print('TranSport == $transport');
 
           print('Distance ==> $distance');
@@ -132,12 +133,10 @@ class _ShowListMenuAllState extends State<ShowListMenuAll> {
 
   @override
   Widget build(BuildContext context) {
-    return foodModels.length == 0
-        ? progress(context)
-        : buildListView();
+    return foodModels.length == 0 ? progress(context) : buildListView();
   }
 
-    Widget progress(BuildContext context) {
+  Widget progress(BuildContext context) {
     return Container(
         child: new Stack(
       children: <Widget>[
@@ -205,7 +204,6 @@ class _ShowListMenuAllState extends State<ShowListMenuAll> {
                 size: 16,
               ),
               MyStyle().mySizebox(),
-              
               Text(
                 'ร้านที่คุณน่าจะชอบ',
                 style: TextStyle(
@@ -217,7 +215,6 @@ class _ShowListMenuAllState extends State<ShowListMenuAll> {
             ],
           ),
         ),
-
         MyStyle().mySizebox(),
         SizedBox(
           height: MediaQuery.of(context).size.width * 0.4,
@@ -280,7 +277,6 @@ class _ShowListMenuAllState extends State<ShowListMenuAll> {
       ],
     );
   }
-
 
   Widget showListshop() => ListView.builder(
         scrollDirection: Axis.horizontal,
@@ -537,14 +533,12 @@ class _ShowListMenuAllState extends State<ShowListMenuAll> {
                         ),
                         MyStyle().mySizebox(),
                         Expanded(
-                            child: Text(
-                          'ค่าส่ง  |  km.',
-                        )
-                            //    'ค่าส่ง $transport |  km.',
-                            //   overflow: TextOverflow.ellipsis,
-                            //   style: MyStyle().mainH2Title,
-
-                            ),
+                          child: Text(
+                            'ค่าส่ง ${transportModels[index]}B. | ${distanceModels[index]} km.',
+                            overflow: TextOverflow.ellipsis,
+                            style: MyStyle().mainH2Title,
+                          ),
+                        ),
                       ],
                     ),
                   ],

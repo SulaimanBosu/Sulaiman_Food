@@ -270,9 +270,10 @@ class _ShowListMenuAllState extends State<ShowListMenuAll> {
         ),
         MyStyle().mySizebox(),
         SizedBox(
-          height: MediaQuery.of(context).size.height * 0.8,
+        // height: MediaQuery.of(context).size.height * 0.8,
+          height: MediaQuery.of(context).size.width * 0.7,
           // height: 150.0,
-          child: showListFoodMenu(),
+          child: showListFoodMenu2(),
         ),
       ],
     );
@@ -550,4 +551,150 @@ class _ShowListMenuAllState extends State<ShowListMenuAll> {
       ),
     );
   }
+
+  Widget showListFoodMenu2() => ListView.builder(
+        scrollDirection: Axis.horizontal,
+        padding: EdgeInsets.all(15.0),
+        itemCount: foodModels.length,
+        itemBuilder: (context, index) => GestureDetector(
+          onTap: () {
+            // MaterialPageRoute route = MaterialPageRoute(
+            //   builder: (context) => FoodMenu(
+            //     foodMenuModel: foodModels[index],
+            //   ),
+            // );
+            // Navigator.push(context, route);
+
+            print('you click index $index');
+            MaterialPageRoute route = MaterialPageRoute(
+              builder: (context) => ShopInfo(
+                shopModel: infomationShopModels[index],
+              ),
+            );
+            Navigator.push(context, route);
+          },
+          child: Card(
+            shadowColor: Colors.black,
+            semanticContainer: true,
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            child: Column(
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.6,
+                  height: MediaQuery.of(context).size.width * 0.40,
+                  child: Card(
+                    shadowColor: Colors.grey,
+                    //semanticContainer: true,
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    child: CachedNetworkImage(
+                      imageUrl:
+                          '${MyConstant().domain}${foodModels[index].imagePath}',
+                      progressIndicatorBuilder:
+                          (context, url, downloadProgress) =>
+                              MyStyle().showProgress(),
+                      // CircularProgressIndicator(
+                      //     ),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                      fit: BoxFit.cover,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    elevation: 5,
+                    margin: EdgeInsets.only(bottom: 0),
+                  ),
+                ),
+                MyStyle().mySizebox(),
+                Container(
+                  //             padding: EdgeInsetsDirectional.only(
+                  // start: 0.0, end: 0.0, bottom: 2),
+                  //  padding: EdgeInsets.all(5.0),
+                  width: MediaQuery.of(context).size.width * 0.55,
+                  // height: MediaQuery.of(context).size.width * 1,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Container(
+                        //padding: EdgeInsetsDirectional.only(top: 0.0,bottom: 10.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.star_outline_rounded,
+                              color: Colors.black45,
+                              size: 16,
+                            ),
+                            MyStyle().mySizebox(),
+                            Expanded(
+                              child: Text(
+                                foodModels[index].foodName,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 14),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.attach_money_outlined,
+                            size: 10,
+                            color: Colors.black45,
+                          ),
+                          MyStyle().mySizebox(),
+                          Expanded(
+                            child: Text(
+                              'ราคา ${foodModels[index].price} บาท',
+                              overflow: TextOverflow.ellipsis,
+                              style: MyStyle().mainH2Title,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.restaurant,
+                            color: Colors.black45,
+                            size: 10,
+                          ),
+                          MyStyle().mySizebox(),
+                          Expanded(
+                            child: Text(
+                              foodModels[index].shopName,
+                              overflow: TextOverflow.ellipsis,
+                              style: MyStyle().mainH2Title,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.motorcycle_outlined,
+                            color: Colors.black45,
+                            size: 10,
+                          ),
+                          MyStyle().mySizebox(),
+                          Expanded(
+                            child: Text(
+                              'ค่าส่ง ${transportModels[index]}B. | ${distanceModels[index]} km.',
+                              overflow: TextOverflow.ellipsis,
+                              style: MyStyle().mainH2Title,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
 }

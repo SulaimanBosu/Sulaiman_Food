@@ -13,6 +13,7 @@ import 'package:sulaimanfood/screens/user/main_user.dart';
 import 'package:sulaimanfood/utility/myConstant.dart';
 import 'package:sulaimanfood/utility/my_style.dart';
 import 'package:sulaimanfood/utility/normal_dialog.dart';
+import 'package:sulaimanfood/utility/test.dart';
 
 class SignIn extends StatefulWidget {
   @override
@@ -22,8 +23,11 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
   String user, password;
   bool loginStatus = false;
+  double screen;
+  bool statusRedEye = true;
   @override
   Widget build(BuildContext context) {
+    screen = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: MyStyle().appbarColor,
@@ -175,6 +179,7 @@ class _SignInState extends State<SignIn> {
             String chooseType = userModel.chooseType;
             if (chooseType == 'User') {
               routeToService(MainUser(), userModel);
+             //  routeToService(KonlakraengScreen(), userModel);
             } else if (chooseType == 'Shop') {
               routeToService(MainShop(), userModel);
             } else if (chooseType == 'Rider') {
@@ -282,8 +287,16 @@ class _SignInState extends State<SignIn> {
           Container(
             width: 300.0,
             child: TextField(
+              obscureText: statusRedEye,
               onChanged: (value) => password = value.trim(),
               decoration: InputDecoration(
+                suffixIcon: IconButton(
+                    icon: statusRedEye ? Icon(Icons.remove_red_eye,color: Colors.black54,) : Icon(Icons.remove_red_eye_outlined,color: Colors.black54,),
+                    onPressed: () {
+                      setState(() {
+                        statusRedEye = !statusRedEye;
+                      });
+                    }),
                 prefixIcon: Icon(
                   Icons.lock,
                   color: Colors.black54,

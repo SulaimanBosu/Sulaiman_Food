@@ -15,13 +15,14 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
   String chooseType, name, user, password;
   bool registerStatus = false;
+  bool statusRedEye = true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: MyStyle().appbarColor,
-        title: Text('Sign Up'),
+        title: MyStyle().showTitleH2('สมัครสมาชิก'),
       ),
       body: registerStatus == true ? progress(context) : buildContent(),
     );
@@ -39,6 +40,8 @@ class _SignUpState extends State<SignUp> {
       child: ListView(
         padding: EdgeInsets.all(10.0),
         children: <Widget>[
+          MyStyle().mySizebox(),
+          MyStyle().mySizebox(),
           myLogo(),
           MyStyle().mySizebox(),
           showAppName(),
@@ -98,50 +101,49 @@ class _SignUpState extends State<SignUp> {
       );
 
   Future<void> registerlDialog(BuildContext context) async {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Column(
-          children: [
-            Row(children: [
-              Icon(
-                Icons.notifications_active,
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Column(
+            children: [
+              Row(children: [
+                Icon(
+                  Icons.notifications_active,
+                  color: Colors.black54,
+                ),
+                MyStyle().mySizebox(),
+                MyStyle().showTitle_2('Register'),
+              ]),
+              Divider(
                 color: Colors.black54,
               ),
-              MyStyle().mySizebox(),
-              MyStyle().showTitle_2('Register'),
-            ]),
-            Divider(
-              color: Colors.black54,
-            ),
-          ],
-        ),
-        content: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            MyStyle().showtext_2('สมัครสมาชิกเรียบร้อย'),
-          ],
-        ),
-        actions: <Widget>[
-          // ignore: deprecated_member_use
-          FlatButton(
-            child: Text("ตกลง"),
-            onPressed: () {
-              
-              Navigator.pop(context);
-              routeToSignIn(SignIn());
-            },
+            ],
           ),
-          // ignore: deprecated_member_use
-        ],
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.0),
-        ),
-      );
-    },
-  );
-}
+          content: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              MyStyle().showtext_2('สมัครสมาชิกเรียบร้อย'),
+            ],
+          ),
+          actions: <Widget>[
+            // ignore: deprecated_member_use
+            FlatButton(
+              child: Text("ตกลง"),
+              onPressed: () {
+                Navigator.pop(context);
+                routeToSignIn(SignIn());
+              },
+            ),
+            // ignore: deprecated_member_use
+          ],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+        );
+      },
+    );
+  }
 
   Widget progress(BuildContext context) {
     return Container(
@@ -246,7 +248,6 @@ class _SignUpState extends State<SignUp> {
           registerStatus = false;
         });
         registerlDialog(context);
-        
       } else {
         normalDialog(context, 'ล้มเหลว กรุณาลองใหม่อีกครั้งค่ะ');
       }
@@ -427,8 +428,24 @@ class _SignUpState extends State<SignUp> {
           Container(
             width: 300.0,
             child: TextField(
+              obscureText: statusRedEye,
               onChanged: (value) => password = value.trim(),
               decoration: InputDecoration(
+                suffixIcon: IconButton(
+                    icon: statusRedEye
+                        ? Icon(
+                            Icons.remove_red_eye,
+                            color: Colors.black54,
+                          )
+                        : Icon(
+                            Icons.remove_red_eye_outlined,
+                            color: Colors.black54,
+                          ),
+                    onPressed: () {
+                      setState(() {
+                        statusRedEye = !statusRedEye;
+                      });
+                    }),
                 prefixIcon: Icon(
                   Icons.lock,
                   color: Colors.black54,

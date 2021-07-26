@@ -14,7 +14,7 @@ class ShopInfo extends StatefulWidget {
 class _ShopInfoState extends State<ShopInfo> {
   InfomationShopModel shopModels;
   List<Widget> listwidgets = List();
-  int indexPage = 0;
+  int indexPage = 1;
 
   @override
   void initState() {

@@ -13,7 +13,6 @@ import 'package:sulaimanfood/screens/user/main_user.dart';
 import 'package:sulaimanfood/utility/myConstant.dart';
 import 'package:sulaimanfood/utility/my_style.dart';
 import 'package:sulaimanfood/utility/normal_dialog.dart';
-import 'package:sulaimanfood/utility/test.dart';
 
 class SignIn extends StatefulWidget {
   @override
@@ -179,7 +178,6 @@ class _SignInState extends State<SignIn> {
             String chooseType = userModel.chooseType;
             if (chooseType == 'User') {
               routeToService(MainUser(), userModel);
-             //  routeToService(KonlakraengScreen(), userModel);
             } else if (chooseType == 'Shop') {
               routeToService(MainShop(), userModel);
             } else if (chooseType == 'Rider') {

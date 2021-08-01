@@ -247,7 +247,7 @@ class _MenuInShopState extends State<MenuInShop> {
                                 children: [
                                   Expanded(
                                     child: MyStyle().textdetail_1(
-                                        '${distanceString} Km. | (${time}min) | ${transport}B'),
+                                        '${distanceString.toString()} Km. | (${time}min) | ${transport}B'),
                                   ),
                                 ],
                               ),

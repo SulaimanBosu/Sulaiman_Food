@@ -32,8 +32,6 @@ class _ShopInfoState extends State<ShopInfo> {
     );
   }
 
-
-
   BottomNavigationBarItem aboutShop() {
     return BottomNavigationBarItem(
       icon: Icon(
@@ -43,7 +41,8 @@ class _ShopInfoState extends State<ShopInfo> {
       title: Text(
         'รายละเอียดร้าน',
         style: TextStyle(
-          fontSize: 16,fontFamily: 'FC-Minimal-Regular',
+          fontSize: 16,
+          fontFamily: 'FC-Minimal-Regular',
         ),
       ),
     );
@@ -58,7 +57,8 @@ class _ShopInfoState extends State<ShopInfo> {
       title: Text(
         'เมนูของร้าน',
         style: TextStyle(
-          fontSize: 16,fontFamily: 'FC-Minimal-Regular',
+          fontSize: 16,
+          fontFamily: 'FC-Minimal-Regular',
         ),
       ),
     );
@@ -67,22 +67,38 @@ class _ShopInfoState extends State<ShopInfo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          MyStyle().iconShowCart(context),
+      body: NestedScrollView(
+        floatHeaderSlivers: true,
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          SliverAppBar(
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            actions: [
+              MyStyle().iconShowCart(context),
+            ],
+            title: Center(
+                child: Text(
+              'ร้าน ' + shopModels.nameShop,
+              style: MyStyle().text2,
+            )),
+            centerTitle: true,
+            floating: true,
+            snap: true,
+            //pinned: true,
+            forceElevated: innerBoxIsScrolled,
+          )
         ],
-        title: Center(child: Text('ร้าน '+shopModels.nameShop,style: MyStyle().text2,)),
+        body: listwidgets.length == 0
+            ? MyStyle().showProgress2('กรุณารอสักครู่...')
+            : listwidgets[indexPage],
       ),
-      body: listwidgets.length == 0
-          ? MyStyle().showProgress2('กรุณารอสักครู่...')
-          : listwidgets[indexPage],
       bottomNavigationBar: showBottomNavigationBar(),
     );
   }
 
   BottomNavigationBar showBottomNavigationBar() => BottomNavigationBar(
         backgroundColor: Colors.white,
-        selectedItemColor: Colors.blueAccent, unselectedItemColor: Colors.black54,
+        selectedItemColor: Colors.blueAccent,
+        unselectedItemColor: Colors.black54,
         // selectedFontSize: 16,
         // selectedFontSize: 24,
         currentIndex: indexPage,

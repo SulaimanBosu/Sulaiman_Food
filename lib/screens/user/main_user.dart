@@ -46,38 +46,69 @@ class _MainUserState extends State<MainUser> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: nameUser == null ? 'Main User' : statusAppbar,
-        actions: <Widget>[
-          MyStyle().iconShowCart(context),
-          IconButton(
-            icon: Icon(
-              Icons.search,
-              color: Colors.black54,
-            ),
-            onPressed: () {
-              signOutProcess(context);
-              routeToHome();
-            },
-          ),
-          // IconButton(
-          //   icon: Icon(
-          //     Icons.exit_to_app,
-          //     color: Colors.black54,
-          //   ),
-          //   onPressed: () {
-          //     signOutProcess(context);
-          //     routeToHome();
-          //   },
-          // ),
+      body: NestedScrollView(
+        floatHeaderSlivers: true,
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          SliverAppBar(
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            actions: [
+              MyStyle().iconShowCart(context),
+              IconButton(
+                icon: Icon(
+                  Icons.search,
+                  color: Colors.black54,
+                ),
+                onPressed: () {
+                  //Search
+                },
+              ),
+            ],
+            title: nameUser == null ? 'Main User' : statusAppbar,
+            centerTitle: true,
+            floating: true,
+            snap: true,
+            pinned: true,
+            forceElevated: innerBoxIsScrolled,
+          )
         ],
+        body: Container(
+          // color: Colors.lightBlueAccent,
+          child: currentWidget,
+        ),
       ),
       drawer: showDrawer(),
-      body: Container(
-        // color: Colors.lightBlueAccent,
-        child: currentWidget,
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: Colors.white,
+      //   title: nameUser == null ? 'Main User' : statusAppbar,
+      // actions: <Widget>[
+      //   MyStyle().iconShowCart(context),
+      //   IconButton(
+      //     icon: Icon(
+      //       Icons.search,
+      //       color: Colors.black54,
+      //     ),
+      //     onPressed: () {
+      //       signOutProcess(context);
+      //       routeToHome();
+      //     },
+      //     ),
+      //     // IconButton(
+      //     //   icon: Icon(
+      //     //     Icons.exit_to_app,
+      //     //     color: Colors.black54,
+      //     //   ),
+      //     //   onPressed: () {
+      //     //     signOutProcess(context);
+      //     //     routeToHome();
+      //     //   },
+      //     // ),
+      //   ],
+      // ),
+      // drawer: showDrawer(),
+      // body: Container(
+      //   // color: Colors.lightBlueAccent,
+      //   child: currentWidget,
+      // ),
     );
   }
 

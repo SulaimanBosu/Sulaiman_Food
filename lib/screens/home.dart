@@ -97,7 +97,8 @@ class _HomeState extends State<Home> {
   }
 
   Future<Null> readfood() async {
-    LocationData locationData = await findLocationData();
+    Location location = Location();
+    LocationData locationData = await location.getLocation();
     //readshop();
     String url =
         '${MyConstant().domain}/Sulaiman_food/get_Menu_forUser.php?isAdd=true';
@@ -182,15 +183,15 @@ class _HomeState extends State<Home> {
   }
 
 //โฟกัสตำแหน่งที่ตั้งปัจบันเสมอ
-  Future<LocationData> findLocationData() async {
-    Location location = Location();
+  // Future<LocationData> findLocationData() async {
+  //   Location location = Location();
 
-    try {
-      return location.getLocation;
-    } catch (e) {
-      return null;
-    }
-  }
+  //   try {
+  //     return location.getLocation;
+  //   } catch (e) {
+  //     return null;
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {

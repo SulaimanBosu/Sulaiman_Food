@@ -30,6 +30,15 @@ class MyStyle {
     );
   }
 
+    Text textdetail_1(String title) => Text(
+        title,
+        style: TextStyle(
+          fontSize: 16.0,
+          color: Colors.black45,
+          fontFamily: 'FC-Minimal-Regular',
+        ),
+      );
+
   Widget showProgress() {
     return Center(
       child: CircularProgressIndicator(

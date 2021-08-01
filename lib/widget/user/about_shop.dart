@@ -42,7 +42,8 @@ class _AboutShopState extends State<AboutShop> {
 
 //ดึงตำ่แหน่งที่ตั้งปัจจุบัน
   Future<Null> findLatLng() async {
-    LocationData locationData = await findLocationData();
+    Location location = Location();
+    LocationData locationData = await location.getLocation();
     setState(() {
       lat1 = locationData.latitude;
       lng1 = locationData.longitude;
@@ -61,15 +62,15 @@ class _AboutShopState extends State<AboutShop> {
   }
 
 //โฟกัสตำแหน่งที่ตั้งปัจบันเสมอ
-  Future<LocationData> findLocationData() async {
-    Location location = Location();
+  // Future<LocationData> findLocationData() async {
+  //   Location location = Location();
 
-    try {
-      return location.getLocation;
-    } catch (e) {
-      return null;
-    }
-  }
+  //   try {
+  //     return location.getLocation;
+  //   } catch (e) {
+  //     return null;
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {

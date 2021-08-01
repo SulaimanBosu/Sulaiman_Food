@@ -31,12 +31,14 @@ class _MenuInShopState extends State<MenuInShop> {
   // ignore: deprecated_member_use
   List<CartModel> cartModels = List();
   int amount = 1;
+  int transport = 0;
   double lat1, lng1, lat2, lng2, distance;
   String distanceString;
   Location location = Location();
   int total;
   String sum;
   int _sum;
+  int time;
 
   @override
   void initState() {
@@ -75,8 +77,22 @@ class _MenuInShopState extends State<MenuInShop> {
   }
 
   //ดึงตำ่แหน่งที่ตั้งปัจจุบัน
-  Future<Null> findLatLng() async {
-    LocationData locationData = await findLocationData();
+  // Future<Null> findLatLng() async {
+  //   Location location = Location();
+  //   LocationData locationData = await location.getLocation();
+  //   setState(() {
+  //     lat1 = locationData.latitude;
+  //     lng1 = locationData.longitude;
+  //     lat2 = double.parse(shopModels.latitude);
+  //     lng2 = double.parse(shopModels.longitude);
+  //   });
+  //   print('Lat = $lat1,  Lng = $lng1, Lat2 == $lat2 , Lon2 == $lng2');
+  //   distance = MyApi().calculateDistance(lat1, lng1, lat2, lng2);
+  // }
+
+    Future<Null> findLatLng() async {
+    Location location = Location();
+    LocationData locationData = await location.getLocation();
     setState(() {
       lat1 = locationData.latitude;
       lng1 = locationData.longitude;
@@ -84,18 +100,23 @@ class _MenuInShopState extends State<MenuInShop> {
       lng2 = double.parse(shopModels.longitude);
     });
     print('Lat = $lat1,  Lng = $lng1, Lat2 == $lat2 , Lon2 == $lng2');
-    distance = MyApi().calculateDistance(lat1, lng1, lat2, lng2);
+    //  distance = MyApi().calculateDistance(lat1, lng1, lat2, lng2);
+    double distance = MyApi().calculateDistance(lat1, lng1, lat2, lng2);
+    var myFormat = NumberFormat('#0.00', 'en_US');
+    distanceString = myFormat.format(distance);
+    transport = MyApi().calculateTransport(distance);
+    time = MyApi().calculateTime(distance);
   }
 
 //โฟกัสตำแหน่งที่ตั้งปัจบันเสมอ
-  Future<LocationData> findLocationData() async {
-    Location location = Location();
-    try {
-      return location.getLocation;
-    } catch (e) {
-      return e;
-    }
-  }
+  // Future<LocationData> findLocationData() async {
+  //   Location location = Location();
+  //   try {
+  //     return location.getLocation;
+  //   } catch (e) {
+  //     return e;
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -225,14 +246,8 @@ class _MenuInShopState extends State<MenuInShop> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Expanded(
-                                    child: Text(
-                                      '7.0 km(27 min) | 50B',
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                          color: Colors.black45,
-                                          fontSize: 10.0,
-                                          fontStyle: FontStyle.normal),
-                                    ),
+                                    child: MyStyle().textdetail_1(
+                                        '${distanceString} Km. | (${time}min) | ${transport}B'),
                                   ),
                                 ],
                               ),

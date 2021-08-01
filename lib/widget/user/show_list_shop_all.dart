@@ -39,7 +39,8 @@ class _ShowListShopAllState extends State<ShowListShopAll> {
   }
 
   Future<Null> readshop() async {
-    LocationData locationData = await findLocationData();
+     Location location = Location();
+    LocationData locationData = await location.getLocation();
     String url =
         '${MyConstant().domain}/Sulaiman_food/get_Shop_forUser.php?isAdd=true';
     await Dio().get(url).then((value) {
@@ -74,15 +75,15 @@ class _ShowListShopAllState extends State<ShowListShopAll> {
   }
 
 //โฟกัสตำแหน่งที่ตั้งปัจบันเสมอ
-  Future<LocationData> findLocationData() async {
-    Location location = Location();
+  // Future<LocationData> findLocationData() async {
+  //   Location location = Location();
 
-    try {
-      return location.getLocation;
-    } catch (e) {
-      return null;
-    }
-  }
+  //   try {
+  //     return location.getLocation;
+  //   } catch (e) {
+  //     return null;
+  //   }
+  // }
 
   Future<Null> findUser() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();

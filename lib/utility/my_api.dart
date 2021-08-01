@@ -27,5 +27,17 @@ class MyApi {
   }
 
 
+
+    int calculateTime(double distance) {
+    int time;
+    if (distance <= 1) {
+      time = 15;
+    } else {
+      time = 15 + ((distance - 1).round() * 5);
+    }
+    return time;
+  }
+
+
   MyApi();
 }

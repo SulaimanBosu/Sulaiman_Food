@@ -53,7 +53,8 @@ class _InfomationShopState extends State<InfomationShop> {
 
   //ดึงตำ่แหน่งที่ตั้งปัจจุบัน
   Future<Null> findLatLng() async {
-    LocationData locationData = await findLocationData();
+    Location location = Location();
+    LocationData locationData = await location.getLocation();
     setState(() {
       lat = locationData.latitude;
       lng = locationData.longitude;
@@ -62,15 +63,15 @@ class _InfomationShopState extends State<InfomationShop> {
   }
 
 //โฟกัสตำแหน่งที่ตั้งปัจบันเสมอ
-  Future<LocationData> findLocationData() async {
-    Location location = Location();
+  // Future<LocationData> findLocationData() async {
+  //   Location location = Location();
 
-    try {
-      return location.getLocation;
-    } catch (e) {
-      return null;
-    }
-  }
+  //   try {
+  //     return location.getLocation;
+  //   } catch (e) {
+  //     return null;
+  //   }
+  // }
 
   Future<Null> readCurrentData() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();

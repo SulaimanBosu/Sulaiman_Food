@@ -195,13 +195,15 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      drawer: showDrawer(),
-      body: loadStatus == true
-          ? progress(context)
-          : foodModels == null
-              ? progress(context)
-              : buildListView(),
+     body: Center(child: Text('data')),
+     
+      // appBar: AppBar(),
+      // drawer: showDrawer(),
+      // body: loadStatus == true
+      //     ? progress(context)
+      //     : foodModels == null
+      //         ? progress(context)
+      //         : buildListView(),
     ); //Scaffold
   }
 

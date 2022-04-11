@@ -38,13 +38,7 @@ class _ShopInfoState extends State<ShopInfo> {
         Icons.home,
         size: 30,
       ),
-      title: Text(
-        'รายละเอียดร้าน',
-        style: TextStyle(
-          fontSize: 16,
-          fontFamily: 'FC-Minimal-Regular',
-        ),
-      ),
+      label:'รายละเอียดร้าน',
     );
   }
 
@@ -55,13 +49,7 @@ class _ShopInfoState extends State<ShopInfo> {
         size: 30,
       ),
       // ignore: deprecated_member_use
-      title: Text(
-        'เมนูของร้าน',
-        style: TextStyle(
-          fontSize: 16,
-          fontFamily: 'FC-Minimal-Regular',
-        ),
-      ),
+      label:'เมนูของร้าน',
     );
   }
 

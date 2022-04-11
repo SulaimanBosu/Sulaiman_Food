@@ -60,6 +60,7 @@ class _AddFoodMenuState extends State<AddFoodMenu> {
           ),
           MyStyle().mySizebox(),
           showImage(),
+          MyStyle().mySizebox(),
           addImageButton(),
           MyStyle().mySizebox(),
           nameForm(),
@@ -145,32 +146,29 @@ class _AddFoodMenuState extends State<AddFoodMenu> {
   //โชว์ภาพตัวอย่างก่อนเลือกรูปและหลังเลือกรูป
   Container showImage() {
     return Container(
-      padding: EdgeInsetsDirectional.only(start: 10.0, end: 10.0, bottom: 10),
       width: MediaQuery.of(context).size.width * 0.9,
-      height: MediaQuery.of(context).size.width * 0.6,
-      child: Container(
-        child: file == null
-            ? Card(
-                semanticContainer: true,
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                child: Image.asset('images/add_image.png'),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                elevation: 5,
-                margin: EdgeInsets.all(0),
-              )
-            : Card(
-                semanticContainer: true,
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                child: Image.file(file),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                elevation: 5,
-                margin: EdgeInsets.all(0),
+      //  height: MediaQuery.of(context).size.width * 0.6,
+      child: file == null
+          ? Card(
+              semanticContainer: true,
+              clipBehavior: Clip.antiAliasWithSaveLayer,
+              child: Image.asset('images/add_image.png'),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
               ),
-      ),
+              elevation: 5,
+              margin: EdgeInsets.all(0),
+            )
+          : Card(
+              semanticContainer: true,
+              clipBehavior: Clip.antiAliasWithSaveLayer,
+              child: Image.file(file),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              elevation: 5,
+              margin: EdgeInsets.all(0),
+            ),
     );
   }
 
@@ -422,7 +420,7 @@ class _AddFoodMenuState extends State<AddFoodMenu> {
     );
   }
 
-    void _onLoading() {
+  void _onLoading() {
     Timer(Duration(seconds: 20), () {
       setState(() {
         addStatus = false;

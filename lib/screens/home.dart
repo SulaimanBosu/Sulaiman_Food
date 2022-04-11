@@ -10,7 +10,6 @@ import 'package:sulaimanfood/model/foodMenu_Model.dart';
 import 'package:sulaimanfood/model/infomationShop_model.dart';
 import 'package:sulaimanfood/screens/main_rider.dart';
 import 'package:sulaimanfood/screens/shop/main_shop.dart';
-import 'package:sulaimanfood/screens/user/food_menu.dart';
 import 'package:sulaimanfood/screens/user/main_user.dart';
 import 'package:sulaimanfood/screens/signin.dart';
 import 'package:sulaimanfood/screens/signup.dart';

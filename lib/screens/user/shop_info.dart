@@ -54,6 +54,7 @@ class _ShopInfoState extends State<ShopInfo> {
         Icons.restaurant,
         size: 30,
       ),
+      // ignore: deprecated_member_use
       title: Text(
         'เมนูของร้าน',
         style: TextStyle(

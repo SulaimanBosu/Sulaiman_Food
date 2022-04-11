@@ -90,8 +90,9 @@ class _ShowCartState extends State<ShowCart> {
   }
 
   Widget buildContent() {
-    return Card(margin: const EdgeInsets.all(20.0),
-          child: Padding(
+    return Card(
+      margin: const EdgeInsets.all(20.0),
+      child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: SingleChildScrollView(
           child: Column(
@@ -130,7 +131,10 @@ class _ShowCartState extends State<ShowCart> {
           onPressed: () {
             confirmDeleteDialog();
           },
-          icon: Icon(Icons.delete,color: Colors.red,),
+          icon: Icon(
+            Icons.delete,
+            color: Colors.red,
+          ),
           label: MyStyle().showtext_2('Clear ตะกร้า'),
           //color: Colors.blue.shade200,
         ),
@@ -144,7 +148,10 @@ class _ShowCartState extends State<ShowCart> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.home_sharp,color: Colors.black54,),
+          Icon(
+            Icons.home_sharp,
+            color: Colors.black54,
+          ),
           MyStyle().mySizebox(),
           MyStyle().showTitle_2('ร้าน ${cartModels[0].nameShop}'),
         ],
@@ -246,7 +253,10 @@ class _ShowCartState extends State<ShowCart> {
                   icon: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Icon(Icons.delete_forever,color: Colors.red,),
+                      Icon(
+                        Icons.delete_forever,
+                        color: Colors.red,
+                      ),
                     ],
                   ),
                   onPressed: () async {
@@ -274,7 +284,10 @@ class _ShowCartState extends State<ShowCart> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Icon(Icons.location_on_outlined,color: Colors.red.shade400,),
+                Icon(
+                  Icons.location_on_outlined,
+                  color: Colors.red.shade400,
+                ),
                 MyStyle().mySizebox(),
                 MyStyle().showtext_2('ระยะทาง '),
               ],
@@ -307,7 +320,6 @@ class _ShowCartState extends State<ShowCart> {
                 // Icon(Icons.monetization_on),
                 // MyStyle().mySizebox(),
                 MyStyle().showtext_2('ค่าส่ง  '),
-
               ],
             ),
           ),
@@ -336,8 +348,7 @@ class _ShowCartState extends State<ShowCart> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 // Icon(Icons.monetization_on),
-                 MyStyle().showtext_2('ราคารวม  '),
-
+                MyStyle().showtext_2('ราคารวม  '),
               ],
             ),
           ),
@@ -362,15 +373,30 @@ class _ShowCartState extends State<ShowCart> {
         return AlertDialog(
           title: Row(children: [
             Icon(Icons.delete_forever_rounded),
-            Text('Delete Confirm')
-          ]),
-          content: Text(
-            'คุณต้องการลบเมนูทั้งหมดหรือไม่',
-            style: TextStyle(
-              fontSize: 10.0,
-              color: Colors.black87,
-              fontStyle: FontStyle.italic,
+            SizedBox(
+              width: 10,
             ),
+            Text(
+              'Delete Confirm',
+              style: TextStyle(
+                fontSize: 26.0,
+                color: Colors.black,
+                fontFamily: 'FC-Minimal-Regular',
+              ),
+            )
+          ]),
+          content: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'คุณต้องการลบเมนูทั้งหมดหรือไม่',
+                style: TextStyle(
+                  fontSize: 20.0,
+                  color: Colors.black45,
+                  fontFamily: 'FC-Minimal-Regular',
+                ),
+              ),
+            ],
           ),
           actions: <Widget>[
             Row(
@@ -400,7 +426,7 @@ class _ShowCartState extends State<ShowCart> {
             // ignore: deprecated_member_use
           ],
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30.0),
+            borderRadius: BorderRadius.circular(15.0),
           ),
         );
       },
@@ -562,7 +588,10 @@ class _ShowCartState extends State<ShowCart> {
               orderStatus = true;
             });
           },
-          icon: Icon(Icons.fastfood,color: Colors.green,),
+          icon: Icon(
+            Icons.fastfood,
+            color: Colors.green,
+          ),
           label: MyStyle().showtext_2('สั่งอาหาร'),
           //color: Colors.blue.shade200,
         ),

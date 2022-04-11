@@ -32,7 +32,7 @@ class _AddInfoShopState extends State<AddInfoShop> {
 
 //ดึงตำ่แหน่งที่ตั้งปัจจุบัน
   Future<Null> findLatLng() async {
-        Location location = Location();
+    Location location = Location();
     LocationData locationData = await location.getLocation();
     setState(() {
       lat = locationData.latitude;
@@ -392,38 +392,31 @@ class _AddInfoShopState extends State<AddInfoShop> {
   }
 
 //โชว์ภาพตัวอย่างก่อนเลือกรูปและหลังเลือกรูป
-  Column showImage() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          padding:
-              EdgeInsetsDirectional.only(start: 10.0, end: 10.0, bottom: 10),
-          width: MediaQuery.of(context).size.width * 0.9,
-          height: MediaQuery.of(context).size.width * 0.6,
-          child: file == null
-              ? Card(
-                  semanticContainer: true,
-                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                  child: Image.asset('images/add_image.png'),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                  elevation: 5,
-                  margin: EdgeInsets.all(0),
-                )
-              : Card(
-                  semanticContainer: true,
-                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                  child: Image.file(file),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                  elevation: 5,
-                  margin: EdgeInsets.all(0),
-                ),
-        ),
-      ],
+  Container showImage() {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.9,
+      //  height: MediaQuery.of(context).size.width * 0.6,
+      child: file == null
+          ? Card(
+              semanticContainer: true,
+              clipBehavior: Clip.antiAliasWithSaveLayer,
+              child: Image.asset('images/add_image.png'),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              elevation: 5,
+              margin: EdgeInsets.all(0),
+            )
+          : Card(
+              semanticContainer: true,
+              clipBehavior: Clip.antiAliasWithSaveLayer,
+              child: Image.file(file),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              elevation: 5,
+              margin: EdgeInsets.all(0),
+            ),
     );
   }
 

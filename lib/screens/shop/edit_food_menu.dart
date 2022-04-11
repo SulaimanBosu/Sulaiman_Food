@@ -178,7 +178,7 @@ class _EditFoodMenuState extends State<EditFoodMenu> {
     return Container(
       padding: EdgeInsetsDirectional.only(start: 10.0, end: 10.0, bottom: 10),
       width: MediaQuery.of(context).size.width * 0.9,
-      height: MediaQuery.of(context).size.width * 0.6,
+     // height: MediaQuery.of(context).size.width * 0.6,
       child: Container(
         child: file == null
             ? Card(

@@ -2,7 +2,10 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <application android:label="sulaimanfood" android:icon="@mipmap/ic_launcher">
+    <application 
+                android:label="sulaimanfood"
+                android:name="${applicationName}"
+                android:icon="@mipmap/ic_launcher">
 
         <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyAKYmA-D-PCkvbI4fERfsKfNokaaqETGjU"/>
 

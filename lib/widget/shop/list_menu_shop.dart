@@ -112,7 +112,8 @@ class _ListMenuShopState extends State<ListMenuShop> {
   }
 
   Widget showContent() {
-    return deleteStatus ? progress2(context) : showListFoodMenu2();
+    return null;
+    // deleteStatus ? progress2(context) : showListFoodMenu2();
   }
 
   Center noDATA() {
@@ -539,7 +540,7 @@ class _ListMenuShopState extends State<ListMenuShop> {
     return Container(
         child: new Stack(
       children: <Widget>[
-        showListFoodMenu2(),
+      //  showListFoodMenu2(),
         Container(
           alignment: AlignmentDirectional.center,
           decoration: new BoxDecoration(

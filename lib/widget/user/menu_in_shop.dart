@@ -130,184 +130,186 @@ class _MenuInShopState extends State<MenuInShop> {
   }
 
   Widget showContent() {
-    return foodModels.length != 0
-        ? showListFoodMenu1()
-        : Center(
+    return
+    //  foodModels.length != 0
+    //     ? showListFoodMenu1()
+    //     : 
+        Center(
             child: Text('ยังไม่มีรายการอาหาร'),
           );
   }
 
-  Widget showListFoodMenu1() => ListView.builder(
-        padding: EdgeInsetsDirectional.only(top: 0.0, bottom: 20.0),
-        itemCount: foodModels.length,
-        itemBuilder: (context, index) => Container(
-          child: Slidable(
-            key: Key(foodModels[index].foodName),
-            actionPane: SlidableDrawerActionPane(),
-            actionExtentRatio: 0.25,
-            child: Container(
-              decoration: index % 2 == 0
-                  ? new BoxDecoration(color: Colors.white10)
-                  : new BoxDecoration(color: Colors.grey.shade300),
-              child: Container(
-                padding: EdgeInsetsDirectional.only(top: 0.0, bottom: 0.0),
-                child: GestureDetector(
-                  onTap: () {
-                    // print('คุณคลิก index = $index');
-                    amount = 1;
-                    userOrder(index);
-                  },
-                  child: Row(
-                    children: [
-                      Container(
-                        padding:
-                            EdgeInsetsDirectional.only(start: 0.0, end: 0.0),
-                        width: MediaQuery.of(context).size.width * 0.4,
-                        height: MediaQuery.of(context).size.width * 0.3,
-                        child: Container(
-                          child: Card(
-                            semanticContainer: true,
-                            clipBehavior: Clip.antiAliasWithSaveLayer,
-                            child: CachedNetworkImage(
-                              imageUrl:
-                                  '${MyConstant().domain}${foodModels[index].imagePath}',
-                              progressIndicatorBuilder:
-                                  (context, url, downloadProgress) =>
-                                      MyStyle().showProgress(),
-                              // CircularProgressIndicator(
-                              //     ),
-                              errorWidget: (context, url, error) =>
-                                  Icon(Icons.error),
-                              fit: BoxFit.cover,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0),
-                            ),
-                            elevation: 5,
-                            margin: EdgeInsets.all(10),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        //  padding: EdgeInsetsDirectional.only(start: 5.0, end: 5.0),
-                        //   padding: EdgeInsets.all(5.0),
-                        width: MediaQuery.of(context).size.width * 0.488,
-                        height: MediaQuery.of(context).size.width * 0.3,
-                        child: SingleChildScrollView(
-                          padding: EdgeInsets.only(
-                              right: 5.0, top: 15.0, bottom: 5.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                //padding: EdgeInsetsDirectional.only(top: 0.0,bottom: 10.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        foodModels[index].foodName,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: MyStyle().mainTitle,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      'ราคา ${foodModels[index].price} บาท',
-                                      overflow: TextOverflow.ellipsis,
-                                      style: MyStyle().mainH2Title,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      foodModels[index].foodDetail,
-                                      //overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                          color: Colors.black45,
-                                          fontSize: 14.0,
-                                          fontFamily: 'FC-Minimal-Regular',
-                                          fontStyle: FontStyle.italic),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Expanded(
-                                    child: MyStyle().textdetail_1(
-                                        '${distanceString.toString()} Km. | (${time}min) | ${transport}B'),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.edit_outlined,
-                            color: Colors.black45,
-                            size: 30,
-                          ),
-                          // ignore: unnecessary_statements
-                          onPressed: () {},
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            actions: <Widget>[
-              IconSlideAction(
-                caption: 'เมนูโปรด',
-                color: Colors.grey.shade400,
-                icon: Icons.favorite_outline_rounded,
-                onTap: () => Toast.show('Archive on $index', context,
-                    duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM),
-              ),
-              IconSlideAction(
-                caption: 'ดูรีวิว',
-                color: Colors.red.shade300,
-                icon: Icons.rate_review,
-                onTap: () => Toast.show('Share on $index', context,
-                    duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM),
-              ),
-            ],
-            secondaryActions: <Widget>[
-              IconSlideAction(
-                caption: 'เขียนรีวิว',
-                color: Colors.black45,
-                icon: Icons.edit,
-                onTap: () {
-                  Text('เขียนรีวิว');
-                },
-              ),
-              IconSlideAction(
-                  caption: 'ให้คะแนน',
-                  color: Colors.lightBlue.shade100,
-                  icon: Icons.stars_rounded,
-                  foregroundColor: Colors.amberAccent.shade700,
-                  onTap: () {
-                    Text('ให้คะแนน');
-                  }),
-            ],
-          ),
-        ),
-      );
+  // Widget showListFoodMenu1() => ListView.builder(
+  //       padding: EdgeInsetsDirectional.only(top: 0.0, bottom: 20.0),
+  //       itemCount: foodModels.length,
+  //       itemBuilder: (context, index) => Container(
+  //         child: Slidable(
+  //           key: Key(foodModels[index].foodName),
+  //           actionPane: SlidableDrawerActionPane(),
+  //           actionExtentRatio: 0.25,
+  //           child: Container(
+  //             decoration: index % 2 == 0
+  //                 ? new BoxDecoration(color: Colors.white10)
+  //                 : new BoxDecoration(color: Colors.grey.shade300),
+  //             child: Container(
+  //               padding: EdgeInsetsDirectional.only(top: 0.0, bottom: 0.0),
+  //               child: GestureDetector(
+  //                 onTap: () {
+  //                   // print('คุณคลิก index = $index');
+  //                   amount = 1;
+  //                   userOrder(index);
+  //                 },
+  //                 child: Row(
+  //                   children: [
+  //                     Container(
+  //                       padding:
+  //                           EdgeInsetsDirectional.only(start: 0.0, end: 0.0),
+  //                       width: MediaQuery.of(context).size.width * 0.4,
+  //                       height: MediaQuery.of(context).size.width * 0.3,
+  //                       child: Container(
+  //                         child: Card(
+  //                           semanticContainer: true,
+  //                           clipBehavior: Clip.antiAliasWithSaveLayer,
+  //                           child: CachedNetworkImage(
+  //                             imageUrl:
+  //                                 '${MyConstant().domain}${foodModels[index].imagePath}',
+  //                             progressIndicatorBuilder:
+  //                                 (context, url, downloadProgress) =>
+  //                                     MyStyle().showProgress(),
+  //                             // CircularProgressIndicator(
+  //                             //     ),
+  //                             errorWidget: (context, url, error) =>
+  //                                 Icon(Icons.error),
+  //                             fit: BoxFit.cover,
+  //                           ),
+  //                           shape: RoundedRectangleBorder(
+  //                             borderRadius: BorderRadius.circular(20.0),
+  //                           ),
+  //                           elevation: 5,
+  //                           margin: EdgeInsets.all(10),
+  //                         ),
+  //                       ),
+  //                     ),
+  //                     Container(
+  //                       //  padding: EdgeInsetsDirectional.only(start: 5.0, end: 5.0),
+  //                       //   padding: EdgeInsets.all(5.0),
+  //                       width: MediaQuery.of(context).size.width * 0.488,
+  //                       height: MediaQuery.of(context).size.width * 0.3,
+  //                       child: SingleChildScrollView(
+  //                         padding: EdgeInsets.only(
+  //                             right: 5.0, top: 15.0, bottom: 5.0),
+  //                         child: Column(
+  //                           mainAxisAlignment: MainAxisAlignment.center,
+  //                           children: [
+  //                             Container(
+  //                               //padding: EdgeInsetsDirectional.only(top: 0.0,bottom: 10.0),
+  //                               child: Row(
+  //                                 mainAxisAlignment: MainAxisAlignment.start,
+  //                                 children: [
+  //                                   Expanded(
+  //                                     child: Text(
+  //                                       foodModels[index].foodName,
+  //                                       overflow: TextOverflow.ellipsis,
+  //                                       style: MyStyle().mainTitle,
+  //                                     ),
+  //                                   ),
+  //                                 ],
+  //                               ),
+  //                             ),
+  //                             Row(
+  //                               mainAxisAlignment: MainAxisAlignment.start,
+  //                               children: [
+  //                                 Expanded(
+  //                                   child: Text(
+  //                                     'ราคา ${foodModels[index].price} บาท',
+  //                                     overflow: TextOverflow.ellipsis,
+  //                                     style: MyStyle().mainH2Title,
+  //                                   ),
+  //                                 ),
+  //                               ],
+  //                             ),
+  //                             Row(
+  //                               mainAxisAlignment: MainAxisAlignment.start,
+  //                               children: [
+  //                                 Expanded(
+  //                                   child: Text(
+  //                                     foodModels[index].foodDetail,
+  //                                     //overflow: TextOverflow.ellipsis,
+  //                                     style: TextStyle(
+  //                                         color: Colors.black45,
+  //                                         fontSize: 14.0,
+  //                                         fontFamily: 'FC-Minimal-Regular',
+  //                                         fontStyle: FontStyle.italic),
+  //                                   ),
+  //                                 ),
+  //                               ],
+  //                             ),
+  //                             Row(
+  //                               mainAxisAlignment: MainAxisAlignment.start,
+  //                               children: [
+  //                                 Expanded(
+  //                                   child: MyStyle().textdetail_1(
+  //                                       '${distanceString.toString()} Km. | (${time}min) | ${transport}B'),
+  //                                 ),
+  //                               ],
+  //                             ),
+  //                           ],
+  //                         ),
+  //                       ),
+  //                     ),
+  //                     Expanded(
+  //                       child: IconButton(
+  //                         icon: Icon(
+  //                           Icons.edit_outlined,
+  //                           color: Colors.black45,
+  //                           size: 30,
+  //                         ),
+  //                         // ignore: unnecessary_statements
+  //                         onPressed: () {},
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ),
+  //             ),
+  //           ),
+  //           actions: <Widget>[
+  //             IconSlideAction(
+  //               caption: 'เมนูโปรด',
+  //               color: Colors.grey.shade400,
+  //               icon: Icons.favorite_outline_rounded,
+  //               onTap: () => Toast.show('Archive on $index', context,
+  //                   duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM),
+  //             ),
+  //             IconSlideAction(
+  //               caption: 'ดูรีวิว',
+  //               color: Colors.red.shade300,
+  //               icon: Icons.rate_review,
+  //               onTap: () => Toast.show('Share on $index', context,
+  //                   duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM),
+  //             ),
+  //           ],
+  //           secondaryActions: <Widget>[
+  //             IconSlideAction(
+  //               caption: 'เขียนรีวิว',
+  //               color: Colors.black45,
+  //               icon: Icons.edit,
+  //               onTap: () {
+  //                 Text('เขียนรีวิว');
+  //               },
+  //             ),
+  //             IconSlideAction(
+  //                 caption: 'ให้คะแนน',
+  //                 color: Colors.lightBlue.shade100,
+  //                 icon: Icons.stars_rounded,
+  //                 foregroundColor: Colors.amberAccent.shade700,
+  //                 onTap: () {
+  //                   Text('ให้คะแนน');
+  //                 }),
+  //           ],
+  //         ),
+  //       ),
+  //     );
 
   // Widget showListFoodMenu3() => ListView.builder(
   //       padding: EdgeInsetsDirectional.only(top: 0.0, bottom: 20.0),
